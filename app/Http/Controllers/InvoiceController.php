@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\NavLink;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class InvoiceController extends Controller
 {
@@ -35,43 +38,90 @@ class InvoiceController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created invoice in storage.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'invoice_number' => 'required|string|unique:invoices',
-            'invoice_date' => 'required|date',
-            'customer_name' => 'required|string',
-            'customer_email' => 'required|email',
-            'customer_address' => 'required|string',
-            'items' => 'required|array',
-            'items.*.description' => 'required|string',
-            'items.*.quantity' => 'required|numeric|min:1',
-            'items.*.price' => 'required|numeric|min:0',
-            'items.*.vat' => 'required|numeric|min:0|max:100',
-            'total_amount' => 'required|numeric|min:0'
+        Log::info('Invoice Creation Request', [
+            'input' => $request->all()
         ]);
     
-        // Calculate totals for each item and verify total amount
-        $calculatedTotal = 0;
-        foreach ($validated['items'] as &$item) {
-            $subtotal = $item['quantity'] * $item['price'];
-            $vatAmount = $item['vat'] > 0 ? ($subtotal * $item['vat'] / 100) : 0;
-            $item['total'] = round($subtotal + $vatAmount, 2);
-            $calculatedTotal += $item['total'];
+        try {
+            $validated = $request->validate([
+                'invoice_number' => 'required|string|unique:invoices',
+                'invoice_date' => 'required|date',
+                'customer_name' => 'required|string',
+                'customer_email' => 'required|email',
+                'customer_address' => 'required|string',
+                'items' => 'required|array|min:1',
+                'items.*.description' => 'required|string',
+                'items.*.quantity' => 'required|numeric|min:1',
+                'items.*.price' => 'required|numeric|min:0',
+                'items.*.vat' => 'required|numeric|min:0|max:100',
+                'total_amount' => 'required|numeric|min:0',
+                'total_vat' => 'required|numeric|min:0',
+                'total_wo_vat' => 'required|numeric|min:0'
+            ]);
+    
+            // Ensure items are properly formatted
+            $processedItems = [];
+            foreach ($validated['items'] as $item) {
+                $processedItems[] = [
+                    'description' => $item['description'],
+                    'quantity' => floatval($item['quantity']),
+                    'price' => floatval($item['price']),
+                    'vat' => floatval($item['vat']),
+                    'total' => round(
+                        $item['quantity'] * $item['price'] * (1 + ($item['vat'] / 100)), 
+                        2
+                    )
+                ];
+            }
+    
+            // Recalculate totals
+            $subtotal = 0;
+            $totalVat = 0;
+            $grandTotal = 0;
+    
+            foreach ($processedItems as $item) {
+                $itemSubtotal = $item['quantity'] * $item['price'];
+                $itemVat = $item['vat'] > 0 ? ($itemSubtotal * $item['vat'] / 100) : 0;
+                $itemTotal = $itemSubtotal + $itemVat;
+    
+                $subtotal += $itemSubtotal;
+                $totalVat += $itemVat;
+                $grandTotal += $itemTotal;
+            }
+    
+            // Override totals with calculated values
+            $validated['items'] = $processedItems;
+            $validated['total_wo_vat'] = round($subtotal, 2);
+            $validated['total_vat'] = round($totalVat, 2);
+            $validated['total_amount'] = round($grandTotal, 2);
+    
+            // Add updater information
+            $validated['updater'] = auth()->user()->name ?? 'System';
+    
+            // Create the invoice
+            $invoice = Invoice::create($validated);
+    
+            return redirect()->route('invoices.show', $invoice)
+                ->with('success', 'Invoice created successfully');
+    
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Error', [
+                'errors' => $e->errors(),
+                'input' => $request->all()
+            ]);
+    
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Invoice Creation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->all()
+            ]);
+    
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
-    
-        // Verify the calculated total matches the submitted total
-        if (abs(round($calculatedTotal, 2) - round($validated['total_amount'], 2)) > 0.01) {
-            return back()->withErrors(['total_amount' => 'Total amount mismatch']);
-        }
-    
-        $invoice = Invoice::create($validated);
-    
-        return redirect()->route('invoices.show', $invoice)
-            ->with('success', 'Invoice created successfully');
     }
 
     /**
@@ -106,18 +156,36 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([
-            'invoice_number' => 'required|string|unique:invoices,invoice_number,' . $invoice->id,
+            'invoice_number' => [
+                'required', 
+                'string', 
+                Rule::unique('invoices')->ignore($invoice->id)
+            ],
             'invoice_date' => 'required|date',
+            'customer_id' => 'nullable|numeric',
             'customer_name' => 'required|string',
             'customer_email' => 'required|email',
             'customer_address' => 'required|string',
+            'customer_vat' => 'nullable|string',
+            'customer_post_address' => 'nullable|string',
             'items' => 'required|array',
             'items.*.description' => 'required|string',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.vat' => 'required|numeric|min:0|max:100',
-            'total_amount' => 'required|numeric|min:0'
+            'total_amount' => 'required|numeric|min:0',
+            'total_vat' => 'required|numeric|min:0',
+            'total_wo_vat' => 'required|numeric|min:0'
         ]);
+
+        // Calculate and verify totals
+        $calculatedTotals = $this->calculateInvoiceTotals($validated['items']);
+    
+        // Verify the calculated totals match the submitted totals
+        $this->validateInvoiceTotals($calculatedTotals, $validated);
+
+        // Add updater information
+        $validated['updater'] = auth()->user()->name ?? 'System';
 
         $invoice->update($validated);
 
@@ -136,70 +204,130 @@ class InvoiceController extends Controller
             ->with('success', 'Invoice deleted successfully');
     }
 
-    /**
-     * Export the specified invoice to PDF.
-     */
-    public function exportPdf(Invoice $invoice)
-    {
-        $calculations = $this->calculateInvoiceTotals($invoice);
-        
-        $pdf = Pdf::loadView('invoices.pdf', [
-            'invoice' => $invoice,
-            'calculations' => $calculations
-        ]);
-
-        $pdf->setPaper('a4');
-        $pdf->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-            'defaultFont' => 'sans-serif'
-        ]);
-
-        return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
-    }
-
-    /**
-     * Calculate invoice totals, subtotals, and VAT.
-     */
-    private function calculateInvoiceTotals(Invoice $invoice): array
-    {
-        $subtotal = 0;
-        $totalVat = 0;
-        
-        foreach ($invoice->items as $item) {
-            $itemSubtotal = $item['quantity'] * $item['price'];
-            $itemVat = $item['vat'] > 0 ? ($itemSubtotal * $item['vat'] / 100) : 0;
+/**
+ * Calculate invoice totals, subtotals, and VAT.
+ *
+ * @param array|null $items
+ * @return array
+ */
+private function calculateInvoiceTotals(?array $items = []): array
+{
+    // Default values if no items
+    $subtotal = 0;
+    $totalVat = 0;
+    $grandTotal = 0;
+    
+    // Only process if items is not null and is an array
+    if (!empty($items)) {
+        foreach ($items as $item) {
+            // Ensure each item has required keys with default values
+            $quantity = $item['quantity'] ?? 0;
+            $price = $item['price'] ?? 0;
+            $vatPercent = $item['vat'] ?? 0;
+            
+            $itemSubtotal = $quantity * $price;
+            $itemVat = $vatPercent > 0 ? ($itemSubtotal * $vatPercent / 100) : 0;
+            $itemTotal = $itemSubtotal + $itemVat;
             
             $subtotal += $itemSubtotal;
             $totalVat += $itemVat;
+            $grandTotal += $itemTotal;
         }
-
-        return [
-            'subtotal' => round($subtotal, 2),
-            'total_vat' => round($totalVat, 2),
-            'total' => round($subtotal + $totalVat, 2)
-        ];
     }
 
-    /**
-     * Preview the PDF in browser
-     */
-    public function previewPdf(Invoice $invoice)
-    {
-        $calculations = $this->calculateInvoiceTotals($invoice);
+    return [
+        'subtotal' => round($subtotal, 2),
+        'total_vat' => round($totalVat, 2),
+        'total' => round($grandTotal, 2)
+    ];
+}
+
+public function exportPdf($id)
+{
+    // Use find() instead of model binding to get more control
+    $invoice = Invoice::find($id);
+
+    // Extensive debugging
+    if (!$invoice) {
+        Log::error('PDF Export - Invoice Not Found', [
+            'invoice_id' => $id
+        ]);
         
-        $pdf = Pdf::loadView('invoices.pdf', [
-            'invoice' => $invoice,
-            'calculations' => $calculations
-        ]);
+        return back()->with('error', 'Invoice not found');
+    }
 
-        $pdf->setPaper('a4');
-        $pdf->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-            'defaultFont' => 'sans-serif'
-        ]);
+    // Ensure items are properly parsed
+    $items = $invoice->items ?? [];
+    
+    $pdf = Pdf::loadView('invoices.pdf', [
+        'invoice' => $invoice,
+        'items' => $items
+    ]);
 
-        return $pdf->stream("invoice-{$invoice->invoice_number}.pdf");
+    $pdf->setPaper('a4');
+    $pdf->setOptions([
+        'isRemoteEnabled' => true,
+        'isHtml5ParserEnabled' => true,
+        'defaultFont' => 'sans-serif'
+    ]);
+
+    return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
+}
+
+/**
+ * Preview the PDF in browser
+ */
+public function previewPdf(Invoice $invoice)
+{
+    // Ensure items is an array, fallback to empty array if null
+    $items = $invoice->items ?? [];
+    $calculations = $this->calculateInvoiceTotals($items);
+    
+    $pdf = Pdf::loadView('invoices.pdf', [
+        'invoice' => $invoice,
+        'calculations' => $calculations
+    ]);
+
+    $pdf->setPaper('a4');
+    $pdf->setOptions([
+        'isRemoteEnabled' => true,
+        'isHtml5ParserEnabled' => true,
+        'defaultFont' => 'sans-serif'
+    ]);
+
+    return $pdf->stream("invoice-{$invoice->invoice_number}.pdf");
+}
+
+    /**
+     * Validate calculated totals against submitted totals.
+     *
+     * @param array $calculatedTotals
+     * @param array $validated
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    private function validateInvoiceTotals(array $calculatedTotals, array $validated)
+    {
+        $tolerance = 0.01; // Allow small floating-point discrepancies
+
+        // Check total amount
+        if (abs($calculatedTotals['total'] - $validated['total_amount']) > $tolerance) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'total_amount' => ['Total amount mismatch']
+            ]);
+        }
+
+        // Check VAT amount
+        if (abs($calculatedTotals['total_vat'] - $validated['total_vat']) > $tolerance) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'total_vat' => ['Total VAT amount mismatch']
+            ]);
+        }
+
+        // Check subtotal
+        if (abs($calculatedTotals['subtotal'] - $validated['total_wo_vat']) > $tolerance) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'total_wo_vat' => ['Total without VAT amount mismatch']
+            ]);
+        }
     }
 }

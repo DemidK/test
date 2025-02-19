@@ -2,165 +2,164 @@
 
 @section('content')
 <div class="container mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold mb-8">Create Invoice</h1>
+    <h1 class="text-3xl font-bold mb-8">Edit Invoice</h1>
     
-    @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-            <strong class="font-bold">Oops! Something went wrong.</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    
-    <form action="{{ route('invoices.store') }}" method="POST" id="invoiceForm">
+    <form action="{{ route('invoices.update', $invoice) }}" method="POST" id="invoiceForm">
         @csrf
+        @method('PUT')
         
         <!-- Basic Invoice Info -->
-        <div class="space-y-4 mb-6">
+        <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
             <div>
                 <label for="invoice_number" class="block text-gray-700 mb-2">Invoice Number</label>
                 <input type="text" name="invoice_number" id="invoice_number" 
                     class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('invoice_number') }}" required>
+                    value="{{ old('invoice_number', $invoice->invoice_number) }}" required>
             </div>
             <div>
                 <label for="invoice_date" class="block text-gray-700 mb-2">Invoice Date</label>
                 <input type="date" name="invoice_date" id="invoice_date" 
                     class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('invoice_date', date('Y-m-d')) }}" required>
+                    value="{{ old('invoice_date', $invoice->invoice_date) }}" required>
             </div>
         </div>
 
         <!-- Customer Info -->
-        <div class="space-y-4 mb-6">
-            <div>
+        <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
+            <div class="md:col-span-1">
                 <label for="customer_id" class="block text-gray-700 mb-2">Customer ID</label>
                 <input type="number" name="customer_id" id="customer_id" 
                     class="w-full px-4 py-2 border rounded-lg"
-                    value="{{ old('customer_id') }}">
+                    value="{{ old('customer_id', $invoice->customer_id) }}">
             </div>
-            <div>
-                <label for="customer_name" class="block text-gray-700 mb-2">Customer Name</label>
-                <input type="text" name="customer_name" id="customer_name" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('customer_name') }}" required>
-            </div>
-            <div>
-                <label for="customer_email" class="block text-gray-700 mb-2">Customer Email</label>
-                <input type="email" name="customer_email" id="customer_email" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('customer_email') }}" required>
-            </div>
-            <div>
+            <div class="md:col-span-1">
                 <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
                 <input type="text" name="customer_vat" id="customer_vat" 
                     class="w-full px-4 py-2 border rounded-lg"
-                    value="{{ old('customer_vat') }}">
+                    value="{{ old('customer_vat', $invoice->customer_vat) }}">
             </div>
-            <div>
+            <div class="md:col-span-1">
+                <label for="customer_name" class="block text-gray-700 mb-2">Customer Name</label>
+                <input type="text" name="customer_name" id="customer_name" 
+                    class="w-full px-4 py-2 border rounded-lg" 
+                    value="{{ old('customer_name', $invoice->customer_name) }}" required>
+            </div>
+            <div class="md:col-span-1">
+                <label for="customer_email" class="block text-gray-700 mb-2">Customer Email</label>
+                <input type="email" name="customer_email" id="customer_email" 
+                    class="w-full px-4 py-2 border rounded-lg" 
+                    value="{{ old('customer_email', $invoice->customer_email) }}" required>
+            </div>
+            <div class="md:col-span-1">
                 <label for="customer_address" class="block text-gray-700 mb-2">Primary Address</label>
                 <textarea name="customer_address" id="customer_address" 
                         class="w-full px-4 py-2 border rounded-lg" 
-                        rows="3" required>{{ old('customer_address') }}</textarea>
+                        rows="3" required>{{ old('customer_address', $invoice->customer_address) }}</textarea>
             </div>
-            <div>
+            <div class="md:col-span-1">
                 <label for="customer_post_address" class="block text-gray-700 mb-2">Postal Address (if different)</label>
                 <textarea name="customer_post_address" id="customer_post_address" 
                         class="w-full px-4 py-2 border rounded-lg" 
-                        rows="3">{{ old('customer_post_address') }}</textarea>
+                        rows="3">{{ old('customer_post_address', $invoice->customer_post_address) }}</textarea>
             </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div>
-                <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
-                <input type="text" name="customer_vat" id="customer_vat" 
-                       class="w-full px-4 py-2 border rounded-lg"
-                       value="{{ old('customer_vat') }}">
-            </div>
-            <div>
-                <label for="customer_address" class="block text-gray-700 mb-2">Primary Address</label>
-                <textarea name="customer_address" id="customer_address" 
-                          class="w-full px-4 py-2 border rounded-lg" required>{{ old('customer_address') }}</textarea>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <label for="customer_post_address" class="block text-gray-700 mb-2">Postal Address (if different)</label>
-            <textarea name="customer_post_address" id="customer_post_address" 
-                      class="w-full px-4 py-2 border rounded-lg">{{ old('customer_post_address') }}</textarea>
         </div>
 
         <!-- Items Header -->
-        <div class="grid grid-cols-6 gap-4 mb-2 font-bold">
+        <div class="grid grid-cols-6 gap-4 mb-2 font-bold text-gray-700">
             <div class="col-span-2">Description</div>
-            <div>Qty</div>
-            <div>Price</div>
-            <div>VAT %</div>
-            <div>Total</div>
+            <div class="text-center">Qty</div>
+            <div class="text-center">Price</div>
+            <div class="text-center">VAT %</div>
+            <div class="text-right">Total</div>
         </div>
 
         <!-- Items Container -->
         <div id="items-container">
-            <div class="item grid grid-cols-6 gap-4 mb-2 mobile-item-layout">
-                <div class="col-span-6 md:col-span-2">
-                    <input type="text" name="items[0][description]" placeholder="Description" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('items.0.description') }}" required>
+            @foreach(old('items', $invoice->items) as $index => $item)
+            <div class="item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg">
+                <div class="col-span-2">
+                    <input type="text" 
+                        name="items[{{ $index }}][description]" 
+                        placeholder="Description" 
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
+                        value="{{ $item['description'] }}" 
+                        required>
                 </div>
-                <div class="col-span-6 md:col-span-4 flex space-x-2">
-                    <div class="w-1/3">
-                        <input type="number" name="items[0][quantity]" placeholder="Qty" min="1" 
-                            class="w-full px-4 py-2 border rounded-lg item-qty" 
-                            value="{{ old('items.0.quantity', 1) }}" required>
-                    </div>
-                    <div class="w-1/3">
-                        <input type="number" name="items[0][price]" placeholder="Price" step="0.01" min="0" 
-                            class="w-full px-4 py-2 border rounded-lg item-price" 
-                            value="{{ old('items.0.price', 0) }}" required>
-                    </div>
-                    <div class="w-1/3">
-                        <input type="number" name="items[0][vat]" placeholder="VAT" min="0" max="100" 
-                            class="w-full px-4 py-2 border rounded-lg item-vat" 
-                            value="{{ old('items.0.vat', 0) }}" required>
+                <div>
+                    <input type="number" 
+                        name="items[{{ $index }}][quantity]" 
+                        placeholder="Qty" 
+                        min="1" 
+                        class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
+                        value="{{ $item['quantity'] }}" 
+                        required>
+                </div>
+                <div>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                        <input type="number" 
+                            name="items[{{ $index }}][price]" 
+                            placeholder="0.00" 
+                            step="0.01" 
+                            min="0" 
+                            class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
+                            value="{{ $item['price'] }}" 
+                            required>
                     </div>
                 </div>
-                <div class="col-span-6 flex justify-between items-center">
-                    <span class="item-total">0.00</span>
+                <div>
+                    <div class="relative">
+                        <input type="number" 
+                            name="items[{{ $index }}][vat]" 
+                            placeholder="0" 
+                            min="0" 
+                            max="100" 
+                            class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
+                            value="{{ $item['vat'] }}" 
+                            required>
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="item-total font-medium">{{ number_format($item['quantity'] * $item['price'] * (1 + $item['vat']/100), 2) }}</span>
                     <button type="button" class="remove-item text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash"></i>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
                     </button>
                 </div>
             </div>
+            @endforeach
         </div>
 
-        <button type="button" id="add-item" 
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700">
-            Add Item
-        </button>
+<!-- Add Item Button -->
+<button type="button" 
+        id="add-item" 
+        class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700 
+               inline-flex items-center justify-center gap-2">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    </svg>
+    Add Item
+</button>
 
-        <!-- Total Amount -->
-        <div class="flex justify-end mt-6">
-            <div class="text-xl font-bold text-right">
-                <div>Total (w/o VAT): $<span id="total-wo-vat-display">0.00</span></div>
-                <div>Total VAT: $<span id="total-vat-display">0.00</span></div>
-                <div>Total Amount: $<span id="total-display">0.00</span></div>
-                
-                <input type="hidden" name="total_amount" id="total_amount" value="0">
-                <input type="hidden" name="total_vat" id="total_vat" value="0">
-                <input type="hidden" name="total_wo_vat" id="total_wo_vat" value="0">
-            </div>
-        </div>
-
-        <div class="flex justify-end mt-6">
-            <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
-                Create Invoice
-            </button>
-        </div>
-    </form>
+<!-- Totals Section -->
+<div class="flex justify-end mt-6">
+    <div class="text-xl font-bold text-right space-y-2">
+        <div class="text-gray-600">Total (w/o VAT): $<span id="total-wo-vat-display">{{ number_format($invoice->total_wo_vat, 2) }}</span></div>
+        <div class="text-gray-600">Total VAT: $<span id="total-vat-display">{{ number_format($invoice->total_vat, 2) }}</span></div>
+        <div class="text-gray-900">Total Amount: $<span id="total-display">{{ number_format($invoice->total_amount, 2) }}</span></div>
+        
+        <input type="hidden" name="total_amount" id="total_amount" value="{{ $invoice->total_amount }}">
+        <input type="hidden" name="total_vat" id="total_vat" value="{{ $invoice->total_vat }}">
+        <input type="hidden" name="total_wo_vat" id="total_wo_vat" value="{{ $invoice->total_wo_vat }}">
+    </div>
+</div>
+<!-- Form Actions -->
+<div class="flex justify-end mt-6">
+    <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
+        Update Invoice
+    </button>
 </div>
 
 <script>

@@ -17,10 +17,16 @@ return new class extends Migration
             $table->date('invoice_date');
             $table->string('customer_name');
             $table->string('customer_email');
-            $table->text('customer_address');
             $table->json('items')->comment('Array of objects with description, quantity, price, vat, total');
             $table->decimal('total_amount', 10, 2);
             $table->timestamps();
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->string('customer_vat')->nullable();
+            $table->text('customer_address')->nullable();
+            $table->text('customer_post_address')->nullable();
+            $table->string('updater')->nullable();
+            $table->decimal('total_vat', 10, 2)->default(0);
+            $table->decimal('total_wo_vat', 10, 2)->default(0);
         });
     }
 
