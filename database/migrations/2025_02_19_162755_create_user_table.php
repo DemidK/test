@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nav_links', function (Blueprint $table) {
+        Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Link text (e.g., "Home", "About")
-            $table->string('url');  // Link URL (e.g., "/", "/about")
-            $table->integer('position')->default(0); // Position in the navigation bar
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
+            $table->string('schema_name')->nullable()->after('password');
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nav_links');
+        Schema::dropIfExists('user');
     }
 };

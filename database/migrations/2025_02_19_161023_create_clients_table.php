@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nav_links', function (Blueprint $table) {
+        Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Link text (e.g., "Home", "About")
-            $table->string('url');  // Link URL (e.g., "/", "/about")
-            $table->integer('position')->default(0); // Position in the navigation bar
+            $table->string('name');
+            $table->string('surname');
+            $table->string('identification_number');
+            $table->json('json_data')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nav_links');
+        Schema::dropIfExists('clients');
     }
 };
