@@ -157,8 +157,6 @@
     </div>
 </div>
 
-@endsection
-@section('script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('items-container');

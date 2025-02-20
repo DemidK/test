@@ -27,26 +27,11 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
         
-        // Hash the input password using our hash_password function
-        $hashedPassword = DB::selectOne('SELECT hash_password(?) as hash', [$request->input('password')])->hash;
-        
-        // Check if user exists with the hashed password
-        $user = DB::selectOne('
-            SELECT * FROM "user" 
-            WHERE email = ? 
-            AND password = ?', 
-            [
-                $request->input('email'),
-                $hashedPassword
-            ]
-        );
-
-        if ($user) {
-            Auth::loginUsingId($user->id);
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
-
+    
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);

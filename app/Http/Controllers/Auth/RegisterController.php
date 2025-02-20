@@ -82,12 +82,11 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        $hashedPassword = DB::selectOne('SELECT hash_password(?) as hash', [$data['password']])->hash;
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $hashedPassword,
-            'schema_name' => null, // Will be updated after schema creation
+            'password' => Hash::make($data['password']),
+            'schema_name' => null,
         ]);
     }
 }
