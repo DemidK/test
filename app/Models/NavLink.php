@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class NavLink extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'url', 'position'];
 }

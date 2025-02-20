@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\NavLink;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -14,13 +16,13 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Fetch links ordered by their position
         $navLinks = NavLink::orderBy('position')->get();
-        // Example data to pass to the view
+        $totalUsers = User::count();
+        $totalClients = Client::count();
         $data = [
             'navLinks' => $navLinks,
-            'totalUsers' => 1234,
-            'totalOrders' => 567,
+            'totalUsers' => $totalUsers,
+            'totalClients' => $totalClients,
             'totalRevenue' => 12345,
             'recentActivities' => [
                 'User "John Doe" placed an order.',

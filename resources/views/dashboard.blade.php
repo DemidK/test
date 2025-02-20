@@ -1,40 +1,40 @@
+<!-- resources/views/dashboard.blade.php -->
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-6 py-8">
+<div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Card 1: Total Users -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">Total Users</h2>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Total Users Card -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold mb-2">Total Users</h3>
             <p class="text-2xl font-bold text-blue-600">{{ $totalUsers }}</p>
-            <p class="text-gray-600">Registered users</p>
         </div>
 
-        <!-- Card 2: Total Orders -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">Total Orders</h2>
-            <p class="text-2xl font-bold text-green-600">{{ $totalOrders }}</p>
-            <p class="text-gray-600">Completed orders</p>
+        <!-- Total Clients Card -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold mb-2">Total Clients</h3>
+            <p class="text-2xl font-bold text-green-600">{{ $totalClients }}</p>
         </div>
 
-        <!-- Card 3: Revenue -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">Revenue</h2>
-            <p class="text-2xl font-bold text-purple-600">${{ number_format($totalRevenue, 2) }}</p>
-            <p class="text-gray-600">Total revenue</p>
+        <!-- Revenue Card -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold mb-2">Revenue</h3>
+            <p class="text-2xl font-bold text-purple-600">$12,345.00</p>
+            <p class="text-gray-600 text-sm">Total revenue</p>
         </div>
     </div>
 
     <!-- Recent Activity Section -->
     <div class="mt-8">
         <h2 class="text-2xl font-bold mb-4">Recent Activity</h2>
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <ul class="space-y-4">
-                @foreach ($recentActivities as $activity)
-                    <li class="text-gray-700">{{ $activity }}</li>
-                @endforeach
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <ul class="space-y-3">
+                <li class="text-gray-700 text-sm md:text-base">User "John Doe" placed an order.</li>
+                <li class="text-gray-700 text-sm md:text-base">User "Jane Smith" registered.</li>
+                <li class="text-gray-700 text-sm md:text-base">Order #123 was completed.</li>
             </ul>
         </div>
     </div>

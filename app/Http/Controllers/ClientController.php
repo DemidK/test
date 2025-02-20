@@ -17,7 +17,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::paginate(10);
         $navLinks = NavLink::orderBy('position')->get();
         // Example data to pass to the view
         $data = [

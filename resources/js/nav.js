@@ -1,58 +1,47 @@
-// resources/js/nav.js
 class NavigationManager {
     constructor() {
         this.navLinks = document.getElementById('nav-links');
+        if (!this.navLinks) return; // Guard clause if element doesn't exist
+        
         this.draggedItem = null;
         this.initializeEventListeners();
     }
 
     initializeEventListeners() {
-        this.navLinks.querySelectorAll('.draggable').forEach(link => {
-            link.setAttribute('draggable', true);
+        const draggables = this.navLinks.querySelectorAll('.draggable');
+        if (!draggables.length) return; // Guard clause if no draggable items
+
+        draggables.forEach(link => {
             link.addEventListener('dragstart', this.handleDragStart.bind(this));
             link.addEventListener('dragend', this.handleDragEnd.bind(this));
+            link.addEventListener('dragover', this.handleDragOver.bind(this));
         });
-
-        this.navLinks.addEventListener('dragover', this.handleDragOver.bind(this));
     }
 
     handleDragStart(e) {
         this.draggedItem = e.target;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.innerHTML);
-        e.target.classList.add('dragging');
+        e.target.classList.add('opacity-50');
     }
 
     handleDragEnd(e) {
-        e.target.classList.remove('dragging');
-        this.draggedItem = null;
+        e.target.classList.remove('opacity-50');
         this.saveOrder();
     }
 
     handleDragOver(e) {
         e.preventDefault();
-        const afterElement = this.getDragAfterElement(e.clientX);
-        const currentItem = document.querySelector('.dragging');
+        const target = e.target.closest('.draggable');
+        if (!target || target === this.draggedItem) return;
 
-        if (afterElement == null) {
-            this.navLinks.appendChild(currentItem);
+        const draggedRect = this.draggedItem.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const nextElement = targetRect.left > draggedRect.left ? target.nextElementSibling : target;
+
+        if (nextElement) {
+            this.navLinks.insertBefore(this.draggedItem, nextElement);
         } else {
-            this.navLinks.insertBefore(currentItem, afterElement);
+            this.navLinks.appendChild(this.draggedItem);
         }
-    }
-
-    getDragAfterElement(x) {
-        const draggableElements = [...this.navLinks.querySelectorAll('.draggable:not(.dragging)')];
-
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = x - box.left - box.width / 2;
-
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            }
-            return closest;
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
     saveOrder() {
@@ -71,9 +60,15 @@ class NavigationManager {
             body: JSON.stringify({ order })
         })
         .then(response => response.json())
-        .then(data => console.log('Order updated successfully:', data))
+        .then(data => console.log('Order updated:', data))
         .catch(error => console.error('Error updating order:', error));
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => new NavigationManager());
+// Initialize only if nav-links element exists
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinksElement = document.getElementById('nav-links');
+    if (navLinksElement) {
+        new NavigationManager();
+    }
+});
