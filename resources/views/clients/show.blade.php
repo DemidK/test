@@ -2,10 +2,9 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="max-w-2xl mx-auto">
-        <!-- Header Section -->
+    <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold">Client Details</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold">Klienta detaļas</h1>
             <div class="space-x-2">
                 <a href="{{ route('clients.index') }}" class="text-blue-600 hover:text-blue-800">
                     <i class="fas fa-arrow-left"></i> Back
@@ -19,18 +18,13 @@
             <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Vārds / Nosaukums</label>
                         <p class="text-gray-900">{{ $client->name }}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Surname</label>
-                        <p class="text-gray-900">{{ $client->surname }}</p>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Identification Number</label>
+                        <p class="text-gray-900">{{ $client->identification_number }}</p>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Identification Number</label>
-                    <p class="text-gray-900">{{ $client->identification_number }}</p>
                 </div>
 
                 <!-- Data Objects Section -->
@@ -70,7 +64,7 @@
                     <a href="{{ route('clients.edit', $client) }}" 
                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         <i class="fas fa-edit mr-2"></i>
-                        Edit Client
+                        Rediģēt klientu
                     </a>
                     <form action="{{ route('clients.destroy', $client) }}" 
                           method="POST" 

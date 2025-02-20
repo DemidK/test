@@ -84,7 +84,7 @@
                             </svg>
                         </button>
                         <div x-show="open" class="pl-4">
-                            <a href="/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                            <a href="/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Vadības panelis</a>
                             <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -93,8 +93,8 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Login</a>
-                    <a href="{{ route('register') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Register</a>
+                    <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Pieslēgties</a>
+                    <a href="{{ route('register') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Reģistrēties</a>
                 @endauth
             </div>
         </div>

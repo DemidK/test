@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold mb-8">Edit Invoice</h1>
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Rediģēt rēķinu</h1>
     
     <form action="{{ route('invoices.update', $invoice) }}" method="POST" id="invoiceForm">
         @csrf
@@ -11,13 +12,13 @@
         <!-- Basic Invoice Info -->
         <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
             <div>
-                <label for="invoice_number" class="block text-gray-700 mb-2">Invoice Number</label>
+                <label for="invoice_number" class="block text-gray-700 mb-2">Rēķina numurs</label>
                 <input type="text" name="invoice_number" id="invoice_number" 
                     class="w-full px-4 py-2 border rounded-lg" 
                     value="{{ old('invoice_number', $invoice->invoice_number) }}" required>
             </div>
             <div>
-                <label for="invoice_date" class="block text-gray-700 mb-2">Invoice Date</label>
+                <label for="invoice_date" class="block text-gray-700 mb-2">Rēķina datums</label>
                 <input type="date" name="invoice_date" id="invoice_date" 
                     class="w-full px-4 py-2 border rounded-lg" 
                     value="{{ old('invoice_date', $invoice->invoice_date) }}" required>
@@ -27,7 +28,7 @@
         <!-- Customer Info -->
         <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
             <div class="md:col-span-1">
-                <label for="customer_id" class="block text-gray-700 mb-2">Customer ID</label>
+                <label for="customer_id" class="block text-gray-700 mb-2">Klienta ID</label>
                 <input type="number" name="customer_id" id="customer_id" 
                     class="w-full px-4 py-2 border rounded-lg"
                     value="{{ old('customer_id', $invoice->customer_id) }}">
@@ -39,25 +40,25 @@
                     value="{{ old('customer_vat', $invoice->customer_vat) }}">
             </div>
             <div class="md:col-span-1">
-                <label for="customer_name" class="block text-gray-700 mb-2">Customer Name</label>
+                <label for="customer_name" class="block text-gray-700 mb-2">Vārds / Nosaukums</label>
                 <input type="text" name="customer_name" id="customer_name" 
                     class="w-full px-4 py-2 border rounded-lg" 
                     value="{{ old('customer_name', $invoice->customer_name) }}" required>
             </div>
             <div class="md:col-span-1">
-                <label for="customer_email" class="block text-gray-700 mb-2">Customer Email</label>
+                <label for="customer_email" class="block text-gray-700 mb-2">Klienta e-pasts</label>
                 <input type="email" name="customer_email" id="customer_email" 
                     class="w-full px-4 py-2 border rounded-lg" 
                     value="{{ old('customer_email', $invoice->customer_email) }}" required>
             </div>
             <div class="md:col-span-1">
-                <label for="customer_address" class="block text-gray-700 mb-2">Primary Address</label>
+                <label for="customer_address" class="block text-gray-700 mb-2">Juridisko adrese</label>
                 <textarea name="customer_address" id="customer_address" 
                         class="w-full px-4 py-2 border rounded-lg" 
                         rows="3" required>{{ old('customer_address', $invoice->customer_address) }}</textarea>
             </div>
             <div class="md:col-span-1">
-                <label for="customer_post_address" class="block text-gray-700 mb-2">Postal Address (if different)</label>
+                <label for="customer_post_address" class="block text-gray-700 mb-2">Pasta adrese (if different)</label>
                 <textarea name="customer_post_address" id="customer_post_address" 
                         class="w-full px-4 py-2 border rounded-lg" 
                         rows="3">{{ old('customer_post_address', $invoice->customer_post_address) }}</textarea>
@@ -66,9 +67,9 @@
 
         <!-- Items Header -->
         <div class="grid grid-cols-6 gap-4 mb-2 font-bold text-gray-700">
-            <div class="col-span-2">Description</div>
+            <div class="col-span-2">Apraksts</div>
             <div class="text-center">Qty</div>
-            <div class="text-center">Price</div>
+            <div class="text-center">Cena</div>
             <div class="text-center">VAT %</div>
             <div class="text-right">Total</div>
         </div>
@@ -80,7 +81,7 @@
                 <div class="col-span-2">
                     <input type="text" 
                         name="items[{{ $index }}][description]" 
-                        placeholder="Description" 
+                        placeholder="Apraksts" 
                         class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
                         value="{{ $item['description'] }}" 
                         required>
@@ -140,7 +141,7 @@
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
     </svg>
-    Add Item
+    Pievienot preci
 </button>
 
 <!-- Totals Section -->
@@ -148,7 +149,7 @@
     <div class="text-xl font-bold text-right space-y-2">
         <div class="text-gray-600">Total (w/o VAT): $<span id="total-wo-vat-display">{{ number_format($invoice->total_wo_vat, 2) }}</span></div>
         <div class="text-gray-600">Total VAT: $<span id="total-vat-display">{{ number_format($invoice->total_vat, 2) }}</span></div>
-        <div class="text-gray-900">Total Amount: $<span id="total-display">{{ number_format($invoice->total_amount, 2) }}</span></div>
+        <div class="text-gray-900">Kopējā summa: $<span id="total-display">{{ number_format($invoice->total_amount, 2) }}</span></div>
         
         <input type="hidden" name="total_amount" id="total_amount" value="{{ $invoice->total_amount }}">
         <input type="hidden" name="total_vat" id="total_vat" value="{{ $invoice->total_vat }}">
@@ -158,7 +159,7 @@
 <!-- Form Actions -->
 <div class="flex justify-end mt-6">
     <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
-        Update Invoice
+        Rediģet rēķinu
     </button>
 </div>
 
@@ -290,56 +291,56 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.addEventListener('click', function() {
         const itemCount = container.querySelectorAll('.item').length;
         const newItem = document.createElement('div');
-        newItem.className = 'item grid grid-cols-12 gap-4 bg-gray-50 rounded-lg p-4 mb-4';
+        newItem.className = 'item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg';  // Updated to match existing items
         newItem.innerHTML = `
-            <div class="col-span-5">
+            <div class="col-span-2">
                 <input type="text" 
-                       name="items[${itemCount}][description]" 
-                       placeholder="Enter description" 
-                       class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" 
-                       required>
+                    name="items[${itemCount}][description]" 
+                    placeholder="Apraksts" 
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
+                    required>
             </div>
-            <div class="col-span-2">
+            <div>
                 <input type="number" 
-                       name="items[${itemCount}][quantity]" 
-                       min="1" 
-                       class="w-full px-3 py-2 border rounded-md text-center item-qty focus:ring-2 focus:ring-blue-500" 
-                       value="1" 
-                       required 
-                       onInput="handleNumericInput(this)">
+                    name="items[${itemCount}][quantity]" 
+                    placeholder="Qty" 
+                    min="1" 
+                    class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
+                    value="1" 
+                    required>
             </div>
-            <div class="col-span-2">
+            <div>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                     <input type="number" 
-                           name="items[${itemCount}][price]" 
-                           step="0.01" 
-                           min="0" 
-                           class="w-full pl-8 pr-3 py-2 border rounded-md text-right item-price focus:ring-2 focus:ring-blue-500" 
-                           value="0" 
-                           required 
-                           onInput="handleNumericInput(this)">
+                        name="items[${itemCount}][price]" 
+                        placeholder="0.00" 
+                        step="0.01" 
+                        min="0" 
+                        class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
+                        value="0" 
+                        required>
                 </div>
             </div>
-            <div class="col-span-2">
+            <div>
                 <div class="relative">
                     <input type="number" 
-                           name="items[${itemCount}][vat]" 
-                           min="0" 
-                           max="100" 
-                           class="w-full pr-8 py-2 border rounded-md text-right item-vat focus:ring-2 focus:ring-blue-500" 
-                           value="0" 
-                           required 
-                           onInput="handleNumericInput(this)">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">%</span>
+                        name="items[${itemCount}][vat]" 
+                        placeholder="0" 
+                        min="0" 
+                        max="100" 
+                        class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
+                        value="0" 
+                        required>
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
                 </div>
             </div>
-            <div class="col-span-1 flex items-center justify-end gap-2">
+            <div class="flex items-center justify-between">
                 <span class="item-total font-medium">$0.00</span>
                 <button type="button" class="remove-item text-red-500 hover:text-red-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
                 </button>
             </div>

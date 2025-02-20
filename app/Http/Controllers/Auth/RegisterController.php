@@ -48,7 +48,6 @@ class RegisterController extends Controller
             // Create client record
             $client = Client::create([
                 'name' => $user->name,
-                'surname' => '', // You might want to add this to registration form
                 'identification_number' => 'USR' . $user->id,
                 'json_data' => null
             ]);
@@ -83,10 +82,11 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        $hashedPassword = DB::selectOne('SELECT hash_password(?) as hash', [$data['password']])->hash;
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => $hashedPassword,
             'schema_name' => null, // Will be updated after schema creation
         ]);
     }

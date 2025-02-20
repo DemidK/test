@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Config;
 use App\Models\NavLink;
-use AWS\CRT\Log;
 use Illuminate\Support\Facades\Log as FacadesLog;
 
 class ClientController extends Controller
@@ -34,11 +34,19 @@ class ClientController extends Controller
      */
     public function create()
     {
+        $dataObjectConfig = Config::getConfig('client_data_objects', [
+            'initial_count' => 1,
+            'max_count' => 5,
+            'background_color' => 'bg-gray-50',
+            'default_items' => []
+        ]);
         $navLinks = NavLink::orderBy('position')->get();
         // Example data to pass to the view
         $data = [
             'navLinks' => $navLinks,
+            'config' => $dataObjectConfig
         ];
+        
         return view('clients.create', $data);
     }
 
@@ -52,13 +60,10 @@ class ClientController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
             'identification_number' => 'required|string|max:255|unique:clients',
             'data' => 'nullable|array'
         ]);
     
-        // dd($request->input('data'));
-
         $formattedData = [];
         if ($request->input('data')) {
             foreach ($request->input('data') as $object) {             
@@ -70,7 +75,6 @@ class ClientController extends Controller
 
         Client::create([
             'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
             'identification_number' => $request->input('identification_number'),
             'json_data' => $formattedData,
         ]);
@@ -101,7 +105,7 @@ class ClientController extends Controller
                 $formattedData[] = $dataObject;
             }
         }
-        FacadesLog::debug($formattedData);
+
         $data = [
             'navLinks' => $navLinks,
             'client' => $client,
@@ -146,11 +150,9 @@ class ClientController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
             'identification_number' => 'required|string|max:255|unique:clients,identification_number,' . $id,
             'data' => 'nullable|array'
         ]);
-        // dd($request->input('data'));
     
         // Restructure data to match JSON storage format
         $jsonData = [];
@@ -168,7 +170,6 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
         $client->update([
             'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
             'identification_number' => $request->input('identification_number'),
             'json_data' => $jsonData,
         ]);

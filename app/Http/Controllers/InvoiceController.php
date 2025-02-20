@@ -48,9 +48,12 @@ class InvoiceController extends Controller
             $validated = $request->validate([
                 'invoice_number' => 'required|string|unique:invoices',
                 'invoice_date' => 'required|date',
+                'customer_id' => 'nullable|numeric',
                 'customer_name' => 'required|string',
                 'customer_email' => 'required|email',
                 'customer_address' => 'required|string',
+                'customer_vat' => 'nullable|string',
+                'customer_post_address' => 'nullable|string',
                 'items' => 'required|array|min:1',
                 'items.*.description' => 'required|string',
                 'items.*.quantity' => 'required|numeric|min:1',
@@ -274,18 +277,26 @@ public function exportPdf($id)
     return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
 }
 
-/**
- * Preview the PDF in browser
- */
-public function previewPdf(Invoice $invoice)
+public function previewPdf($id)
 {
-    // Ensure items is an array, fallback to empty array if null
-    $items = $invoice->items ?? [];
-    $calculations = $this->calculateInvoiceTotals($items);
+    $invoice = Invoice::find($id);
+
+    // Extensive debugging
+    if (!$invoice) {
+        Log::error('PDF Export - Invoice Not Found', [
+            'invoice_id' => $id
+        ]);
+        
+        return back()->with('error', 'Invoice not found');
+    }
+    // Ensure items is parsed correctly
+    $items = is_string($invoice->items) 
+        ? json_decode($invoice->items, true) 
+        : ($invoice->items ?? []);
     
     $pdf = Pdf::loadView('invoices.pdf', [
         'invoice' => $invoice,
-        'calculations' => $calculations
+        'items' => $items
     ]);
 
     $pdf->setPaper('a4');

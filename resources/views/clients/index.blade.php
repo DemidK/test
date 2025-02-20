@@ -1,17 +1,17 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">Clients</h1>
-        <a href="{{ route('clients.create') }}" 
-           class="inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <span class="mr-2">Add New Client</span>
-            <i class="fas fa-plus"></i>
-        </a>
-    </div>
+    <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">Clients</h1>
+            <a href="{{ route('clients.create') }}" 
+               class="inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <span class="mr-2">Pievienot jaunu klientu</span>
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
 
-    <!-- Mobile-friendly search and filter -->
+    <!-- Search and filter section -->
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
         <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
@@ -22,7 +22,7 @@
             <div class="flex flex-wrap gap-2">
                 <select class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Sort by</option>
-                    <option value="name">Name</option>
+                    <option value="name">Vārds / Nosaukums</option>
                     <option value="date">Date Added</option>
                 </select>
             </div>
@@ -72,7 +72,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Name
+                            Vārds / Nosaukums
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             ID Number

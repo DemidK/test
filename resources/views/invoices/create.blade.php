@@ -1,168 +1,164 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold mb-8">Create Invoice</h1>
-    
-    @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-            <strong class="font-bold">Oops! Something went wrong.</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    
-    <form action="{{ route('invoices.store') }}" method="POST" id="invoiceForm">
-        @csrf
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Izveidot rēķinu</h1>
         
-        <!-- Basic Invoice Info -->
-        <div class="space-y-4 mb-6">
-            <div>
-                <label for="invoice_number" class="block text-gray-700 mb-2">Invoice Number</label>
-                <input type="text" name="invoice_number" id="invoice_number" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('invoice_number') }}" required>
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <strong class="font-bold">Oops! Something went wrong.</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <div>
-                <label for="invoice_date" class="block text-gray-700 mb-2">Invoice Date</label>
-                <input type="date" name="invoice_date" id="invoice_date" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('invoice_date', date('Y-m-d')) }}" required>
-            </div>
-        </div>
-
-        <!-- Customer Info -->
-        <div class="space-y-4 mb-6">
-            <div>
-                <label for="customer_id" class="block text-gray-700 mb-2">Customer ID</label>
-                <input type="number" name="customer_id" id="customer_id" 
-                    class="w-full px-4 py-2 border rounded-lg"
-                    value="{{ old('customer_id') }}">
-            </div>
-            <div>
-                <label for="customer_name" class="block text-gray-700 mb-2">Customer Name</label>
-                <input type="text" name="customer_name" id="customer_name" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('customer_name') }}" required>
-            </div>
-            <div>
-                <label for="customer_email" class="block text-gray-700 mb-2">Customer Email</label>
-                <input type="email" name="customer_email" id="customer_email" 
-                    class="w-full px-4 py-2 border rounded-lg" 
-                    value="{{ old('customer_email') }}" required>
-            </div>
-            <div>
-                <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
-                <input type="text" name="customer_vat" id="customer_vat" 
-                    class="w-full px-4 py-2 border rounded-lg"
-                    value="{{ old('customer_vat') }}">
-            </div>
-            <div>
-                <label for="customer_address" class="block text-gray-700 mb-2">Primary Address</label>
-                <textarea name="customer_address" id="customer_address" 
+        @endif
+        
+        <form action="{{ route('invoices.store') }}" method="POST" id="invoiceForm">
+            @csrf
+            
+            <!-- Basic Invoice Info -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label for="invoice_number" class="block text-gray-700 mb-2">Rēķina numurs</label>
+                    <input type="text" name="invoice_number" id="invoice_number" 
                         class="w-full px-4 py-2 border rounded-lg" 
-                        rows="3" required>{{ old('customer_address') }}</textarea>
-            </div>
-            <div>
-                <label for="customer_post_address" class="block text-gray-700 mb-2">Postal Address (if different)</label>
-                <textarea name="customer_post_address" id="customer_post_address" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        rows="3">{{ old('customer_post_address') }}</textarea>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div>
-                <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
-                <input type="text" name="customer_vat" id="customer_vat" 
-                       class="w-full px-4 py-2 border rounded-lg"
-                       value="{{ old('customer_vat') }}">
-            </div>
-            <div>
-                <label for="customer_address" class="block text-gray-700 mb-2">Primary Address</label>
-                <textarea name="customer_address" id="customer_address" 
-                          class="w-full px-4 py-2 border rounded-lg" required>{{ old('customer_address') }}</textarea>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <label for="customer_post_address" class="block text-gray-700 mb-2">Postal Address (if different)</label>
-            <textarea name="customer_post_address" id="customer_post_address" 
-                      class="w-full px-4 py-2 border rounded-lg">{{ old('customer_post_address') }}</textarea>
-        </div>
-
-        <!-- Items Header -->
-        <div class="grid grid-cols-6 gap-4 mb-2 font-bold">
-            <div class="col-span-2">Description</div>
-            <div>Qty</div>
-            <div>Price</div>
-            <div>VAT %</div>
-            <div>Total</div>
-        </div>
-
-        <!-- Items Container -->
-        <div id="items-container">
-            <div class="item grid grid-cols-6 gap-4 mb-2 mobile-item-layout">
-                <div class="col-span-6 md:col-span-2">
-                    <input type="text" name="items[0][description]" placeholder="Description" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('items.0.description') }}" required>
+                        value="{{ old('invoice_number') }}" required>
                 </div>
-                <div class="col-span-6 md:col-span-4 flex space-x-2">
-                    <div class="w-1/3">
+                <div>
+                    <label for="invoice_date" class="block text-gray-700 mb-2">Rēķina datums</label>
+                    <input type="date" name="invoice_date" id="invoice_date" 
+                        class="w-full px-4 py-2 border rounded-lg" 
+                        value="{{ old('invoice_date', date('Y-m-d')) }}" required>
+                </div>
+            </div>
+
+            <!-- Customer Info -->
+            <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
+                <div class="md:col-span-1">
+                    <label for="customer_id" class="block text-gray-700 mb-2">Klienta ID</label>
+                    <input type="number" name="customer_id" id="customer_id" 
+                        class="w-full px-4 py-2 border rounded-lg"
+                        value="{{ old('customer_id') }}">
+                </div>
+                <div class="md:col-span-1">
+                    <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
+                    <input type="text" name="customer_vat" id="customer_vat" 
+                        class="w-full px-4 py-2 border rounded-lg"
+                        value="{{ old('customer_vat') }}">
+                </div>
+                <div class="md:col-span-1">
+                    <label for="customer_name" class="block text-gray-700 mb-2">Klienta vārds / nosaukums</label>
+                    <input type="text" name="customer_name" id="customer_name" 
+                        class="w-full px-4 py-2 border rounded-lg" 
+                        value="{{ old('customer_name') }}" required>
+                </div>
+                <div class="md:col-span-1">
+                    <label for="customer_email" class="block text-gray-700 mb-2">Klienta e-pasts</label>
+                    <input type="email" name="customer_email" id="customer_email" 
+                        class="w-full px-4 py-2 border rounded-lg" 
+                        value="{{ old('customer_email') }}" required>
+                </div>
+                <div class="md:col-span-1">
+                    <label for="customer_address" class="block text-gray-700 mb-2">Juridisko adrese</label>
+                    <textarea name="customer_address" id="customer_address" 
+                            class="w-full px-4 py-2 border rounded-lg" 
+                            rows="3" required>{{ old('customer_address') }}</textarea>
+                </div>
+                <div class="md:col-span-1">
+                    <label for="customer_post_address" class="block text-gray-700 mb-2">Pasta adrese (if different)</label>
+                    <textarea name="customer_post_address" id="customer_post_address" 
+                            class="w-full px-4 py-2 border rounded-lg" 
+                            rows="3">{{ old('customer_post_address') }}</textarea>
+                </div>
+            </div>
+
+            <!-- Items Header -->
+            <div class="grid grid-cols-6 gap-4 mb-2 font-bold">
+                <div class="col-span-2">Apraksts</div>
+                <div>Qty</div>
+                <div>Cena</div>
+                <div>VAT %</div>
+                <div>Total</div>
+            </div>
+
+            <!-- Items Container -->
+            <div id="items-container">
+                <div class="item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg">
+                    <div class="col-span-2">
+                        <input type="text" name="items[0][description]" placeholder="Apraksts" 
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
+                            value="{{ old('items.0.description') }}" required>
+                    </div>
+                    <div>
                         <input type="number" name="items[0][quantity]" placeholder="Qty" min="1" 
-                            class="w-full px-4 py-2 border rounded-lg item-qty" 
+                            class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
                             value="{{ old('items.0.quantity', 1) }}" required>
                     </div>
-                    <div class="w-1/3">
-                        <input type="number" name="items[0][price]" placeholder="Price" step="0.01" min="0" 
-                            class="w-full px-4 py-2 border rounded-lg item-price" 
-                            value="{{ old('items.0.price', 0) }}" required>
+                    <div>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" name="items[0][price]" placeholder="0.00" step="0.01" min="0" 
+                                class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
+                                value="{{ old('items.0.price', 0) }}" required>
+                        </div>
                     </div>
-                    <div class="w-1/3">
-                        <input type="number" name="items[0][vat]" placeholder="VAT" min="0" max="100" 
-                            class="w-full px-4 py-2 border rounded-lg item-vat" 
-                            value="{{ old('items.0.vat', 0) }}" required>
+                    <div>
+                        <div class="relative">
+                            <input type="number" name="items[0][vat]" placeholder="0" min="0" max="100" 
+                                class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
+                                value="{{ old('items.0.vat', 0) }}" required>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="item-total font-medium">$0.00</span>
+                        <button type="button" class="remove-item text-red-500 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-                <div class="col-span-6 flex justify-between items-center">
-                    <span class="item-total">0.00</span>
-                    <button type="button" class="remove-item text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
             </div>
-        </div>
 
-        <button type="button" id="add-item" 
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700">
-            Add Item
-        </button>
-
-        <!-- Total Amount -->
-        <div class="flex justify-end mt-6">
-            <div class="text-xl font-bold text-right">
-                <div>Total (w/o VAT): $<span id="total-wo-vat-display">0.00</span></div>
-                <div>Total VAT: $<span id="total-vat-display">0.00</span></div>
-                <div>Total Amount: $<span id="total-display">0.00</span></div>
-                
-                <input type="hidden" name="total_amount" id="total_amount" value="0">
-                <input type="hidden" name="total_vat" id="total_vat" value="0">
-                <input type="hidden" name="total_wo_vat" id="total_wo_vat" value="0">
-            </div>
-        </div>
-
-        <div class="flex justify-end mt-6">
-            <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
-                Create Invoice
+            <button type="button" 
+                    id="add-item" 
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700 
+                        inline-flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Pievienot preci
             </button>
-        </div>
-    </form>
+
+            <!-- Totals Section -->
+            <div class="flex justify-end mt-6">
+                <div class="text-xl font-bold text-right space-y-2">
+                    <div class="text-gray-600">Total (w/o VAT): $<span id="total-wo-vat-display">0.00</span></div>
+                    <div class="text-gray-600">Total VAT: $<span id="total-vat-display">0.00</span></div>
+                    <div class="text-gray-900">Kopējā summa: $<span id="total-display">0.00</span></div>
+                    
+                    <input type="hidden" name="total_amount" id="total_amount" value="0">
+                    <input type="hidden" name="total_vat" id="total_vat" value="0">
+                    <input type="hidden" name="total_wo_vat" id="total_wo_vat" value="0">
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+                    Izveidot rēķinu
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
+@endsection
+@section('script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('items-container');
@@ -291,56 +287,56 @@ document.addEventListener('DOMContentLoaded', function() {
     addButton.addEventListener('click', function() {
         const itemCount = container.querySelectorAll('.item').length;
         const newItem = document.createElement('div');
-        newItem.className = 'item grid grid-cols-12 gap-4 bg-gray-50 rounded-lg p-4 mb-4';
+        newItem.className = 'item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg';
         newItem.innerHTML = `
-            <div class="col-span-5">
+            <div class="col-span-2">
                 <input type="text" 
-                       name="items[${itemCount}][description]" 
-                       placeholder="Enter description" 
-                       class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500" 
-                       required>
+                    name="items[${itemCount}][description]" 
+                    placeholder="Apraksts" 
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
+                    required>
             </div>
-            <div class="col-span-2">
+            <div>
                 <input type="number" 
-                       name="items[${itemCount}][quantity]" 
-                       min="1" 
-                       class="w-full px-3 py-2 border rounded-md text-center item-qty focus:ring-2 focus:ring-blue-500" 
-                       value="1" 
-                       required 
-                       onInput="handleNumericInput(this)">
+                    name="items[${itemCount}][quantity]" 
+                    placeholder="Qty" 
+                    min="1" 
+                    class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
+                    value="1" 
+                    required>
             </div>
-            <div class="col-span-2">
+            <div>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                     <input type="number" 
-                           name="items[${itemCount}][price]" 
-                           step="0.01" 
-                           min="0" 
-                           class="w-full pl-8 pr-3 py-2 border rounded-md text-right item-price focus:ring-2 focus:ring-blue-500" 
-                           value="0" 
-                           required 
-                           onInput="handleNumericInput(this)">
+                        name="items[${itemCount}][price]" 
+                        placeholder="0.00" 
+                        step="0.01" 
+                        min="0" 
+                        class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
+                        value="0" 
+                        required>
                 </div>
             </div>
-            <div class="col-span-2">
+            <div>
                 <div class="relative">
                     <input type="number" 
-                           name="items[${itemCount}][vat]" 
-                           min="0" 
-                           max="100" 
-                           class="w-full pr-8 py-2 border rounded-md text-right item-vat focus:ring-2 focus:ring-blue-500" 
-                           value="0" 
-                           required 
-                           onInput="handleNumericInput(this)">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">%</span>
+                        name="items[${itemCount}][vat]" 
+                        placeholder="0" 
+                        min="0" 
+                        max="100" 
+                        class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
+                        value="0" 
+                        required>
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
                 </div>
             </div>
-            <div class="col-span-1 flex items-center justify-end gap-2">
+            <div class="flex items-center justify-between">
                 <span class="item-total font-medium">$0.00</span>
                 <button type="button" class="remove-item text-red-500 hover:text-red-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
                 </button>
             </div>

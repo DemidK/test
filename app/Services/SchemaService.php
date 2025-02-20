@@ -30,7 +30,6 @@ class SchemaService
             CREATE TABLE {$schemaName}.clients (
                 id BIGSERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
-                surname VARCHAR(255) NOT NULL,
                 identification_number VARCHAR(255) NOT NULL,
                 json_data JSON NULL,
                 created_at TIMESTAMP NULL,

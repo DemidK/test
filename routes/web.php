@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NavController;
@@ -23,8 +24,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('clients', ClientController::class);
     Route::resource('invoices', InvoiceController::class);
-    Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.pdf');
-    Route::get('/invoices/{invoice}/preview', [InvoiceController::class, 'previewPdf'])->name('invoices.preview-pdf');
+    Route::get('/invoices/{id}/preview-pdf', [InvoiceController::class, 'previewPdf'])->name('invoices.previewPdf');
     Route::get('/invoices/{id}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.exportPdf');
     Route::post('/updateNavOrder', [NavController::class, 'updateOrder'])->name('update.nav.order');
+    Route::prefix('configs')->group(function () {
+        Route::get('/', [ConfigController::class, 'index'])->name('configs.index');
+        Route::get('/{key}/edit', [ConfigController::class, 'edit'])->name('configs.edit');
+        Route::put('/{key}', [ConfigController::class, 'update'])->name('configs.update');
+    });
 });

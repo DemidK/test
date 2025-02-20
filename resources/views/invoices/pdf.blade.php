@@ -1,80 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ $invoice->invoice_number }}</title>
     <style>
-        body { font-family: sans-serif; font-size: 10pt; }
-        .invoice-details { margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 4px; }
-        .total-section { text-align: right; margin-top: 20px; }
-        .debug-section { background-color: #f0f0f0; padding: 10px; margin-bottom: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+        .items-table th {
+            background-color: #f2f2f2;
+        }
+        .items-table td:first-child {
+            text-align: left;
+        }
+        .totals {
+            text-align: right;
+        }
+        .total-row {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <div class="invoice-header">
+        <div>
+            <h1>Invoice</h1>
+            <p>Invoice Number: #{{ $invoice->invoice_number }}</p>
+            <p>Date: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('F d, Y') }}</p>
+        </div>
+        <div>
+            <h3>{{ $invoice->customer_name }}</h3>
+            <p>{{ $invoice->customer_email }}</p>
+            @if($invoice->customer_vat)
+                <p>VAT No: {{ $invoice->customer_vat }}</p>
+            @endif
+        </div>
+    </div>
+
     <div class="invoice-details">
-        <h1>Invoice #{{ $invoice->invoice_number }}</h1>
-        <p>Date: {{ $invoice->invoice_date }}</p>
-        <p>Customer: {{ $invoice->customer_name }}</p>
+        <h3>Customer Details</h3>
+        <p>Address: {{ $invoice->customer_address }}</p>
+        @if($invoice->customer_post_address)
+            <p>Postal Address: {{ $invoice->customer_post_address }}</p>
+        @endif
     </div>
 
     <table class="items-table">
         <thead>
             <tr>
-                <th>No.</th>
                 <th>Description</th>
-                <th>VAT</th>
-                <th>Nosakunums</th>
-                <th>PVN</th>
-                <th>Daudzums</th>
-                <th>Cena EUR</th>
-                <th>Summa EUR</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>VAT %</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
-            @php 
-                // Ensure $items is an array
-                $items = is_array($items) ? $items : [];
-                
-                $totalSum = 0;
+            @php
+                $totalSubtotal = 0;
                 $totalVat = 0;
-                $totalWoVat = 0;
+                $grandTotal = 0;
             @endphp
 
-            @forelse($items as $index => $item)
+            @foreach($items as $item)
                 @php
-                    $itemQty = $item['quantity'] ?? 1;
-                    $itemPrice = $item['price'] ?? 0;
-                    $itemVat = $item['vat'] ?? 0;
+                    // Ensure numeric values
+                    $itemQty = floatval($item['quantity'] ?? 0);
+                    $itemPrice = floatval($item['price'] ?? 0);
+                    $itemVat = floatval($item['vat'] ?? 0);
+                    $itemDescription = $item['description'] ?? '';
+                    
                     $itemSubtotal = $itemQty * $itemPrice;
                     $itemVatAmount = $itemSubtotal * ($itemVat / 100);
                     $itemTotal = $itemSubtotal + $itemVatAmount;
                     
-                    $totalSum += $itemTotal;
+                    $totalSubtotal += $itemSubtotal;
                     $totalVat += $itemVatAmount;
-                    $totalWoVat += $itemSubtotal;
+                    $grandTotal += $itemTotal;
                 @endphp
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $item['description'] ?? 'N/A' }}</td>
-                    <td>{{ number_format($itemVat, 2) }}%</td>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ number_format($itemVat, 2) }}%</td>
+                    <td>{{ $itemDescription }}</td>
                     <td>{{ $itemQty }}</td>
-                    <td>{{ number_format($itemPrice, 2) }}</td>
-                    <td>{{ number_format($itemTotal, 2) }}</td>
+                    <td>${{ number_format($itemPrice, 2) }}</td>
+                    <td>{{ $itemVat }}%</td>
+                    <td>${{ number_format($itemTotal, 2) }}</td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="8" style="text-align: center;">No items found</td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 
-    <div class="total-section">
-        <p>Total Sum (EUR): {{ number_format($totalSum, 2) }}</p>
-        <p>Total without VAT (EUR): {{ number_format($totalWoVat, 2) }}</p>
-        <p>Total VAT (EUR): {{ number_format($totalVat, 2) }}</p>
+    <div class="totals">
+        <div>Subtotal (w/o VAT): ${{ number_format($totalSubtotal, 2) }}</div>
+        <div>Total VAT: ${{ number_format($totalVat, 2) }}</div>
+        <div class="total-row">Total Amount: ${{ number_format($grandTotal, 2) }}</div>
     </div>
 </body>
 </html>

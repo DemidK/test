@@ -16,7 +16,7 @@
         <!-- Invoices Dropdown -->
         <div class="relative group">
             <button class="text-gray-700 hover:text-gray-900 px-3 py-2 focus:outline-none">
-                Invoices
+                Rēķini
                 <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
@@ -60,7 +60,10 @@
                 </button>
                 <div class="absolute right-0 hidden bg-white shadow-lg rounded-lg w-48 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
                     <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Dashboard
+                        Vadības panelis
+                    </a>
+                    <a href="{{ route('configs.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        Konfigurācija
                     </a>
                     <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                         Profile
@@ -74,8 +77,8 @@
                 </div>
             </div>
         @else
-            <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2">Login</a>
-            <a href="{{ route('register') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2">Register</a>
+            <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2">Pieslēgties</a>
+            <a href="{{ route('register') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2">Reģistrēties</a>
         @endauth
     </div>
 </div>

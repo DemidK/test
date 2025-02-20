@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold">Edit Client</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold">Rediģēt klientu</h1>
             <a href="{{ route('clients.index') }}" class="text-blue-600 hover:text-blue-800">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
@@ -17,18 +17,13 @@
                 <!-- Basic Information -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Vārds / Nosaukums</label>
                         <input type="text" name="name" id="name" value="{{ $client->name }}" class="w-full px-3 py-2 border rounded-lg" required>
                     </div>
                     <div>
-                        <label for="surname" class="block text-sm font-medium text-gray-700 mb-1">Surname</label>
-                        <input type="text" name="surname" id="surname" value="{{ $client->surname }}" class="w-full px-3 py-2 border rounded-lg" required>
+                        <label for="identification_number" class="block text-sm font-medium text-gray-700 mb-1">Identification Number</label>
+                        <input type="text" name="identification_number" id="identification_number" value="{{ $client->identification_number }}" class="w-full px-3 py-2 border rounded-lg" required>
                     </div>
-                </div>
-
-                <div class="mb-6">
-                    <label for="identification_number" class="block text-sm font-medium text-gray-700 mb-1">Identification Number</label>
-                    <input type="text" name="identification_number" id="identification_number" value="{{ $client->identification_number }}" class="w-full px-3 py-2 border rounded-lg" required>
                 </div>
 
                 <!-- Data Objects Section -->
