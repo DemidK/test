@@ -55,5 +55,39 @@ class SchemaService
             SELECT name, url, position, created_at, updated_at
             FROM public.nav_links
         ");
+
+        // Create configs table in new schema
+        DB::statement("
+        CREATE TABLE {$schemaName}.configs (
+            id BIGSERIAL PRIMARY KEY,
+            key VARCHAR(255) UNIQUE NOT NULL,
+            value TEXT NOT NULL,
+            created_at TIMESTAMP NULL,
+            updated_at TIMESTAMP NULL
+        )
+        ");
+
+        // Copy config data from ConfigSeeder
+        DB::statement("
+        INSERT INTO {$schemaName}.configs (key, value, created_at, updated_at)
+        VALUES (
+            'client_data_objects',
+            " . DB::getPdo()->quote(json_encode([
+                'client_create' => [
+                    [
+                        'name' => 'Contact Information',
+                        'background_color' => 'bg-gray-50',
+                        'fields' => [
+                            ['key' => 'Phone', 'value' => ''],
+                            ['key' => 'Email', 'value' => ''],
+                            ['key' => 'Address', 'value' => '']
+                        ]
+                    ]
+                ]
+            ])) . ",
+            NOW(),
+            NOW()
+        )
+        ");
     }
 }
