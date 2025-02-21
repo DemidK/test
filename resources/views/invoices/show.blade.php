@@ -81,10 +81,42 @@
                 <x-customer-info :customer="$item" readonly="true" />
             </div>
 
-            {{-- Invoice Items and Totals --}}
             <div class="p-4">
                 <h3 class="font-semibold text-gray-700 mb-4">Invoice Items</h3>
-                <x-invoice-items-table :items="$item->items" />
+                
+                <!-- Mobile Items List -->
+                <div class="block sm:hidden">
+                    @foreach($item->items as $invoiceItem)
+                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                            <div class="mb-3">
+                                <div class="font-medium text-gray-900">{{ $invoiceItem['description'] }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500">Qty</span>
+                                    <span class="font-medium">{{ $invoiceItem['quantity'] }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500">Cena</span>
+                                    <span class="font-medium">${{ number_format($invoiceItem['price'], 2) }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500">VAT</span>
+                                    <span class="font-medium">{{ $invoiceItem['vat'] }}%</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500">Total</span>
+                                    <span class="font-medium">${{ number_format($invoiceItem['quantity'] * $invoiceItem['price'] * (1 + $invoiceItem['vat']/100), 2) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Desktop Table using the component -->
+                <div class="hidden sm:block">
+                    <x-invoice-items-table :items="$item->items" />
+                </div>
             </div>
 
             {{-- Additional Invoice Details --}}

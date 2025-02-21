@@ -18,6 +18,11 @@ abstract class CrudController extends Controller
     protected $validationMessages = [];
     protected $perPage = 10;
 
+    public function navLinks()
+    {
+        return NavLink::orderBy('position')->get();
+    }
+
     public function index(Request $request)
     {
         $query = $this->model::query();

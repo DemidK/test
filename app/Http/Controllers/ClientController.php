@@ -50,10 +50,9 @@ class ClientController extends CrudController
             'background_color' => 'bg-gray-50',
             'default_items' => []
         ]);
-        $navLinks = NavLink::orderBy('position')->get();
         
         return view("{$this->viewPath}.create", [
-            'navLinks' => $navLinks,
+            'navLinks' => $this->navLinks(),
             'config' => $dataObjectConfig
         ]);
     }
@@ -61,11 +60,10 @@ class ClientController extends CrudController
     public function show($id)
     {
         $client = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
         $formattedData = $this->formatDataForView($client->json_data);
 
         return view("{$this->viewPath}.show", [
-            'navLinks' => $navLinks,
+            'navLinks' => $this->navLinks(),
             'client' => $client,
             'formattedData' => $formattedData
         ]);
@@ -74,11 +72,10 @@ class ClientController extends CrudController
     public function edit($id)
     {
         $client = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
         $formattedData = $this->formatDataForView($client->json_data);
 
         return view("{$this->viewPath}.edit", [
-            'navLinks' => $navLinks,
+            'navLinks' => $this->navLinks(),
             'client' => $client,
             'formattedData' => $formattedData
         ]);

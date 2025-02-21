@@ -56,6 +56,27 @@ class SchemaService
             FROM public.nav_links
         ");
 
+        DB::statement("
+            CREATE TABLE {$schemaName}.invoices (
+                id bigint PRIMARY KEY DEFAULT nextval('invoices_id_seq'::regclass),
+                invoice_number character varying(255) NOT NULL,
+                invoice_date date NOT NULL,
+                customer_name character varying(255) NOT NULL,
+                customer_email character varying(255),
+                items json NOT NULL,
+                total_amount numeric(10,2) NOT NULL,
+                created_at timestamp without time zone,
+                updated_at timestamp without time zone,
+                customer_id bigint,
+                customer_vat character varying(255),
+                customer_address text,
+                customer_post_address text,
+                updater character varying(255),
+                total_vat numeric(10,2) NOT NULL DEFAULT 0,
+                total_wo_vat numeric(10,2) NOT NULL DEFAULT 0
+            );
+        ");
+
         // Create configs table in new schema
         DB::statement("
         CREATE TABLE {$schemaName}.configs (
