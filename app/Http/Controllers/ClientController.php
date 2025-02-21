@@ -2,36 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Config;
-use App\Models\NavLink;
-use Illuminate\Support\Facades\Log as FacadesLog;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
-class ClientController extends Controller
+class ClientController extends CrudController
 {
-    /**
-     * Display a listing of the clients.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function __construct()
     {
-        $clients = Client::paginate(10);
-        $navLinks = NavLink::orderBy('position')->get();
-        // Example data to pass to the view
-        $data = [
-            'navLinks' => $navLinks,
-            'clients' => $clients,
+        $this->model = Client::class;
+        $this->viewPath = 'clients';
+        $this->routePrefix = 'clients';
+        $this->searchableFields = ['name', 'identification_number'];
+        $this->sortableFields = [
+            'name' => 'name',
+            'date' => 'created_at',
+            'id' => 'identification_number'
         ];
-        return view('clients.index', $data);
+        $this->defaultSort = ['created_at', 'desc'];
+        $this->validationRules = [
+            'name' => 'required|string|max:255',
+            'identification_number' => 'required|string|max:255|unique:clients',
+            'data' => 'nullable|array'
+        ];
     }
 
-    /**
-     * Show the form for creating a new client.
-     *
-     * @return \Illuminate\View\View
-     */
+    protected function getValidationRules($id = null): array
+    {
+        $rules = $this->validationRules;
+        if ($id) {
+            $rules['identification_number'] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('clients')->ignore($id)
+            ];
+        }
+        return $rules;
+    }
+
     public function create()
     {
         $dataObjectConfig = Config::getConfig('client_data_objects', [
@@ -41,55 +51,82 @@ class ClientController extends Controller
             'default_items' => []
         ]);
         $navLinks = NavLink::orderBy('position')->get();
-        // Example data to pass to the view
-        $data = [
+        
+        return view("{$this->viewPath}.create", [
             'navLinks' => $navLinks,
             'config' => $dataObjectConfig
-        ];
-        
-        return view('clients.create', $data);
-    }
-
-    /**
-     * Store a newly created client in the database.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'identification_number' => 'required|string|max:255|unique:clients',
-            'data' => 'nullable|array'
         ]);
-    
-        $formattedData = [];
-        if ($request->input('data')) {
-            foreach ($request->input('data') as $object) {             
-                foreach ($object['items'] as $item) {
-                    $formattedData[$object['object_name']][$item['key']] = $item['value'];
-                }
-            }
-        }
-
-        Client::create([
-            'name' => $request->input('name'),
-            'identification_number' => $request->input('identification_number'),
-            'json_data' => $formattedData,
-        ]);
-    
-        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
     public function show($id)
     {
-        $client = Client::findOrFail($id);
+        $client = $this->model::findOrFail($id);
         $navLinks = NavLink::orderBy('position')->get();
+        $formattedData = $this->formatDataForView($client->json_data);
+
+        return view("{$this->viewPath}.show", [
+            'navLinks' => $navLinks,
+            'client' => $client,
+            'formattedData' => $formattedData
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $client = $this->model::findOrFail($id);
+        $navLinks = NavLink::orderBy('position')->get();
+        $formattedData = $this->formatDataForView($client->json_data);
+
+        return view("{$this->viewPath}.edit", [
+            'navLinks' => $navLinks,
+            'client' => $client,
+            'formattedData' => $formattedData
+        ]);
+    }
+
+    protected function storeItem(array $validated)
+    {
+        $formattedData = $this->formatJsonData($validated['data'] ?? []);
         
+        return $this->model::create([
+            'name' => $validated['name'],
+            'identification_number' => $validated['identification_number'],
+            'json_data' => $formattedData,
+        ]);
+    }
+
+    protected function updateItem($item, array $validated)
+    {
+        $formattedData = $this->formatJsonData($validated['data'] ?? []);
+        
+        return $item->update([
+            'name' => $validated['name'],
+            'identification_number' => $validated['identification_number'],
+            'json_data' => $formattedData,
+        ]);
+    }
+
+    private function formatJsonData(array $data): array
+    {
         $formattedData = [];
-        if ($client->json_data) {
-            foreach ($client->json_data as $object_name => $items) {
+        if (!empty($data)) {
+            foreach ($data as $object) {
+                $objectName = $object['object_name'];
+                $formattedData[$objectName] = [];
+                
+                foreach ($object['items'] as $item) {
+                    $formattedData[$objectName][$item['key']] = $item['value'];
+                }
+            }
+        }
+        return $formattedData;
+    }
+
+    private function formatDataForView(?array $jsonData): array
+    {
+        $formattedData = [];
+        if ($jsonData) {
+            foreach ($jsonData as $object_name => $items) {
                 $dataObject = [
                     'object_name' => $object_name,
                     'items' => []
@@ -105,89 +142,6 @@ class ClientController extends Controller
                 $formattedData[] = $dataObject;
             }
         }
-
-        $data = [
-            'navLinks' => $navLinks,
-            'client' => $client,
-            'formattedData' => $formattedData
-        ];
-        return view('clients.show', $data);
-    }
-   
-    public function edit($id)
-    {
-        $client = Client::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
-        $formattedData = [];
-
-        if ($client->json_data) {
-            foreach ($client->json_data as $object_name => $data) {
-                $dataObject = [
-                    'object_name' => $object_name,
-                    'items' => []
-                ];
-                
-                foreach ($data as $key => $value) {
-                    $dataObject['items'][] = [
-                        'key' => $key,
-                        'value' => $value
-                    ];
-                }
-                
-                $formattedData[] = $dataObject;
-            }
-        }
-    
-        $data = [
-            'navLinks' => $navLinks,
-            'client' => $client,
-            'formattedData' => $formattedData
-        ];
-        return view('clients.edit', $data);
-    }
-    
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'identification_number' => 'required|string|max:255|unique:clients,identification_number,' . $id,
-            'data' => 'nullable|array'
-        ]);
-    
-        // Restructure data to match JSON storage format
-        $jsonData = [];
-        if ($request->input('data')) {
-            foreach ($request->input('data') as $dataObject) {
-                $objectName = $dataObject['object_name'];
-                $jsonData[$objectName] = [];
-                
-                foreach ($dataObject['items'] as $item) {
-                    $jsonData[$objectName][$item['key']] = $item['value'];
-                }
-            }
-        }
-    
-        $client = Client::findOrFail($id);
-        $client->update([
-            'name' => $request->input('name'),
-            'identification_number' => $request->input('identification_number'),
-            'json_data' => $jsonData,
-        ]);
-    
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
-    }
-
-    /**
-     * Remove the specified client from the database.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
-    {
-        $client = Client::findOrFail($id);
-        $client->delete();
-
-        return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+        return $formattedData;
     }
 }

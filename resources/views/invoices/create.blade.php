@@ -23,57 +23,26 @@
             <div class="space-y-4 mb-6">
                 <div>
                     <label for="invoice_number" class="block text-gray-700 mb-2">Rēķina numurs</label>
-                    <input type="text" name="invoice_number" id="invoice_number" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('invoice_number') }}" required>
+                    <input type="text" 
+                           name="invoice_number" 
+                           id="invoice_number" 
+                           class="w-full px-4 py-2 border rounded-lg" 
+                           value="{{ old('invoice_number') }}" 
+                           required>
                 </div>
                 <div>
                     <label for="invoice_date" class="block text-gray-700 mb-2">Rēķina datums</label>
-                    <input type="date" name="invoice_date" id="invoice_date" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('invoice_date', date('Y-m-d')) }}" required>
+                    <input type="date" 
+                           name="invoice_date" 
+                           id="invoice_date" 
+                           class="w-full px-4 py-2 border rounded-lg" 
+                           value="{{ old('invoice_date', date('Y-m-d')) }}" 
+                           required>
                 </div>
             </div>
 
-            <!-- Customer Info -->
-            <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4 mb-6">
-                <div class="md:col-span-1">
-                    <label for="customer_id" class="block text-gray-700 mb-2">Klienta ID</label>
-                    <input type="number" name="customer_id" id="customer_id" 
-                        class="w-full px-4 py-2 border rounded-lg"
-                        value="{{ old('customer_id') }}">
-                </div>
-                <div class="md:col-span-1">
-                    <label for="customer_vat" class="block text-gray-700 mb-2">Customer VAT Number</label>
-                    <input type="text" name="customer_vat" id="customer_vat" 
-                        class="w-full px-4 py-2 border rounded-lg"
-                        value="{{ old('customer_vat') }}">
-                </div>
-                <div class="md:col-span-1">
-                    <label for="customer_name" class="block text-gray-700 mb-2">Klienta vārds / nosaukums</label>
-                    <input type="text" name="customer_name" id="customer_name" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('customer_name') }}" required>
-                </div>
-                <div class="md:col-span-1">
-                    <label for="customer_email" class="block text-gray-700 mb-2">Klienta e-pasts</label>
-                    <input type="email" name="customer_email" id="customer_email" 
-                        class="w-full px-4 py-2 border rounded-lg" 
-                        value="{{ old('customer_email') }}" required>
-                </div>
-                <div class="md:col-span-1">
-                    <label for="customer_address" class="block text-gray-700 mb-2">Juridisko adrese</label>
-                    <textarea name="customer_address" id="customer_address" 
-                            class="w-full px-4 py-2 border rounded-lg" 
-                            rows="3" required>{{ old('customer_address') }}</textarea>
-                </div>
-                <div class="md:col-span-1">
-                    <label for="customer_post_address" class="block text-gray-700 mb-2">Pasta adrese (if different)</label>
-                    <textarea name="customer_post_address" id="customer_post_address" 
-                            class="w-full px-4 py-2 border rounded-lg" 
-                            rows="3">{{ old('customer_post_address') }}</textarea>
-                </div>
-            </div>
+            <!-- Customer Information Component -->
+            <x-customer-info :customer="null" />
 
             <!-- Items Header -->
             <div class="grid grid-cols-6 gap-4 mb-2 font-bold">
@@ -85,71 +54,91 @@
             </div>
 
             <!-- Items Container -->
-            <div id="items-container">
-                <div class="item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg">
-                    <div class="col-span-2">
-                        <input type="text" name="items[0][description]" placeholder="Apraksts" 
-                            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
-                            value="{{ old('items.0.description') }}" required>
-                    </div>
-                    <div>
-                        <input type="number" name="items[0][quantity]" placeholder="Qty" min="1" 
-                            class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
-                            value="{{ old('items.0.quantity', 1) }}" required>
-                    </div>
-                    <div>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                            <input type="number" name="items[0][price]" placeholder="0.00" step="0.01" min="0" 
-                                class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
-                                value="{{ old('items.0.price', 0) }}" required>
+            <div x-data="{
+                items: [{ description: '', quantity: 1, price: 0, vat: 0 }],
+                addItem() {
+                    this.items.push({ description: '', quantity: 1, price: 0, vat: 0 });
+                }
+            }">
+                <div id="items-container">
+                    <template x-for="(item, index) in items" :key="index">
+                        <div class="item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg">
+                            <div class="col-span-2">
+                                <input type="text" 
+                                    x-bind:name="'items[' + index + '][description]'"
+                                    x-model="item.description"
+                                    placeholder="Apraksts" 
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
+                                    required>
+                            </div>
+                            <div>
+                                <input type="number" 
+                                    x-bind:name="'items[' + index + '][quantity]'"
+                                    x-model.number="item.quantity"
+                                    placeholder="Qty" 
+                                    min="1" 
+                                    class="w-full px-3 py-2 border rounded-lg text-center focus:ring-2 focus:ring-blue-200" 
+                                    required>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                                    <input type="number" 
+                                        x-bind:name="'items[' + index + '][price]'"
+                                        x-model.number="item.price"
+                                        placeholder="0.00" 
+                                        step="0.01" 
+                                        min="0" 
+                                        class="w-full px-3 py-2 pl-7 border rounded-lg text-right focus:ring-2 focus:ring-blue-200" 
+                                        required>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <input type="number" 
+                                        x-bind:name="'items[' + index + '][vat]'"
+                                        x-model.number="item.vat"
+                                        placeholder="0" 
+                                        min="0" 
+                                        max="100" 
+                                        class="w-full px-3 py-2 pr-7 border rounded-lg text-right focus:ring-2 focus:ring-blue-200" 
+                                        required>
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium" x-text="'$' + ((item.quantity || 0) * (item.price || 0) * (1 + (item.vat || 0)/100)).toFixed(2)"></span>
+                                <button type="button" 
+                                        @click="items.splice(index, 1)" 
+                                        class="text-red-500 hover:text-red-700"
+                                        x-show="items.length > 1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="relative">
-                            <input type="number" name="items[0][vat]" placeholder="0" min="0" max="100" 
-                                class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
-                                value="{{ old('items.0.vat', 0) }}" required>
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="item-total font-medium">$0.00</span>
-                        <button type="button" class="remove-item text-red-500 hover:text-red-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
-                    </div>
+                    </template>
                 </div>
+
+                <button type="button" 
+                        @click="addItem"
+                        class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700 
+                            inline-flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Pievienot preci
+                </button>
+
+                <x-invoice-totals :editable="true" />
             </div>
 
-            <button type="button" 
-                    id="add-item" 
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-700 
-                        inline-flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Pievienot preci
-            </button>
-
-            <!-- Totals Section -->
+            <!-- Form Actions -->
             <div class="flex justify-end mt-6">
-                <div class="text-xl font-bold text-right space-y-2">
-                    <div class="text-gray-600">Total (w/o VAT): $<span id="total-wo-vat-display">0.00</span></div>
-                    <div class="text-gray-600">Total VAT: $<span id="total-vat-display">0.00</span></div>
-                    <div class="text-gray-900">Kopējā summa: $<span id="total-display">0.00</span></div>
-                    
-                    <input type="hidden" name="total_amount" id="total_amount" value="0">
-                    <input type="hidden" name="total_vat" id="total_vat" value="0">
-                    <input type="hidden" name="total_wo_vat" id="total_wo_vat" value="0">
-                </div>
-            </div>
-
-            <div class="flex justify-end mt-6">
-                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+                <button type="submit" 
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200">
                     Izveidot rēķinu
                 </button>
             </div>
@@ -157,200 +146,8 @@
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('items-container');
-    const addButton = document.getElementById('add-item');
-    
-    // Handle numeric input to prevent leading zeros
-    function handleNumericInput(input) {
-        let value = input.value;
-        
-        // Handle decimal numbers
-        if (value.includes('.')) {
-            let [whole, decimal] = value.split('.');
-            // Remove leading zeros from whole part
-            if (whole.length > 1 && whole.startsWith('0')) {
-                whole = parseFloat(whole) || '0';
-            }
-            value = whole + '.' + decimal;
-        } 
-        // Handle whole numbers
-        else if (value.length > 1 && value.startsWith('0')) {
-            value = parseFloat(value) || '0';
-        }
+@push('scripts')
+    <script src="{{ asset('js/invoice-calculations.js') }}"></script>
+@endpush
 
-        // Update input value
-        input.value = value;
-        return value;
-    }
-
-    // Calculate totals for a single item
-    function calculateItemTotal(item) {
-        const qty = parseFloat(item.querySelector('.item-qty').value) || 0;
-        const price = parseFloat(item.querySelector('.item-price').value) || 0;
-        const vat = parseFloat(item.querySelector('.item-vat').value) || 0;
-        
-        const subtotal = qty * price;
-        const vatAmount = vat > 0 ? (subtotal * vat / 100) : 0;
-        const total = subtotal + vatAmount;
-        
-        // Update total displays in both mobile and desktop views
-        item.querySelectorAll('.item-total').forEach(el => {
-            el.textContent = '$' + formatCurrency(total);
-        });
-        
-        return { subtotal, vatAmount, total };
-    }
-
-    // Format currency
-    function formatCurrency(number) {
-        return new Intl.NumberFormat('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(number);
-    }
-
-    // Update all totals
-    function updateTotals() {
-        let grandTotal = 0;
-        let totalVat = 0;
-        let subtotal = 0;
-
-        container.querySelectorAll('.item').forEach(item => {
-            const itemTotals = calculateItemTotal(item);
-            grandTotal += itemTotals.total;
-            totalVat += itemTotals.vatAmount;
-            subtotal += itemTotals.subtotal;
-        });
-        
-        // Update display totals
-        document.getElementById('total-display').textContent = formatCurrency(grandTotal);
-        document.getElementById('total-vat-display').textContent = formatCurrency(totalVat);
-        document.getElementById('total-wo-vat-display').textContent = formatCurrency(subtotal);
-        
-        // Update hidden inputs
-        document.getElementById('total_amount').value = grandTotal.toFixed(2);
-        document.getElementById('total_vat').value = totalVat.toFixed(2);
-        document.getElementById('total_wo_vat').value = subtotal.toFixed(2);
-    }
-
-    // Add event listeners to an item
-    function addItemListeners(item) {
-        // Input change listeners
-        item.querySelectorAll('input').forEach(input => {
-            if (input.type === 'number') {
-                // Handle input event for numeric fields
-                input.addEventListener('input', () => {
-                    handleNumericInput(input);
-                    updateTotals();
-                });
-
-                // Handle blur event for numeric fields
-                input.addEventListener('blur', () => {
-                    if (input.value === '') {
-                        if (input.classList.contains('item-qty')) {
-                            input.value = '1';
-                        } else {
-                            input.value = '0';
-                        }
-                    }
-                    // Format decimal numbers
-                    if (input.classList.contains('item-price')) {
-                        input.value = parseFloat(input.value).toFixed(2);
-                    }
-                    updateTotals();
-                });
-            } else {
-                // Regular input update for non-numeric fields
-                input.addEventListener('input', updateTotals);
-            }
-        });
-        
-        // Remove item button
-        const removeButton = item.querySelector('.remove-item');
-        if (removeButton) {
-            removeButton.addEventListener('click', function() {
-                if (container.querySelectorAll('.item').length > 1) {
-                    item.remove();
-                    updateTotals();
-                } else {
-                    alert('At least one item is required.');
-                }
-            });
-        }
-    }
-
-    // Add new item
-    addButton.addEventListener('click', function() {
-        const itemCount = container.querySelectorAll('.item').length;
-        const newItem = document.createElement('div');
-        newItem.className = 'item grid grid-cols-6 gap-4 mb-2 p-3 bg-gray-50 rounded-lg';
-        newItem.innerHTML = `
-            <div class="col-span-2">
-                <input type="text" 
-                    name="items[${itemCount}][description]" 
-                    placeholder="Apraksts" 
-                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200" 
-                    required>
-            </div>
-            <div>
-                <input type="number" 
-                    name="items[${itemCount}][quantity]" 
-                    placeholder="Qty" 
-                    min="1" 
-                    class="w-full px-3 py-2 border rounded-lg text-center item-qty focus:ring-2 focus:ring-blue-200" 
-                    value="1" 
-                    required>
-            </div>
-            <div>
-                <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                    <input type="number" 
-                        name="items[${itemCount}][price]" 
-                        placeholder="0.00" 
-                        step="0.01" 
-                        min="0" 
-                        class="w-full px-3 py-2 pl-7 border rounded-lg text-right item-price focus:ring-2 focus:ring-blue-200" 
-                        value="0" 
-                        required>
-                </div>
-            </div>
-            <div>
-                <div class="relative">
-                    <input type="number" 
-                        name="items[${itemCount}][vat]" 
-                        placeholder="0" 
-                        min="0" 
-                        max="100" 
-                        class="w-full px-3 py-2 pr-7 border rounded-lg text-right item-vat focus:ring-2 focus:ring-blue-200" 
-                        value="0" 
-                        required>
-                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
-                </div>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="item-total font-medium">$0.00</span>
-                <button type="button" class="remove-item text-red-500 hover:text-red-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                </button>
-            </div>
-        `;
-        
-        container.appendChild(newItem);
-        addItemListeners(newItem);
-        updateTotals();
-        
-        // Focus on the description field of the new item
-        newItem.querySelector('input[type="text"]').focus();
-    });
-
-    // Initialize listeners for existing items
-    container.querySelectorAll('.item').forEach(addItemListeners);
-    updateTotals();
-});
-</script>
 @endsection

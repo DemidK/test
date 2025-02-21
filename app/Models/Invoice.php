@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\Json;
 
 class Invoice extends Model
 {
@@ -26,7 +27,7 @@ class Invoice extends Model
     ];
     
     protected $casts = [
-        'items' => 'array',
+        'items' => Json::class,
         'total_vat' => 'float',
         'total_wo_vat' => 'float',
         'customer_id' => 'integer'

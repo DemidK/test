@@ -3,78 +3,127 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\NavLink;
 
 abstract class CrudController extends Controller
 {
     protected $model;
+    protected $viewPath;
+    protected $routePrefix;
+    protected $searchableFields = [];
+    protected $sortableFields = [];
+    protected $defaultSort = ['created_at', 'desc'];
+    protected $validationRules = [];
+    protected $validationMessages = [];
+    protected $perPage = 10;
 
-    public function index()
+    public function index(Request $request)
     {
-        $items = $this->model->all();
-        return view('crud.index', compact('items'));
+        $query = $this->model::query();
+
+        // Search functionality
+        if ($request->has('search') && !empty($this->searchableFields)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                foreach ($this->searchableFields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$searchTerm}%");
+                }
+            });
+        }
+
+        // Sort functionality
+        $sortBy = $request->get('sort_by', $this->defaultSort[0]);
+        $sortOrder = $request->get('sort_order', $this->defaultSort[1]);
+        
+        if (in_array($sortBy, array_keys($this->sortableFields))) {
+            $query->orderBy($this->sortableFields[$sortBy], $sortOrder);
+        } else {
+            $query->orderBy($this->defaultSort[0], $this->defaultSort[1]);
+        }
+
+        $items = $query->paginate($this->perPage);
+        $items->appends($request->except('page'));
+        
+        $navLinks = NavLink::orderBy('position')->get();
+        
+        return view("{$this->viewPath}.index", [
+            'navLinks' => $navLinks,
+            'items' => $items,
+            'search' => $request->search,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder
+        ]);
     }
 
     public function create()
     {
-        return view('crud.create');
+        $navLinks = NavLink::orderBy('position')->get();
+        return view("{$this->viewPath}.create", compact('navLinks'));
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $this->beforeCreate($data);
-        $item = $this->model->create($data);
-        $this->afterCreate($item);
-        return redirect()->route('crud.index');
+        $validated = $request->validate($this->validationRules, $this->validationMessages);
+        
+        try {
+            $item = $this->storeItem($validated);
+            return redirect()->route("{$this->routePrefix}.show", $item)
+                ->with('success', 'Item created successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
     }
 
     public function show($id)
     {
-        $item = $this->model->findOrFail($id);
-        return view('crud.show', compact('item'));
+        $item = $this->model::findOrFail($id);
+        $navLinks = NavLink::orderBy('position')->get();
+        return view("{$this->viewPath}.show", compact('item', 'navLinks'));
     }
 
     public function edit($id)
     {
-        $item = $this->model->findOrFail($id);
-        return view('crud.edit', compact('item'));
+        $item = $this->model::findOrFail($id);
+        $navLinks = NavLink::orderBy('position')->get();
+        return view("{$this->viewPath}.edit", compact('item', 'navLinks'));
     }
 
     public function update(Request $request, $id)
     {
-        $item = $this->model->findOrFail($id);
-        $data = $request->all();
-        $this->beforeUpdate($item, $data);
-        $item->update($data);
-        $this->afterUpdate($item);
-        return redirect()->route('crud.index');
+        $item = $this->model::findOrFail($id);
+        $validated = $request->validate($this->getValidationRules($id));
+        
+        try {
+            $this->updateItem($item, $validated);
+            return redirect()->route("{$this->routePrefix}.show", $item)
+                ->with('success', 'Item updated successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
     }
 
     public function destroy($id)
     {
-        $this->model->destroy($id);
-        return redirect()->route('crud.index');
+        $item = $this->model::findOrFail($id);
+        $item->delete();
+        
+        return redirect()->route("{$this->routePrefix}.index")
+            ->with('success', 'Item deleted successfully');
     }
 
-    protected function beforeCreate(&$data)
+    protected function storeItem(array $validated)
     {
-        // Perform any actions before creating the item
-        // Modify $data if needed
+        return $this->model::create($validated);
     }
 
-    protected function afterCreate($item)
+    protected function updateItem($item, array $validated)
     {
-        // Perform any actions after creating the item
+        return $item->update($validated);
     }
 
-    protected function beforeUpdate($item, &$data)
+    protected function getValidationRules($id = null): array
     {
-        // Perform any actions before updating the item
-        // Modify $item or $data if needed
-    }
-
-    protected function afterUpdate($item)
-    {
-        // Perform any actions after updating the item
+        return $this->validationRules;
     }
 }

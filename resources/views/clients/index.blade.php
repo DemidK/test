@@ -11,23 +11,43 @@
             </a>
         </div>
 
-    <!-- Search and filter section -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <div class="flex flex-col sm:flex-row gap-4">
-            <div class="flex-1">
-                <input type="text" 
-                       placeholder="Search clients..." 
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- Search and filter section -->
+        <form action="{{ route('clients.index') }}" method="GET" class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <input type="text" 
+                           name="search"
+                           value="{{ request('search') }}"
+                           placeholder="Search clients..." 
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <select name="sort_by" 
+                            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onchange="this.form.submit()">
+                        <option value="date" {{ request('sort_by') === 'date' ? 'selected' : '' }}>Date Added</option>
+                        <option value="name" {{ request('sort_by') === 'name' ? 'selected' : '' }}>Vārds / Nosaukums</option>
+                        <option value="id" {{ request('sort_by') === 'id' ? 'selected' : '' }}>ID Number</option>
+                    </select>
+                    <select name="sort_order" 
+                            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onchange="this.form.submit()">
+                        <option value="asc" {{ request('sort_order') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                        <option value="desc" {{ request('sort_order') === 'desc' ? 'selected' : '' }}>Descending</option>
+                    </select>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Search
+                    </button>
+                    @if(request()->hasAny(['search', 'sort_by', 'sort_order']))
+                        <a href="{{ route('clients.index') }}" 
+                           class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                            Clear
+                        </a>
+                    @endif
+                </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <select class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Sort by</option>
-                    <option value="name">Vārds / Nosaukums</option>
-                    <option value="date">Date Added</option>
-                </select>
-            </div>
-        </div>
-    </div>
+        </form>
 
     <!-- Clients List -->
     <div class="bg-white rounded-lg shadow-md">

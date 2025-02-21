@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
@@ -14,34 +13,48 @@
         </div>
 
         <!-- Filters Section -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <form action="{{ route('invoices.index') }}" method="GET" class="bg-white rounded-lg shadow-md p-4 mb-6">
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
                     <input type="text" 
+                           name="search"
+                           value="{{ request('search') }}"
                            placeholder="Search invoices..." 
                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <select class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">Status</option>
-                        <option value="paid">Paid</option>
-                        <option value="pending">Pending</option>
-                        <option value="overdue">Overdue</option>
+                    <select name="sort_by" 
+                            class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            onchange="this.form.submit()">
+                        <option value="date" {{ request('sort_by') === 'date' ? 'selected' : '' }}>Date</option>
+                        <option value="amount" {{ request('sort_by') === 'amount' ? 'selected' : '' }}>Amount</option>
+                        <option value="number" {{ request('sort_by') === 'number' ? 'selected' : '' }}>Invoice #</option>
                     </select>
-                    <select class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">Sort by</option>
-                        <option value="date">Date</option>
-                        <option value="amount">Amount</option>
+                    <select name="sort_order" 
+                            class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                            onchange="this.form.submit()">
+                        <option value="asc" {{ request('sort_order') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                        <option value="desc" {{ request('sort_order') === 'desc' ? 'selected' : '' }}>Descending</option>
                     </select>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Search
+                    </button>
+                    @if(request()->hasAny(['search', 'sort_by', 'sort_order']))
+                        <a href="{{ route('invoices.index') }}" 
+                           class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                            Clear
+                        </a>
+                    @endif
                 </div>
             </div>
-        </div>
+        </form>
 
         <!-- Invoices List -->
         <div class="bg-white rounded-lg shadow-md">
             <!-- Mobile View -->
             <div class="sm:hidden">
-                @foreach($invoices as $invoice)
+                @foreach($items as $invoice)
                 <div class="p-4 border-b">
                     <div class="flex justify-between items-start">
                         <div>
@@ -61,9 +74,9 @@
                         </div>
                         <div class="flex gap-3">
                             <a href="{{ route('invoices.previewPdf', $invoice->id) }}" 
-                            target="_blank" 
-                            class="text-green-600 hover:text-green-900"
-                            title="Priekšskatīt PDF">
+                               target="_blank" 
+                               class="text-green-600 hover:text-green-900"
+                               title="Priekšskatīt PDF">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -73,8 +86,8 @@
                             </a>
                             
                             <a href="{{ route('invoices.exportPdf', $invoice->id) }}" 
-                            class="text-purple-600 hover:text-purple-900"
-                            title="Lejupielādēt PDF">
+                               class="text-purple-600 hover:text-purple-900"
+                               title="Lejupielādēt PDF">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -82,16 +95,16 @@
                             </a>
                             
                             <a href="{{ route('invoices.edit', $invoice->id) }}" 
-                            class="text-yellow-600 hover:text-yellow-900"
-                            title="Edit">
+                               class="text-yellow-600 hover:text-yellow-900"
+                               title="Edit">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </a>
                             
-                            <form action="{{ route('invoices.destroy', $invoice) }}" 
-                                method="POST" 
+                            <form action="{{ route('invoices.destroy', $invoice) }}"
+                            method="POST" 
                                 class="inline-block">
                                 @csrf
                                 @method('DELETE')
@@ -110,6 +123,7 @@
                 </div>
                 @endforeach
             </div>
+
             <!-- Desktop View -->
             <div class="hidden sm:block">
                 <table class="w-full">
@@ -124,20 +138,15 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach($invoices as $invoice)
+                        @foreach($items as $invoice)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <a href="{{ route('invoices.show', $invoice->id) }}" 
-                                    class="text-blue-600 hover:text-blue-900">
+                                       class="text-blue-600 hover:text-blue-900">
                                         #{{ $invoice->invoice_number }}
                                     </a>
                                 </td>
-                                <td class="px-4 py-4">
-                                    <a href="{{ route('invoices.show', $invoice->id) }}" 
-                                    class="text-blue-600 hover:text-blue-900">
-                                        {{ $invoice->customer_name }}
-                                    </a>
-                                </td>
+                                <td class="px-4 py-4">{{ $invoice->customer_name }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     {{ $invoice->created_at->format('M d, Y') }}
                                 </td>
@@ -152,53 +161,9 @@
                                         {{ ucfirst($invoice->status) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td class="px-4 py-4 whitespace-nowrap text-right">
                                     <div class="flex justify-end gap-3">
-                                        <a href="{{ route('invoices.previewPdf', $invoice->id) }}" 
-                                        target="_blank"
-                                        class="text-green-600 hover:text-green-900"
-                                        title="Priekšskatīt PDF">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                            </svg>
-                                        </a>
-                                        
-                                        <a href="{{ route('invoices.exportPdf', $invoice->id) }}" 
-                                        class="text-purple-600 hover:text-purple-900"
-                                        title="Lejupielādēt PDF">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                        </a>
-                                        
-                                        <a href="{{ route('invoices.edit', $invoice->id) }}" 
-                                        class="text-yellow-600 hover:text-yellow-900"
-                                        title="Rediģēt rēķinu">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </a>
-                                    
-                                        <form action="{{ route('invoices.destroy', $invoice) }}" 
-                                            method="POST" 
-                                            class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="text-red-600 hover:text-red-800"
-                                                    onclick="return confirm('Are you sure?')"
-                                                    title="Delete Invoice">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                            </button>
-                                        </form>
+                                        @include('components.invoice-actions', ['invoice' => $invoice])
                                     </div>
                                 </td>
                             </tr>
@@ -208,9 +173,9 @@
             </div>
 
             <!-- Pagination -->
-            @if(method_exists($invoices, 'links'))
+            @if(method_exists($items, 'links'))
                 <div class="px-4 py-3 border-t border-gray-200">
-                    {{ $invoices->links() }}
+                    {{ $items->links() }}
                 </div>
             @endif
         </div>
