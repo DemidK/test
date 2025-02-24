@@ -10,7 +10,7 @@ class ConfigSeeder extends Seeder
     public function run()
     {
         Config::create([
-            'key' => 'client_data_objects',
+            'key' => 'partner_data_objects',
             'value' => json_encode([
                 'initial_count' => 1,
                 'max_count' => 5,

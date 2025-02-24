@@ -6,24 +6,24 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold">Klienta detaļas</h1>
             <div class="space-x-2">
-                <a href="{{ route('clients.index') }}" class="text-blue-600 hover:text-blue-800">
+                <a href="{{ route('partners.index') }}" class="text-blue-600 hover:text-blue-800">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
         </div>
 
-        <!-- Client Information Card -->
+        <!-- Partner Information Card -->
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
             <!-- Basic Info Section -->
             <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Vārds / Nosaukums</label>
-                        <p class="text-gray-900">{{ $client->name }}</p>
+                        <p class="text-gray-900">{{ $partner->name }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Identification Number</label>
-                        <p class="text-gray-900">{{ $client->identification_number }}</p>
+                        <p class="text-gray-900">{{ $partner->identification_number }}</p>
                     </div>
                 </div>
 
@@ -61,21 +61,21 @@
             <!-- Actions Section -->
             <div class="px-6 py-4 bg-gray-50 border-t">
                 <div class="flex flex-col sm:flex-row gap-3 justify-end">
-                    <a href="{{ route('clients.edit', $client) }}" 
+                    <a href="{{ route('partners.edit', $partner) }}" 
                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         <i class="fas fa-edit mr-2"></i>
                         Rediģēt klientu
                     </a>
-                    <form action="{{ route('clients.destroy', $client) }}" 
+                    <form action="{{ route('partners.destroy', $partner) }}" 
                           method="POST" 
                           class="inline-block"
-                          onsubmit="return confirm('Are you sure you want to delete this client?');">
+                          onsubmit="return confirm('Are you sure you want to delete this partner?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" 
                                 class="inline-flex items-center justify-center w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                             <i class="fas fa-trash mr-2"></i>
-                            Delete Client
+                            Delete Partner
                         </button>
                     </form>
                 </div>

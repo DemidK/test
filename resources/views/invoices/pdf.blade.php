@@ -52,19 +52,19 @@
             <p>Date: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('F d, Y') }}</p>
         </div>
         <div>
-            <h3>{{ $invoice->customer_name }}</h3>
-            <p>{{ $invoice->customer_email }}</p>
-            @if($invoice->customer_vat)
-                <p>VAT No: {{ $invoice->customer_vat }}</p>
+            <h3>{{ $invoice->partner_name }}</h3>
+            <p>{{ $invoice->partner_email }}</p>
+            @if($invoice->partner_vat)
+                <p>VAT No: {{ $invoice->partner_vat }}</p>
             @endif
         </div>
     </div>
 
     <div class="invoice-details">
         <h3>Customer Details</h3>
-        <p>Address: {{ $invoice->customer_address }}</p>
-        @if($invoice->customer_post_address)
-            <p>Postal Address: {{ $invoice->customer_post_address }}</p>
+        <p>Address: {{ $invoice->partner_address }}</p>
+        @if($invoice->partner_post_address)
+            <p>Postal Address: {{ $invoice->partner_post_address }}</p>
         @endif
     </div>
 

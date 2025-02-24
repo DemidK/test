@@ -60,7 +60,7 @@
                         <div>
                             <a href="{{ route('invoices.show', $invoice->id) }}" class="text-blue-600 hover:text-blue-900">
                                 <div class="font-medium">#{{ $invoice->invoice_number }}</div>
-                                <div class="text-sm">{{ $invoice->customer_name }}</div>
+                                <div class="text-sm">{{ $invoice->partner_name }}</div>
                             </a>
                             <div class="text-sm text-gray-900 mt-1">${{ number_format($invoice->total_amount, 2) }}</div>
                             <div class="mt-2">
@@ -146,7 +146,7 @@
                                         #{{ $invoice->invoice_number }}
                                     </a>
                                 </td>
-                                <td class="px-4 py-4">{{ $invoice->customer_name }}</td>
+                                <td class="px-4 py-4">{{ $invoice->partner_name }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     {{ $invoice->created_at->format('M d, Y') }}
                                 </td>

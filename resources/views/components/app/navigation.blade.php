@@ -10,9 +10,44 @@
             </a>
         @endforeach
     </div>
-
     <!-- Static Navigation Items -->
     <div class="flex space-x-4">
+        <!-- Transportation Orders Dropdown -->
+        <div class="relative group">
+            <button class="text-gray-700 hover:text-gray-900 px-3 py-2 focus:outline-none">
+                Transportation
+                <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="absolute hidden bg-white shadow-lg rounded-lg w-40 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
+                <a href="{{ route('transportation_orders.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <span class="text-base">All Orders</span>
+                </a>
+                <a href="{{ route('transportation_orders.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <span class="text-base">New Order</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- partners Dropdown -->
+        <div class="relative group">
+            <button class="text-gray-700 hover:text-gray-900 px-3 py-2 focus:outline-none">
+                Partners
+                <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="absolute hidden bg-white shadow-lg rounded-lg w-40 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
+                <a href="{{ route('partners.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <span class="text-base">All Partners</span>
+                </a>
+                <a href="{{ route('partners.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <span class="text-base">New Partner</span>
+                </a>
+            </div>
+        </div>
+
         <!-- Invoices Dropdown -->
         <div class="relative group">
             <button class="text-gray-700 hover:text-gray-900 px-3 py-2 focus:outline-none">
@@ -22,28 +57,10 @@
                 </svg>
             </button>
             <div class="absolute hidden bg-white shadow-lg rounded-lg w-40 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
-                <a href="{{ url('/invoices') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('invoices.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                     <span class="text-base">All</span>
                 </a>
-                <a href="{{ url('/invoices/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                    <span class="text-base">New</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Clients Dropdown -->
-        <div class="relative group">
-            <button class="text-gray-700 hover:text-gray-900 px-3 py-2 focus:outline-none">
-                Clients
-                <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            </button>
-            <div class="absolute hidden bg-white shadow-lg rounded-lg w-40 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
-                <a href="{{ url('/clients') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                    <span class="text-base">All</span>
-                </a>
-                <a href="{{ url('/clients/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                <a href="{{ route('invoices.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                     <span class="text-base">New</span>
                 </a>
             </div>
@@ -59,14 +76,8 @@
                     </svg>
                 </button>
                 <div class="absolute right-0 hidden bg-white shadow-lg rounded-lg w-48 pt-2 group-hover:block" style="top: 100%; margin-top: -2px;">
-                    <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                         Vadības panelis
-                    </a>
-                    <a href="{{ route('configs.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Konfigurācija
-                    </a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Profile
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

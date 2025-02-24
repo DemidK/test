@@ -13,12 +13,12 @@ class Invoice extends Model
     protected $fillable = [
         'invoice_number',
         'invoice_date',
-        'customer_name',
-        'customer_email',
-        'customer_address',
-        'customer_id',
-        'customer_vat',
-        'customer_post_address',
+        'partner_name',
+        'partner_email',
+        'partner_address',
+        'partner_id',
+        'partner_vat',
+        'partner_post_address',
         'items',
         'total_amount',
         'total_vat',
@@ -30,6 +30,6 @@ class Invoice extends Model
         'items' => Json::class,
         'total_vat' => 'float',
         'total_wo_vat' => 'float',
-        'customer_id' => 'integer'
+        'partner_id' => 'integer'
     ];
 }

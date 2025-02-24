@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\NavLink;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ class InvoiceController extends CrudController
         $this->model = Invoice::class;
         $this->viewPath = 'invoices';
         $this->routePrefix = 'invoices';
-        $this->searchableFields = ['invoice_number', 'customer_name', 'customer_email'];
+        $this->searchableFields = ['invoice_number', 'parner_name'];
         $this->sortableFields = [
             'date' => 'invoice_date',
             'amount' => 'total_amount',
@@ -25,12 +26,12 @@ class InvoiceController extends CrudController
         $this->validationRules = [
             'invoice_number' => 'required|string|unique:invoices',
             'invoice_date' => 'required|date',
-            'customer_id' => 'nullable|numeric',
-            'customer_name' => 'required|string',
-            'customer_email' => 'required|email',
-            'customer_address' => 'required|string',
-            'customer_vat' => 'nullable|string',
-            'customer_post_address' => 'nullable|string',
+            'partner_id' => 'nullable|numeric',
+            'partner_name' => 'required|string',
+            'partner_email' => 'required|email',
+            'partner_address' => 'required|string',
+            'partner_vat' => 'nullable|string',
+            'partner_post_address' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.description' => 'required|string',
             'items.*.quantity' => 'required|numeric|min:1',
@@ -40,6 +41,20 @@ class InvoiceController extends CrudController
             'total_vat' => 'required|numeric|min:0',
             'total_wo_vat' => 'required|numeric|min:0'
         ];
+    }
+
+    public function show($id)
+    {
+        $item = $this->model::findOrFail($id);
+        $navLinks = NavLink::orderBy('position')->get();
+        
+        if (is_string($item->items)) {
+            $item->items = json_decode($item->items, true);
+        }
+        
+        return view("{$this->viewPath}.show", [
+            'navLinks' => $navLinks,
+            'items' => $item]);
     }
 
     protected function getValidationRules($id = null): array

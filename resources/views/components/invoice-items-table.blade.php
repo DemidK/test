@@ -25,7 +25,7 @@
         <table class="w-full border-collapse">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="p-2 text-left">Aprakstsss</th>
+                    <th class="p-2 text-left">Apraksts</th>
                     <th class="p-2 text-right">Qty</th>
                     <th class="p-2 text-right">Cena</th>
                     <th class="p-2 text-right">VAT</th>

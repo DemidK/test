@@ -20,7 +20,7 @@
                     <div class="text-gray-900 text-lg">{{ $config->key }}</div>
                 </div>
 
-                @if($config->key === 'client_data_objects')
+                @if($config->key === 'partner_data_objects')
                     <div class="space-y-6">
                         <div class="border-t pt-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -29,28 +29,28 @@
                             <div class="text-sm text-gray-500 mb-4">
                                 Šie lauki tiks automātiski pievienoti jauniem klientiem
                             </div>
-                            <div id="client-create-items" class="space-y-4">
+                            <div id="partner-create-items" class="space-y-4">
                                 @php 
-                                $existingItems = json_decode($config->value, true)['client_create'] ?? [];
+                                $existingItems = json_decode($config->value, true)['partner_create'] ?? [];
                                 @endphp
 
                                 @foreach($existingItems as $index => $item)
-                                    <div class="client-create-item bg-gray-50 p-4 rounded-lg relative">
+                                    <div class="partner-create-item bg-gray-50 p-4 rounded-lg relative">
                                         <button type="button" 
-                                                onclick="removeClientCreateItem(this)" 
+                                                onclick="removePartnerCreateItem(this)" 
                                                 class="absolute top-2 right-2 text-red-500 hover:text-red-700">
                                             <i class="fas fa-trash"></i>
                                         </button>
 
                                         <div class="grid grid-cols-2 gap-4 mb-4">
                                             <input type="text" 
-                                                   name="value[client_create][{{ $index }}][name]"
+                                                   name="value[partner_create][{{ $index }}][name]"
                                                    value="{{ $item['name'] }}"
                                                    class="px-3 py-2 border rounded-lg"
                                                    placeholder="Objekta nosaukums"
                                                    required>
                                             
-                                            <select name="value[client_create][{{ $index }}][background_color]"
+                                            <select name="value[partner_create][{{ $index }}][background_color]"
                                                     class="px-3 py-2 border rounded-lg">
                                                 <option value="bg-gray-50" {{ ($item['background_color'] ?? '') === 'bg-gray-50' ? 'selected' : '' }}>Pelēks</option>
                                                 <option value="bg-blue-50" {{ ($item['background_color'] ?? '') === 'bg-blue-50' ? 'selected' : '' }}>Zils</option>
@@ -68,13 +68,13 @@
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                     <input type="text" 
-                                                           name="value[client_create][{{ $index }}][fields][{{ $fieldIndex }}][key]"
+                                                           name="value[partner_create][{{ $index }}][fields][{{ $fieldIndex }}][key]"
                                                            value="{{ $field['key'] }}"
                                                            class="px-3 py-2 border rounded-lg"
                                                            placeholder="Atslēga"
                                                            required>
                                                     <input type="text" 
-                                                           name="value[client_create][{{ $index }}][fields][{{ $fieldIndex }}][value]"
+                                                           name="value[partner_create][{{ $index }}][fields][{{ $fieldIndex }}][value]"
                                                            value="{{ $field['value'] }}"
                                                            class="px-3 py-2 border rounded-lg"
                                                            placeholder="Vērtība">
@@ -92,7 +92,7 @@
                             </div>
 
                             <button type="button" 
-                                    onclick="addClientCreateItem()" 
+                                    onclick="addPartnerCreateItem()" 
                                     class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg">
                                 Pievienot objektu
                             </button>
@@ -120,27 +120,27 @@
 </div>
 
 <script>
-let clientCreateItemIndex = {{ count($existingItems) }};
+let partnerCreateItemIndex = {{ count($existingItems) }};
 
-function addClientCreateItem() {
-    const container = document.getElementById('client-create-items');
+function addPartnerCreateItem() {
+    const container = document.getElementById('partner-create-items');
     const newItem = document.createElement('div');
-    newItem.className = 'client-create-item bg-gray-50 p-4 rounded-lg relative';
+    newItem.className = 'partner-create-item bg-gray-50 p-4 rounded-lg relative';
     newItem.innerHTML = `
         <button type="button" 
-                onclick="removeClientCreateItem(this)" 
+                onclick="removePartnerCreateItem(this)" 
                 class="absolute top-2 right-2 text-red-500 hover:text-red-700">
             <i class="fas fa-trash"></i>
         </button>
 
         <div class="grid grid-cols-2 gap-4 mb-4">
             <input type="text" 
-                   name="value[client_create][${clientCreateItemIndex}][name]"
+                   name="value[partner_create][${partnerCreateItemIndex}][name]"
                    class="px-3 py-2 border rounded-lg"
                    placeholder="Objekta nosaukums"
                    required>
             
-            <select name="value[client_create][${clientCreateItemIndex}][background_color]"
+            <select name="value[partner_create][${partnerCreateItemIndex}][background_color]"
                     class="px-3 py-2 border rounded-lg">
                 <option value="bg-gray-50">Pelēks</option>
                 <option value="bg-blue-50">Zils</option>
@@ -157,12 +157,12 @@ function addClientCreateItem() {
                     <i class="fas fa-times"></i>
                 </button>
                 <input type="text" 
-                       name="value[client_create][${clientCreateItemIndex}][fields][0][key]"
+                       name="value[partner_create][${partnerCreateItemIndex}][fields][0][key]"
                        class="px-3 py-2 border rounded-lg"
                        placeholder="Atslēga"
                        required>
                 <input type="text" 
-                       name="value[client_create][${clientCreateItemIndex}][fields][0][value]"
+                       name="value[partner_create][${partnerCreateItemIndex}][fields][0][value]"
                        class="px-3 py-2 border rounded-lg"
                        placeholder="Vērtība">
             </div>
@@ -175,19 +175,19 @@ function addClientCreateItem() {
         </button>
     `;
     container.appendChild(newItem);
-    clientCreateItemIndex++;
+    partnerCreateItemIndex++;
 }
 
-function removeClientCreateItem(button) {
-    const item = button.closest('.client-create-item');
+function removePartnerCreateItem(button) {
+    const item = button.closest('.partner-create-item');
     item.remove();
 }
 
 function addField(button) {
     const fieldsContainer = button.previousElementSibling;
-    const item = button.closest('.client-create-item');
+    const item = button.closest('.partner-create-item');
     const fieldIndex = fieldsContainer.children.length;
-    const clientCreateIndex = Array.from(item.parentNode.children).indexOf(item);
+    const partnerCreateIndex = Array.from(item.parentNode.children).indexOf(item);
 
     const newField = document.createElement('div');
     newField.className = 'field-row grid grid-cols-2 gap-4 mb-2 relative';
@@ -198,12 +198,12 @@ function addField(button) {
             <i class="fas fa-times"></i>
         </button>
         <input type="text" 
-               name="value[client_create][${clientCreateIndex}][fields][${fieldIndex}][key]"
+               name="value[partner_create][${partnerCreateIndex}][fields][${fieldIndex}][key]"
                class="px-3 py-2 border rounded-lg"
                placeholder="Atslēga"
                required>
         <input type="text" 
-               name="value[client_create][${clientCreateIndex}][fields][${fieldIndex}][value]"
+               name="value[partner_create][${partnerCreateIndex}][fields][${fieldIndex}][value]"
                class="px-3 py-2 border rounded-lg"
                placeholder="Vērtība">
     `;

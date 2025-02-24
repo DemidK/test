@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\NavLink;
-use App\Models\Client;
+use App\Models\Partner;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Services\SchemaService;
@@ -45,8 +45,8 @@ class RegisterController extends Controller
             // Create user
             $user = $this->create($request->all());
             
-            // Create client record
-            $client = Client::create([
+            // Create partner record
+            $partner = Partner::create([
                 'name' => $user->name,
                 'identification_number' => 'USR' . $user->id,
                 'json_data' => null

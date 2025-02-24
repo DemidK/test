@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
+use App\Models\Partner;
 use App\Models\NavLink;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,11 +18,11 @@ class DashboardController extends Controller
     {
         $navLinks = NavLink::orderBy('position')->get();
         $totalUsers = User::count();
-        $totalClients = Client::count();
+        $totalPartners = Partner::count();
         $data = [
             'navLinks' => $navLinks,
             'totalUsers' => $totalUsers,
-            'totalClients' => $totalClients,
+            'totalPartners' => $totalPartners,
             'totalRevenue' => 12345,
             'recentActivities' => [
                 'User "John Doe" placed an order.',

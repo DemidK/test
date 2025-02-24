@@ -33,8 +33,8 @@ class NavigationManager {
         const target = e.target.closest('.draggable');
         if (!target || target === this.draggedItem) return;
 
-        const draggedRect = this.draggedItem.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
+        const draggedRect = this.draggedItem.getBoundingPartnerRect();
+        const targetRect = target.getBoundingPartnerRect();
         const nextElement = targetRect.left > draggedRect.left ? target.nextElementSibling : target;
 
         if (nextElement) {

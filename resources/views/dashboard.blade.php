@@ -16,7 +16,7 @@
             <!-- Kopējais klientu skaits Card -->
             <div class="bg-white rounded-lg shadow-md p-4">
                 <h3 class="text-lg font-semibold mb-2">Kopējais klientu skaits</h3>
-                <p class="text-2xl font-bold text-green-600">{{ $totalClients }}</p>
+                <p class="text-2xl font-bold text-green-600">{{ $totalPartners }}</p>
             </div>
 
             <!-- Revenue Card -->

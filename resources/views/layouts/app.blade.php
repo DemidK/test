@@ -60,17 +60,17 @@
                     </div>
                 </div>
 
-                <!-- Clients Dropdown -->
+                <!-- partners Dropdown -->
                 <div x-data="{ open: false }">
                     <button @click="open = !open" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Clients
+                        Partners
                         <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div x-show="open" class="pl-4">
-                        <a href="{{ url('/clients') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">All</a>
-                        <a href="{{ url('/clients/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">New</a>
+                        <a href="{{ url('/partners') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">All</a>
+                        <a href="{{ url('/partners/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">New</a>
                     </div>
                 </div>
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\Json;
 
-class Client extends Model
+class Partner extends Model
 {
     use HasFactory;
 

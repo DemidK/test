@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
+use App\Models\Partner;
 use App\Models\Config;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class ClientController extends CrudController
+class PartnerController extends CrudController
 {
     public function __construct()
     {
-        $this->model = Client::class;
-        $this->viewPath = 'clients';
-        $this->routePrefix = 'clients';
+        $this->model = Partner::class;
+        $this->viewPath = 'partners';
+        $this->routePrefix = 'partners';
         $this->searchableFields = ['name', 'identification_number'];
         $this->sortableFields = [
             'name' => 'name',
@@ -23,7 +23,7 @@ class ClientController extends CrudController
         $this->defaultSort = ['created_at', 'desc'];
         $this->validationRules = [
             'name' => 'required|string|max:255',
-            'identification_number' => 'required|string|max:255|unique:clients',
+            'identification_number' => 'required|string|max:255|unique:partners',
             'data' => 'nullable|array'
         ];
     }
@@ -36,7 +36,7 @@ class ClientController extends CrudController
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('clients')->ignore($id)
+                Rule::unique('partner')->ignore($id)
             ];
         }
         return $rules;
@@ -44,7 +44,7 @@ class ClientController extends CrudController
 
     public function create()
     {
-        $dataObjectConfig = Config::getConfig('client_data_objects', [
+        $dataObjectConfig = Config::getConfig('partner_data_objects', [
             'initial_count' => 1,
             'max_count' => 5,
             'background_color' => 'bg-gray-50',
@@ -59,24 +59,24 @@ class ClientController extends CrudController
 
     public function show($id)
     {
-        $client = $this->model::findOrFail($id);
-        $formattedData = $this->formatDataForView($client->json_data);
+        $partner = $this->model::findOrFail($id);
+        $formattedData = $this->formatDataForView($partner->json_data);
 
         return view("{$this->viewPath}.show", [
             'navLinks' => $this->navLinks(),
-            'client' => $client,
+            'partner' => $partner,
             'formattedData' => $formattedData
         ]);
     }
 
     public function edit($id)
     {
-        $client = $this->model::findOrFail($id);
-        $formattedData = $this->formatDataForView($client->json_data);
+        $partner = $this->model::findOrFail($id);
+        $formattedData = $this->formatDataForView($partner->json_data);
 
         return view("{$this->viewPath}.edit", [
             'navLinks' => $this->navLinks(),
-            'client' => $client,
+            'partner' => $partner,
             'formattedData' => $formattedData
         ]);
     }

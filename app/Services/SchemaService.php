@@ -25,9 +25,9 @@ class SchemaService
             )
         ");
 
-        // Create clients table in new schema
+        // Create partners table in new schema
         DB::statement("
-            CREATE TABLE {$schemaName}.clients (
+            CREATE TABLE {$schemaName}.partners (
                 id BIGSERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 identification_number VARCHAR(255) NOT NULL,
@@ -61,16 +61,16 @@ class SchemaService
                 id bigint PRIMARY KEY DEFAULT nextval('invoices_id_seq'::regclass),
                 invoice_number character varying(255) NOT NULL,
                 invoice_date date NOT NULL,
-                customer_name character varying(255) NOT NULL,
-                customer_email character varying(255),
+                partner_name character varying(255) NOT NULL,
+                partner_email character varying(255),
                 items json NOT NULL,
                 total_amount numeric(10,2) NOT NULL,
                 created_at timestamp without time zone,
                 updated_at timestamp without time zone,
-                customer_id bigint,
-                customer_vat character varying(255),
-                customer_address text,
-                customer_post_address text,
+                partner_id bigint,
+                partner_vat character varying(255),
+                partner_address text,
+                partner_post_address text,
                 updater character varying(255),
                 total_vat numeric(10,2) NOT NULL DEFAULT 0,
                 total_wo_vat numeric(10,2) NOT NULL DEFAULT 0
@@ -92,9 +92,9 @@ class SchemaService
         DB::statement("
         INSERT INTO {$schemaName}.configs (key, value, created_at, updated_at)
         VALUES (
-            'client_data_objects',
+            'partner_data_objects',
             " . DB::getPdo()->quote(json_encode([
-                'client_create' => [
+                'partner_create' => [
                     [
                         'name' => 'Contact Information',
                         'background_color' => 'bg-gray-50',

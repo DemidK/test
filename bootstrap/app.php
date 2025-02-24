@@ -41,6 +41,20 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+function loadUserEnv($userId) {
+    $userEnvFile = base_path("/config/db/.env.user{$userId}");
+
+    if (file_exists($userEnvFile)) {
+        // Load the user-specific .env file
+        $dotenv = Dotenv\Dotenv::createMutable(base_path(), ".env.user{$userId}");
+        $dotenv->load();
+
+        // Update the database configuration dynamically for PostgreSQL
+        Illuminate\Support\Facades\Config::set('database.connections.pgsql.database', env('DB_DATABASE'));
+        Illuminate\Support\Facades\Config::set('database.connections.pgsql.username', env('DB_USERNAME'));
+        Illuminate\Support\Facades\Config::set('database.connections.pgsql.password', env('DB_PASSWORD'));
+    }
+}
 /*
 |--------------------------------------------------------------------------
 | Return The Application

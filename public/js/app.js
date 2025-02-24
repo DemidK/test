@@ -122,8 +122,8 @@ var NavigationManager = /*#__PURE__*/function () {
       e.preventDefault();
       var target = e.target.closest('.draggable');
       if (!target || target === this.draggedItem) return;
-      var draggedRect = this.draggedItem.getBoundingClientRect();
-      var targetRect = target.getBoundingClientRect();
+      var draggedRect = this.draggedItem.getBoundingPartnerRect();
+      var targetRect = target.getBoundingPartnerRect();
       var nextElement = targetRect.left > draggedRect.left ? target.nextElementSibling : target;
       if (nextElement) {
         this.navLinks.insertBefore(this.draggedItem, nextElement);

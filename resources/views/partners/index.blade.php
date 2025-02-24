@@ -3,8 +3,8 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">Clients</h1>
-            <a href="{{ route('clients.create') }}" 
+            <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">Partners</h1>
+            <a href="{{ route('partners.create') }}" 
                class="inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
                 <span class="mr-2">Pievienot jaunu klientu</span>
                 <i class="fas fa-plus"></i>
@@ -45,7 +45,7 @@
                         Search
                     </button>
                     @if(request()->hasAny(['search', 'sort_by', 'sort_order']))
-                        <a href="{{ route('clients.index') }}"
+                        <a href="{{ route('partners.index') }}"
                             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
                             Clear
                         </a>
@@ -53,22 +53,22 @@
                 </div>
             </form>
 
-            <!-- Clients List -->
+            <!-- partners List -->
             <div class="sm:hidden divide-y divide-gray-200">
-                @foreach($items as $client)
+                @foreach($items as $partner)
                     <div class="p-4">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-medium text-gray-900">{{ $client->name }}</h3>
-                                <p class="text-sm text-gray-500">ID: {{ $client->identification_number }}</p>
-                                <p class="text-sm text-gray-500">Added: {{ $client->created_at->format('M d, Y') }}</p>
+                                <h3 class="font-medium text-gray-900">{{ $partner->name }}</h3>
+                                <p class="text-sm text-gray-500">ID: {{ $partner->identification_number }}</p>
+                                <p class="text-sm text-gray-500">Added: {{ $partner->created_at->format('M d, Y') }}</p>
                             </div>
                             <div class="flex gap-2">
-                                <a href="{{ route('clients.show', $client) }}"
+                                <a href="{{ route('partners.show', $partner) }}"
                                     class="text-blue-600 hover:text-blue-800 p-2">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ route('clients.edit', $client) }}"
+                                <a href="{{ route('partners.edit', $partner) }}"
                                     class="text-blue-600 hover:text-blue-800 p-2">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -91,22 +91,22 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($items as $client)
+                            @foreach($items as $partner)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $client->name }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $partner->name }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">{{ $client->identification_number }}</div>
+                                        <div class="text-sm text-gray-500">{{ $partner->identification_number }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">{{ $client->created_at->format('M d, Y') }}</div>
+                                        <div class="text-sm text-gray-500">{{ $partner->created_at->format('M d, Y') }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('clients.show', $client) }}" class="text-blue-600 hover:text-blue-800 p-2">
+                                        <a href="{{ route('partners.show', $partner) }}" class="text-blue-600 hover:text-blue-800 p-2">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('clients.edit', $client) }}" class="text-blue-600 hover:text-blue-800 p-2">
+                                        <a href="{{ route('partners.edit', $partner) }}" class="text-blue-600 hover:text-blue-800 p-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>

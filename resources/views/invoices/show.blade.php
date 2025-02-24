@@ -30,7 +30,7 @@
 
             <div class="flex items-center gap-4">
                 <!-- Edit Button -->
-                <a href="{{ route('invoices.edit', $item->id) }}" 
+                <a href="{{ route('invoices.edit', $items->id) }}" 
                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 inline-flex items-center gap-2"
                    title="Edit Invoice">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@
                 </a>
 
                 <!-- Preview PDF -->
-                <a href="{{ route('invoices.previewPdf', $item->id) }}" 
+                <a href="{{ route('invoices.previewPdf', $items->id) }}" 
                    target="_blank"
                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex items-center gap-2"
                    title="Preview PDF">
@@ -52,7 +52,7 @@
                 </a>
 
                 <!-- Download PDF -->
-                <a href="{{ route('invoices.exportPdf', $item->id) }}" 
+                <a href="{{ route('invoices.exportPdf', $items->id) }}" 
                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 inline-flex items-center gap-2"
                    title="Download PDF">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,55 +68,60 @@
             <div class="bg-gray-100 p-4">
                 <div class="mb-4">
                     <h1 class="text-2xl font-bold text-gray-800">
-                        Invoice #{{ $item->invoice_number }}
+                        Invoice #{{ $items->invoice_number }}
                     </h1>
                     <p class="text-sm text-gray-600">
-                        Issued on {{ \Carbon\Carbon::parse($item->invoice_date)->format('F d, Y') }}
+                        Issued on {{ \Carbon\Carbon::parse($items->invoice_date)->format('F d, Y') }}
                     </p>
                 </div>
             </div>
 
             {{-- Customer Information --}}
             <div class="p-4 border-b">
-                <x-customer-info :customer="$item" readonly="true" />
+                <x-customer-info :customer="$items" readonly="true" />
             </div>
 
+            {{-- Invoice Items Section --}}
             <div class="p-4">
                 <h3 class="font-semibold text-gray-700 mb-4">Invoice Items</h3>
                 
-                <!-- Mobile Items List -->
-                <div class="block sm:hidden">
-                    @foreach($item->items as $invoiceItem)
-                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                            <div class="mb-3">
-                                <div class="font-medium text-gray-900">{{ $invoiceItem['description'] }}</div>
+                @if(empty($items->items))
+                    <p class="text-gray-500">No items found for this invoice.</p>
+                @else
+                    <!-- Mobile Items List -->
+                    <div class="block sm:hidden">
+                        @foreach($items->items as $invoiceItem)
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <div class="mb-3">
+                                    <div class="font-medium text-gray-900">{{ $invoiceItem['description'] }}</div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-500">Qty</span>
+                                        <span class="font-medium">{{ $invoiceItem['quantity'] }}</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-500">Price</span>
+                                        <span class="font-medium">${{ number_format($invoiceItem['price'], 2) }}</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-500">VAT</span>
+                                        <span class="font-medium">{{ $invoiceItem['vat'] }}%</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-500">Total</span>
+                                        <span class="font-medium">${{ number_format($invoiceItem['quantity'] * $invoiceItem['price'] * (1 + $invoiceItem['vat']/100), 2) }}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="flex flex-col">
-                                    <span class="text-sm text-gray-500">Qty</span>
-                                    <span class="font-medium">{{ $invoiceItem['quantity'] }}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm text-gray-500">Cena</span>
-                                    <span class="font-medium">${{ number_format($invoiceItem['price'], 2) }}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm text-gray-500">VAT</span>
-                                    <span class="font-medium">{{ $invoiceItem['vat'] }}%</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm text-gray-500">Total</span>
-                                    <span class="font-medium">${{ number_format($invoiceItem['quantity'] * $invoiceItem['price'] * (1 + $invoiceItem['vat']/100), 2) }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
 
-                <!-- Desktop Table using the component -->
-                <div class="hidden sm:block">
-                    <x-invoice-items-table :items="$item->items" />
-                </div>
+                    <!-- Desktop Table -->
+                    <div class="hidden sm:block">
+                        <x-invoice-items-table :items="$items->items" />
+                    </div>
+                @endif
             </div>
 
             {{-- Additional Invoice Details --}}
@@ -124,11 +129,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <strong>Created By:</strong> 
-                        {{ $item->updater ?? 'System' }}
+                        {{ $items->updater ?? 'System' }}
                     </div>
                     <div class="text-right">
                         <strong>Invoice ID:</strong> 
-                        {{ $item->id }}
+                        {{ $items->id }}
                     </div>
                 </div>
             </div>
