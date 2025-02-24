@@ -1,0 +1,154 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Divs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="item" draggable="true" data-id="1">1</div>
+    <div class="item" draggable="true" data-id="2">2</div>
+    <div class="item" draggable="true" data-id="3">3</div>
+    <div class="item" draggable="true" data-id="4">4</div>
+    <div class="item" draggable="true" data-id="5">5</div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+css
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    display: flex;
+    gap: 10px;
+}
+
+.item {
+    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    cursor: grab;
+    user-select: none;
+    border-radius: 5px;
+}
+
+.item.dragging {
+    opacity: 0.5;
+}
+
+js
+// script.js
+const container = document.querySelector('.container');
+const items = document.querySelectorAll('.item');
+
+let draggedItem = null;
+
+// Add event listeners for drag-and-drop
+items.forEach(item => {
+    item.addEventListener('dragstart', dragStart);
+    item.addEventListener('dragend', dragEnd);
+});
+
+container.addEventListener('dragover', dragOver);
+container.addEventListener('drop', drop);
+
+// Drag start
+function dragStart(e) {
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+// Drag end
+function dragEnd() {
+    this.classList.remove('dragging');
+    draggedItem = null;
+
+    // Send the new order to the server
+    updateOrder();
+}
+
+// Drag over
+function dragOver(e) {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(container, e.clientX);
+    const currentItem = document.querySelector('.dragging');
+
+    if (afterElement == null) {
+        container.appendChild(currentItem);
+    } else {
+        container.insertBefore(currentItem, afterElement);
+    }
+}
+
+// Drop
+function drop(e) {
+    e.preventDefault();
+}
+
+// Helper function to find the element after the dragged item
+function getDragAfterElement(container, x) {
+    const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// Function to send the new order to the server
+function updateOrder() {
+    const order = Array.from(container.querySelectorAll('.item')).map((item, index) => ({
+        id: item.dataset.id, // Assuming each div has a data-id attribute
+        position: index + 1,
+    }));
+
+    fetch('/update-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // For Laravel CSRF protection
+        },
+        body: JSON.stringify({ order }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Order updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating order:', error);
+    });
+}
+How It Works
+HTML Structure:
+
+Each <div> has the draggable="true" attribute to make it draggable.
+
+The container holds all the <div> elements in a row.
+
+CSS Styling:
+
+The .container uses
+

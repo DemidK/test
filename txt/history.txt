@@ -1,0 +1,1390 @@
+
+hi
+hi
+Hello! How can I assist you today? 😊
+
+use php, make xml from php array like example below
+<Invoice xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>012458-4567</cbc:ID>
+  <cbc:IssueDate>2025-02-12</cbc:IssueDate>
+  <cbc:DueDate>2025-02-26</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>-</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>40003893156</cbc:BuyerReference>
+  <cac:ContractDocumentReference>
+    <cbc:ID>RD-1234567</cbc:ID>
+  </cac:ContractDocumentReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="9939">40103309759</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID>40103309759</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>SIA "RD Consult"</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cac:AddressLine>
+          <cbc:Line>Dzelzavas 38-5</cbc:Line>
+        </cac:AddressLine>
+        <cac:Country>
+          <cbc:IdentificationCode>LV</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:RegistrationName>SIA "RD Consult"</cbc:RegistrationName>
+        <cbc:CompanyID>LV 40103309759</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>SIA "RD Consult"</cbc:RegistrationName>
+        <cbc:CompanyID>LV40103309759</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="9939">40003893156</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID>40003893156</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>SIA „Vājstrāvas Tīkli”</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cac:AddressLine>
+          <cbc:Line>Dzelzavas iela 117, Rīga, LV-1082 </cbc:Line>
+        </cac:AddressLine>
+        <cac:Country>
+          <cbc:IdentificationCode>LV</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:RegistrationName>SIA „Vājstrāvas Tīkli”</cbc:RegistrationName>
+        <cbc:CompanyID>LV40003893156</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>SIA „Vājstrāvas Tīkli”</cbc:RegistrationName>
+        <cbc:CompanyID>LV40003893156</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">42.00</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">200.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">42.00</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Name>VAT 21%</cbc:Name>
+        <cbc:Percent>21</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">200.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">200.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">242.00</cbc:TaxInclusiveAmount>
+    <cbc:PrepaidAmount currencyID="EUR">0.00</cbc:PrepaidAmount>
+    <cbc:PayableAmount currencyID="EUR">242.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="H87">1.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">20.00</cbc:LineExtensionAmount>
+    <cac:AllowanceCharge>
+      <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReason>-</cbc:AllowanceChargeReason>
+      <cbc:Amount currencyID="EUR">0.00</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:Item>
+      <cbc:Name>Internets</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">20.0000</cbc:PriceAmount>
+      <cbc:BaseQuantity>1.00</cbc:BaseQuantity>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="H87">1.00</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">180.00</cbc:LineExtensionAmount>
+    <cac:AllowanceCharge>
+      <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReason>-</cbc:AllowanceChargeReason>
+      <cbc:Amount currencyID="EUR">0.00</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:Item>
+      <cbc:Name>Montažas darbi</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">180.0000</cbc:PriceAmount>
+      <cbc:BaseQuantity>1.00</cbc:BaseQuantity>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
+To generate the XML structure you provided from a PHP array, you can use the SimpleXMLElement class in PHP. Below is an example of how you can achieve this:
+
+php
+Copy
+<?php
+
+// Define the PHP array representing the XML structure
+$invoiceArray = [
+    'CustomizationID' => 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
+    'ProfileID' => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+    'ID' => '012458-4567',
+    'IssueDate' => '2025-02-12',
+    'DueDate' => '2025-02-26',
+    'InvoiceTypeCode' => '380',
+    'Note' => '-',
+    'DocumentCurrencyCode' => 'EUR',
+    'BuyerReference' => '40003893156',
+    'ContractDocumentReference' => [
+        'ID' => 'RD-1234567',
+    ],
+    'AccountingSupplierParty' => [
+        'Party' => [
+            'EndpointID' => [
+                '_attributes' => ['schemeID' => '9939'],
+                '_value' => '40103309759',
+            ],
+            'PartyIdentification' => [
+                'ID' => '40103309759',
+            ],
+            'PartyName' => [
+                'Name' => 'SIA "RD Consult"',
+            ],
+            'PostalAddress' => [
+                'AddressLine' => [
+                    'Line' => 'Dzelzavas 38-5',
+                ],
+                'Country' => [
+                    'IdentificationCode' => 'LV',
+                ],
+            ],
+            'PartyTaxScheme' => [
+                'RegistrationName' => 'SIA "RD Consult"',
+                'CompanyID' => 'LV 40103309759',
+                'TaxScheme' => [
+                    'ID' => 'VAT',
+                ],
+            ],
+            'PartyLegalEntity' => [
+                'RegistrationName' => 'SIA "RD Consult"',
+                'CompanyID' => 'LV40103309759',
+            ],
+        ],
+    ],
+    'AccountingCustomerParty' => [
+        'Party' => [
+            'EndpointID' => [
+                '_attributes' => ['schemeID' => '9939'],
+                '_value' => '40003893156',
+            ],
+            'PartyIdentification' => [
+                'ID' => '40003893156',
+            ],
+            'PartyName' => [
+                'Name' => 'SIA „Vājstrāvas Tīkli”',
+            ],
+            'PostalAddress' => [
+                'AddressLine' => [
+                    'Line' => 'Dzelzavas iela 117, Rīga, LV-1082',
+                ],
+                'Country' => [
+                    'IdentificationCode' => 'LV',
+                ],
+            ],
+            'PartyTaxScheme' => [
+                'RegistrationName' => 'SIA „Vājstrāvas Tīkli”',
+                'CompanyID' => 'LV40003893156',
+                'TaxScheme' => [
+                    'ID' => 'VAT',
+                ],
+            ],
+            'PartyLegalEntity' => [
+                'RegistrationName' => 'SIA „Vājstrāvas Tīkli”',
+                'CompanyID' => 'LV40003893156',
+            ],
+        ],
+    ],
+    'TaxTotal' => [
+        'TaxAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '42.00',
+        ],
+        'TaxSubtotal' => [
+            'TaxableAmount' => [
+                '_attributes' => ['currencyID' => 'EUR'],
+                '_value' => '200.00',
+            ],
+            'TaxAmount' => [
+                '_attributes' => ['currencyID' => 'EUR'],
+                '_value' => '42.00',
+            ],
+            'TaxCategory' => [
+                'ID' => 'S',
+                'Name' => 'VAT 21%',
+                'Percent' => '21',
+                'TaxScheme' => [
+                    'ID' => 'VAT',
+                ],
+            ],
+        ],
+    ],
+    'LegalMonetaryTotal' => [
+        'LineExtensionAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '200.00',
+        ],
+        'TaxExclusiveAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '200.00',
+        ],
+        'TaxInclusiveAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '242.00',
+        ],
+        'PrepaidAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '0.00',
+        ],
+        'PayableAmount' => [
+            '_attributes' => ['currencyID' => 'EUR'],
+            '_value' => '242.00',
+        ],
+    ],
+    'InvoiceLine' => [
+        [
+            'ID' => '1',
+            'InvoicedQuantity' => [
+                '_attributes' => ['unitCode' => 'H87'],
+                '_value' => '1.00',
+            ],
+            'LineExtensionAmount' => [
+                '_attributes' => ['currencyID' => 'EUR'],
+                '_value' => '20.00',
+            ],
+            'AllowanceCharge' => [
+                'ChargeIndicator' => 'false',
+                'AllowanceChargeReason' => '-',
+                'Amount' => [
+                    '_attributes' => ['currencyID' => 'EUR'],
+                    '_value' => '0.00',
+                ],
+            ],
+            'Item' => [
+                'Name' => 'Internets',
+                'ClassifiedTaxCategory' => [
+                    'ID' => 'S',
+                    'Percent' => '21',
+                    'TaxScheme' => [
+                        'ID' => 'VAT',
+                    ],
+                ],
+            ],
+            'Price' => [
+                'PriceAmount' => [
+                    '_attributes' => ['currencyID' => 'EUR'],
+                    '_value' => '20.0000',
+                ],
+                'BaseQuantity' => '1.00',
+            ],
+        ],
+        [
+            'ID' => '2',
+            'InvoicedQuantity' => [
+                '_attributes' => ['unitCode' => 'H87'],
+                '_value' => '1.00',
+            ],
+            'LineExtensionAmount' => [
+                '_attributes' => ['currencyID' => 'EUR'],
+                '_value' => '180.00',
+            ],
+            'AllowanceCharge' => [
+                'ChargeIndicator' => 'false',
+                'AllowanceChargeReason' => '-',
+                'Amount' => [
+                    '_attributes' => ['currencyID' => 'EUR'],
+                    '_value' => '0.00',
+                ],
+            ],
+            'Item' => [
+                'Name' => 'Montažas darbi',
+                'ClassifiedTaxCategory' => [
+                    'ID' => 'S',
+                    'Percent' => '21',
+                    'TaxScheme' => [
+                        'ID' => 'VAT',
+                    ],
+                ],
+            ],
+            'Price' => [
+                'PriceAmount' => [
+                    '_attributes' => ['currencyID' => 'EUR'],
+                    '_value' => '180.0000',
+                ],
+                'BaseQuantity' => '1.00',
+            ],
+        ],
+    ],
+];
+
+// Function to recursively add array data to XML
+function arrayToXml($array, &$xml) {
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            if (isset($value['_attributes'])) {
+                $subnode = $xml->addChild($key, $value['_value']);
+                foreach ($value['_attributes'] as $attrKey => $attrValue) {
+                    $subnode->addAttribute($attrKey, $attrValue);
+                }
+            } else {
+                $subnode = $xml->addChild($key);
+                arrayToXml($value, $subnode);
+            }
+        } else {
+            $xml->addChild($key, htmlspecialchars($value));
+        }
+    }
+}
+
+// Create the root element with namespaces
+$xml = new SimpleXMLElement('<Invoice/>');
+$xml->addAttribute('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
+$xml->addAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+$xml->addAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+$xml->addAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+$xml->addAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+
+// Convert the array to XML
+arrayToXml($invoiceArray, $xml);
+
+// Output the XML
+echo $xml->asXML();
+
+?>
+Explanation:
+Array Structure: The PHP array is structured to match the XML hierarchy. Special keys like _attributes and _value are used to handle XML attributes and values respectively.
+
+Recursive Function: The arrayToXml function recursively converts the array into XML nodes.
+
+Namespaces: The root element <Invoice> is created with the necessary namespaces.
+
+Output: The final XML is output using $xml->asXML().
+
+Output:
+The script will generate the XML structure you provided. You can save it to a file or output it directly.
+
+Let me know if you need further assistance! 😊
+
+make html form with inputs to make from form data such xml
+To create an HTML form that collects data and generates the XML structure you provided, you can use PHP to process the form data and dynamically create the XML. Below is an example of how to achieve this:
+
+HTML Form
+This form collects all the necessary data for the XML structure.
+
+html
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Form</title>
+</head>
+<body>
+    <h1>Invoice Form</h1>
+    <form action="generate_xml.php" method="POST">
+        <!-- General Invoice Information -->
+        <fieldset>
+            <legend>Invoice Details</legend>
+            <label for="CustomizationID">Customization ID:</label>
+            <input type="text" id="CustomizationID" name="CustomizationID" required><br>
+
+            <label for="ProfileID">Profile ID:</label>
+            <input type="text" id="ProfileID" name="ProfileID" required><br>
+
+            <label for="ID">Invoice ID:</label>
+            <input type="text" id="ID" name="ID" required><br>
+
+            <label for="IssueDate">Issue Date:</label>
+            <input type="date" id="IssueDate" name="IssueDate" required><br>
+
+            <label for="DueDate">Due Date:</label>
+            <input type="date" id="DueDate" name="DueDate" required><br>
+
+            <label for="InvoiceTypeCode">Invoice Type Code:</label>
+            <input type="text" id="InvoiceTypeCode" name="InvoiceTypeCode" required><br>
+
+            <label for="Note">Note:</label>
+            <input type="text" id="Note" name="Note" required><br>
+
+            <label for="DocumentCurrencyCode">Document Currency Code:</label>
+            <input type="text" id="DocumentCurrencyCode" name="DocumentCurrencyCode" required><br>
+
+            <label for="BuyerReference">Buyer Reference:</label>
+            <input type="text" id="BuyerReference" name="BuyerReference" required><br>
+        </fieldset>
+
+        <!-- Supplier Information -->
+        <fieldset>
+            <legend>Supplier Details</legend>
+            <label for="SupplierEndpointID">Supplier Endpoint ID:</label>
+            <input type="text" id="SupplierEndpointID" name="SupplierEndpointID" required><br>
+
+            <label for="SupplierID">Supplier ID:</label>
+            <input type="text" id="SupplierID" name="SupplierID" required><br>
+
+            <label for="SupplierName">Supplier Name:</label>
+            <input type="text" id="SupplierName" name="SupplierName" required><br>
+
+            <label for="SupplierAddress">Supplier Address:</label>
+            <input type="text" id="SupplierAddress" name="SupplierAddress" required><br>
+
+            <label for="SupplierCountryCode">Supplier Country Code:</label>
+            <input type="text" id="SupplierCountryCode" name="SupplierCountryCode" required><br>
+
+            <label for="SupplierTaxName">Supplier Tax Name:</label>
+            <input type="text" id="SupplierTaxName" name="SupplierTaxName" required><br>
+
+            <label for="SupplierCompanyID">Supplier Company ID:</label>
+            <input type="text" id="SupplierCompanyID" name="SupplierCompanyID" required><br>
+        </fieldset>
+
+        <!-- Customer Information -->
+        <fieldset>
+            <legend>Customer Details</legend>
+            <label for="CustomerEndpointID">Customer Endpoint ID:</label>
+            <input type="text" id="CustomerEndpointID" name="CustomerEndpointID" required><br>
+
+            <label for="CustomerID">Customer ID:</label>
+            <input type="text" id="CustomerID" name="CustomerID" required><br>
+
+            <label for="CustomerName">Customer Name:</label>
+            <input type="text" id="CustomerName" name="CustomerName" required><br>
+
+            <label for="CustomerAddress">Customer Address:</label>
+            <input type="text" id="CustomerAddress" name="CustomerAddress" required><br>
+
+            <label for="CustomerCountryCode">Customer Country Code:</label>
+            <input type="text" id="CustomerCountryCode" name="CustomerCountryCode" required><br>
+
+            <label for="CustomerTaxName">Customer Tax Name:</label>
+            <input type="text" id="CustomerTaxName" name="CustomerTaxName" required><br>
+
+            <label for="CustomerCompanyID">Customer Company ID:</label>
+            <input type="text" id="CustomerCompanyID" name="CustomerCompanyID" required><br>
+        </fieldset>
+
+        <!-- Tax and Monetary Information -->
+        <fieldset>
+            <legend>Tax and Monetary Details</legend>
+            <label for="TaxAmount">Tax Amount:</label>
+            <input type="number" step="0.01" id="TaxAmount" name="TaxAmount" required><br>
+
+            <label for="TaxableAmount">Taxable Amount:</label>
+            <input type="number" step="0.01" id="TaxableAmount" name="TaxableAmount" required><br>
+
+            <label for="TaxPercent">Tax Percent:</label>
+            <input type="number" step="0.01" id="TaxPercent" name="TaxPercent" required><br>
+
+            <label for="LineExtensionAmount">Line Extension Amount:</label>
+            <input type="number" step="0.01" id="LineExtensionAmount" name="LineExtensionAmount" required><br>
+
+            <label for="PayableAmount">Payable Amount:</label>
+            <input type="number" step="0.01" id="PayableAmount" name="PayableAmount" required><br>
+        </fieldset>
+
+        <!-- Invoice Line Items -->
+        <fieldset>
+            <legend>Invoice Line Items</legend>
+            <label for="Item1Name">Item 1 Name:</label>
+            <input type="text" id="Item1Name" name="Item1Name" required><br>
+
+            <label for="Item1Quantity">Item 1 Quantity:</label>
+            <input type="number" step="0.01" id="Item1Quantity" name="Item1Quantity" required><br>
+
+            <label for="Item1Price">Item 1 Price:</label>
+            <input type="number" step="0.01" id="Item1Price" name="Item1Price" required><br>
+
+            <label for="Item2Name">Item 2 Name:</label>
+            <input type="text" id="Item2Name" name="Item2Name" required><br>
+
+            <label for="Item2Quantity">Item 2 Quantity:</label>
+            <input type="number" step="0.01" id="Item2Quantity" name="Item2Quantity" required><br>
+
+            <label for="Item2Price">Item 2 Price:</label>
+            <input type="number" step="0.01" id="Item2Price" name="Item2Price" required><br>
+        </fieldset>
+
+        <button type="submit">Generate XML</button>
+    </form>
+</body>
+</html>
+Run HTML
+PHP Script to Generate XML (generate_xml.php)
+This script processes the form data and generates the XML.
+
+php
+Copy
+<?php
+// Check if form data is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Collect form data
+    $formData = [
+        'CustomizationID' => $_POST['CustomizationID'],
+        'ProfileID' => $_POST['ProfileID'],
+        'ID' => $_POST['ID'],
+        'IssueDate' => $_POST['IssueDate'],
+        'DueDate' => $_POST['DueDate'],
+        'InvoiceTypeCode' => $_POST['InvoiceTypeCode'],
+        'Note' => $_POST['Note'],
+        'DocumentCurrencyCode' => $_POST['DocumentCurrencyCode'],
+        'BuyerReference' => $_POST['BuyerReference'],
+        'SupplierEndpointID' => $_POST['SupplierEndpointID'],
+        'SupplierID' => $_POST['SupplierID'],
+        'SupplierName' => $_POST['SupplierName'],
+        'SupplierAddress' => $_POST['SupplierAddress'],
+        'SupplierCountryCode' => $_POST['SupplierCountryCode'],
+        'SupplierTaxName' => $_POST['SupplierTaxName'],
+        'SupplierCompanyID' => $_POST['SupplierCompanyID'],
+        'CustomerEndpointID' => $_POST['CustomerEndpointID'],
+        'CustomerID' => $_POST['CustomerID'],
+        'CustomerName' => $_POST['CustomerName'],
+        'CustomerAddress' => $_POST['CustomerAddress'],
+        'CustomerCountryCode' => $_POST['CustomerCountryCode'],
+        'CustomerTaxName' => $_POST['CustomerTaxName'],
+        'CustomerCompanyID' => $_POST['CustomerCompanyID'],
+        'TaxAmount' => $_POST['TaxAmount'],
+        'TaxableAmount' => $_POST['TaxableAmount'],
+        'TaxPercent' => $_POST['TaxPercent'],
+        'LineExtensionAmount' => $_POST['LineExtensionAmount'],
+        'PayableAmount' => $_POST['PayableAmount'],
+        'Item1Name' => $_POST['Item1Name'],
+        'Item1Quantity' => $_POST['Item1Quantity'],
+        'Item1Price' => $_POST['Item1Price'],
+        'Item2Name' => $_POST['Item2Name'],
+        'Item2Quantity' => $_POST['Item2Quantity'],
+        'Item2Price' => $_POST['Item2Price'],
+    ];
+
+    // Create the XML structure
+    $xml = new SimpleXMLElement('<Invoice/>');
+    $xml->addAttribute('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
+    $xml->addAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+    $xml->addAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+    $xml->addAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+    $xml->addAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+
+    // Add invoice details
+    $xml->addChild('cbc:CustomizationID', $formData['CustomizationID']);
+    $xml->addChild('cbc:ProfileID', $formData['ProfileID']);
+    $xml->addChild('cbc:ID', $formData['ID']);
+    $xml->addChild('cbc:IssueDate', $formData['IssueDate']);
+    $xml->addChild('cbc:DueDate', $formData['DueDate']);
+    $xml->addChild('cbc:InvoiceTypeCode', $formData['InvoiceTypeCode']);
+    $xml->addChild('cbc:Note', $formData['Note']);
+    $xml->addChild('cbc:DocumentCurrencyCode', $formData['DocumentCurrencyCode']);
+    $xml->addChild('cbc:BuyerReference', $formData['BuyerReference']);
+
+    // Add supplier details
+    $supplierParty = $xml->addChild('cac:AccountingSupplierParty')->addChild('cac:Party');
+    $supplierParty->addChild('cbc:EndpointID', $formData['SupplierEndpointID'])->addAttribute('schemeID', '9939');
+    $supplierParty->addChild('cac:PartyIdentification')->addChild('cbc:ID', $formData['SupplierID']);
+    $supplierParty->addChild('cac:PartyName')->addChild('cbc:Name', $formData['SupplierName']);
+    $postalAddress = $supplierParty->addChild('cac:PostalAddress');
+    $postalAddress->addChild('cac:AddressLine')->addChild('cbc:Line', $formData['SupplierAddress']);
+    $postalAddress->addChild('cac:Country')->addChild('cbc:IdentificationCode', $formData['SupplierCountryCode']);
+    $supplierParty->addChild('cac:PartyTaxScheme')->addChild('cbc:RegistrationName', $formData['SupplierTaxName']);
+    $supplierParty->addChild('cac:PartyLegalEntity')->addChild('cbc:CompanyID', $formData['SupplierCompanyID']);
+
+    // Add customer details
+    $customerParty = $xml->addChild('cac:AccountingCustomerParty')->addChild('cac:Party');
+    $customerParty->addChild('cbc:EndpointID', $formData['CustomerEndpointID'])->addAttribute('schemeID', '9939');
+    $customerParty->addChild('cac:PartyIdentification')->addChild('cbc:ID', $formData['CustomerID']);
+    $customerParty->addChild('cac:PartyName')->addChild('cbc:Name', $formData['CustomerName']);
+    $postalAddress = $customerParty->addChild('cac:PostalAddress');
+    $postalAddress->addChild('cac:AddressLine')->addChild('cbc:Line', $formData['CustomerAddress']);
+    $postalAddress->addChild('cac:Country')->addChild('cbc:IdentificationCode', $formData['CustomerCountryCode']);
+    $customerParty->addChild('cac:PartyTaxScheme')->addChild('cbc:RegistrationName', $formData['CustomerTaxName']);
+    $customerParty->addChild('cac:PartyLegalEntity')->addChild('cbc:CompanyID', $formData['CustomerCompanyID']);
+
+    // Add tax and monetary details
+    $taxTotal = $xml->addChild('cac:TaxTotal');
+    $taxTotal->addChild('cbc:TaxAmount', $formData['TaxAmount'])->addAttribute('currencyID', 'EUR');
+    $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal');
+    $taxSubtotal->addChild('cbc:TaxableAmount', $formData['TaxableAmount'])->addAttribute('currencyID', 'EUR');
+    $taxSubtotal->addChild('cbc:TaxAmount', $formData['TaxAmount'])->addAttribute('currencyID', 'EUR');
+    $taxCategory = $taxSubtotal->addChild('cac:TaxCategory');
+    $taxCategory->addChild('cbc:ID', 'S');
+    $taxCategory->addChild('cbc:Name', 'VAT ' . $formData['TaxPercent'] . '%');
+    $taxCategory->addChild('cbc:Percent', $formData['TaxPercent']);
+    $taxCategory->addChild('cac:TaxScheme')->addChild('cbc:ID', 'VAT');
+
+    $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal');
+    $legalMonetaryTotal->addChild('cbc:LineExtensionAmount', $formData['LineExtensionAmount'])->addAttribute('currencyID', 'EUR');
+    $legalMonetaryTotal->addChild('cbc:PayableAmount', $formData['PayableAmount'])->addAttribute('currencyID', 'EUR');
+
+    // Add invoice line items
+    $invoiceLine1 = $xml->addChild('cac:InvoiceLine');
+    $invoiceLine1->addChild('cbc:ID', '1');
+    $invoiceLine1->addChild('cbc:InvoicedQuantity', $formData['Item1Quantity'])->addAttribute('unitCode', 'H87');
+    $invoiceLine1->addChild('cbc:LineExtensionAmount', $formData['Item1Price'])->addAttribute('currencyID', 'EUR');
+    $item1 = $invoiceLine1->addChild('cac:Item');
+    $item1->addChild('cbc:Name', $formData['Item1Name']);
+    $item1->addChild('cac:ClassifiedTaxCategory')->addChild('cbc:ID', 'S');
+
+    $invoiceLine2 = $xml->addChild('cac:InvoiceLine');
+    $invoiceLine2->addChild('cbc:ID', '2');
+    $invoiceLine2->addChild('cbc:InvoicedQuantity', $formData['Item2Quantity'])->addAttribute('unitCode', 'H87');
+    $invoiceLine2->addChild('cbc:LineExtensionAmount', $formData['Item2Price'])->addAttribute('currencyID', 'EUR');
+    $item2 = $invoiceLine2->addChild('cac:Item');
+    $item2->addChild('cbc:Name', $formData['Item2Name']);
+    $item2->addChild('cac:ClassifiedTaxCategory')->addChild('cbc:ID', 'S');
+
+    // Output the XML
+    header('Content-Type: application/xml');
+    echo $xml->asXML();
+} else {
+    echo "Form data not submitted.";
+}
+?>
+How It Works:
+The HTML form collects all the necessary data.
+
+When the form is submitted, the data is sent to generate_xml.php.
+
+The PHP script processes the form data and generates the XML structure using SimpleXMLElement.
+
+The XML is output to the browser or can be saved to a file.
+
+Let me know if you need further clarification! 😊
+
+invoice line must be only one in form, but also there must be js button to add new invoice lines as much as needed
+To allow users to dynamically add multiple invoice lines to the form, we can use JavaScript to add new input fields for each invoice line. Here's how you can modify the form and PHP script to support this functionality:
+
+Updated HTML Form with JavaScript
+This version includes a button to add new invoice lines dynamically.
+
+html
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Form</title>
+    <style>
+        .invoice-line {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Invoice Form</h1>
+    <form action="generate_xml.php" method="POST">
+        <!-- General Invoice Information -->
+        <fieldset>
+            <legend>Invoice Details</legend>
+            <label for="CustomizationID">Customization ID:</label>
+            <input type="text" id="CustomizationID" name="CustomizationID" required><br>
+
+            <label for="ProfileID">Profile ID:</label>
+            <input type="text" id="ProfileID" name="ProfileID" required><br>
+
+            <label for="ID">Invoice ID:</label>
+            <input type="text" id="ID" name="ID" required><br>
+
+            <label for="IssueDate">Issue Date:</label>
+            <input type="date" id="IssueDate" name="IssueDate" required><br>
+
+            <label for="DueDate">Due Date:</label>
+            <input type="date" id="DueDate" name="DueDate" required><br>
+
+            <label for="InvoiceTypeCode">Invoice Type Code:</label>
+            <input type="text" id="InvoiceTypeCode" name="InvoiceTypeCode" required><br>
+
+            <label for="Note">Note:</label>
+            <input type="text" id="Note" name="Note" required><br>
+
+            <label for="DocumentCurrencyCode">Document Currency Code:</label>
+            <input type="text" id="DocumentCurrencyCode" name="DocumentCurrencyCode" required><br>
+
+            <label for="BuyerReference">Buyer Reference:</label>
+            <input type="text" id="BuyerReference" name="BuyerReference" required><br>
+        </fieldset>
+
+        <!-- Supplier Information -->
+        <fieldset>
+            <legend>Supplier Details</legend>
+            <label for="SupplierEndpointID">Supplier Endpoint ID:</label>
+            <input type="text" id="SupplierEndpointID" name="SupplierEndpointID" required><br>
+
+            <label for="SupplierID">Supplier ID:</label>
+            <input type="text" id="SupplierID" name="SupplierID" required><br>
+
+            <label for="SupplierName">Supplier Name:</label>
+            <input type="text" id="SupplierName" name="SupplierName" required><br>
+
+            <label for="SupplierAddress">Supplier Address:</label>
+            <input type="text" id="SupplierAddress" name="SupplierAddress" required><br>
+
+            <label for="SupplierCountryCode">Supplier Country Code:</label>
+            <input type="text" id="SupplierCountryCode" name="SupplierCountryCode" required><br>
+
+            <label for="SupplierTaxName">Supplier Tax Name:</label>
+            <input type="text" id="SupplierTaxName" name="SupplierTaxName" required><br>
+
+            <label for="SupplierCompanyID">Supplier Company ID:</label>
+            <input type="text" id="SupplierCompanyID" name="SupplierCompanyID" required><br>
+        </fieldset>
+
+        <!-- Customer Information -->
+        <fieldset>
+            <legend>Customer Details</legend>
+            <label for="CustomerEndpointID">Customer Endpoint ID:</label>
+            <input type="text" id="CustomerEndpointID" name="CustomerEndpointID" required><br>
+
+            <label for="CustomerID">Customer ID:</label>
+            <input type="text" id="CustomerID" name="CustomerID" required><br>
+
+            <label for="CustomerName">Customer Name:</label>
+            <input type="text" id="CustomerName" name="CustomerName" required><br>
+
+            <label for="CustomerAddress">Customer Address:</label>
+            <input type="text" id="CustomerAddress" name="CustomerAddress" required><br>
+
+            <label for="CustomerCountryCode">Customer Country Code:</label>
+            <input type="text" id="CustomerCountryCode" name="CustomerCountryCode" required><br>
+
+            <label for="CustomerTaxName">Customer Tax Name:</label>
+            <input type="text" id="CustomerTaxName" name="CustomerTaxName" required><br>
+
+            <label for="CustomerCompanyID">Customer Company ID:</label>
+            <input type="text" id="CustomerCompanyID" name="CustomerCompanyID" required><br>
+        </fieldset>
+
+        <!-- Tax and Monetary Information -->
+        <fieldset>
+            <legend>Tax and Monetary Details</legend>
+            <label for="TaxAmount">Tax Amount:</label>
+            <input type="number" step="0.01" id="TaxAmount" name="TaxAmount" required><br>
+
+            <label for="TaxableAmount">Taxable Amount:</label>
+            <input type="number" step="0.01" id="TaxableAmount" name="TaxableAmount" required><br>
+
+            <label for="TaxPercent">Tax Percent:</label>
+            <input type="number" step="0.01" id="TaxPercent" name="TaxPercent" required><br>
+
+            <label for="LineExtensionAmount">Line Extension Amount:</label>
+            <input type="number" step="0.01" id="LineExtensionAmount" name="LineExtensionAmount" required><br>
+
+            <label for="PayableAmount">Payable Amount:</label>
+            <input type="number" step="0.01" id="PayableAmount" name="PayableAmount" required><br>
+        </fieldset>
+
+        <!-- Invoice Line Items -->
+        <fieldset>
+            <legend>Invoice Line Items</legend>
+            <div id="invoice-lines">
+                <div class="invoice-line">
+                    <label for="ItemName">Item Name:</label>
+                    <input type="text" name="ItemName[]" required><br>
+
+                    <label for="ItemQuantity">Item Quantity:</label>
+                    <input type="number" step="0.01" name="ItemQuantity[]" required><br>
+
+                    <label for="ItemPrice">Item Price:</label>
+                    <input type="number" step="0.01" name="ItemPrice[]" required><br>
+                </div>
+            </div>
+            <button type="button" id="add-invoice-line">Add Invoice Line</button>
+        </fieldset>
+
+        <button type="submit">Generate XML</button>
+    </form>
+
+    <script>
+        // JavaScript to add new invoice lines
+        document.getElementById('add-invoice-line').addEventListener('click', function () {
+            const invoiceLines = document.getElementById('invoice-lines');
+            const newLine = document.createElement('div');
+            newLine.classList.add('invoice-line');
+            newLine.innerHTML = `
+                <label for="ItemName">Item Name:</label>
+                <input type="text" name="ItemName[]" required><br>
+
+                <label for="ItemQuantity">Item Quantity:</label>
+                <input type="number" step="0.01" name="ItemQuantity[]" required><br>
+
+                <label for="ItemPrice">Item Price:</label>
+                <input type="number" step="0.01" name="ItemPrice[]" required><br>
+            `;
+            invoiceLines.appendChild(newLine);
+        });
+    </script>
+</body>
+</html>
+Run HTML
+Updated PHP Script (generate_xml.php)
+This script processes the dynamically added invoice lines.
+
+php
+Copy
+<?php
+// Check if form data is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Collect form data
+    $formData = [
+        'CustomizationID' => $_POST['CustomizationID'],
+        'ProfileID' => $_POST['ProfileID'],
+        'ID' => $_POST['ID'],
+        'IssueDate' => $_POST['IssueDate'],
+        'DueDate' => $_POST['DueDate'],
+        'InvoiceTypeCode' => $_POST['InvoiceTypeCode'],
+        'Note' => $_POST['Note'],
+        'DocumentCurrencyCode' => $_POST['DocumentCurrencyCode'],
+        'BuyerReference' => $_POST['BuyerReference'],
+        'SupplierEndpointID' => $_POST['SupplierEndpointID'],
+        'SupplierID' => $_POST['SupplierID'],
+        'SupplierName' => $_POST['SupplierName'],
+        'SupplierAddress' => $_POST['SupplierAddress'],
+        'SupplierCountryCode' => $_POST['SupplierCountryCode'],
+        'SupplierTaxName' => $_POST['SupplierTaxName'],
+        'SupplierCompanyID' => $_POST['SupplierCompanyID'],
+        'CustomerEndpointID' => $_POST['CustomerEndpointID'],
+        'CustomerID' => $_POST['CustomerID'],
+        'CustomerName' => $_POST['CustomerName'],
+        'CustomerAddress' => $_POST['CustomerAddress'],
+        'CustomerCountryCode' => $_POST['CustomerCountryCode'],
+        'CustomerTaxName' => $_POST['CustomerTaxName'],
+        'CustomerCompanyID' => $_POST['CustomerCompanyID'],
+        'TaxAmount' => $_POST['TaxAmount'],
+        'TaxableAmount' => $_POST['TaxableAmount'],
+        'TaxPercent' => $_POST['TaxPercent'],
+        'LineExtensionAmount' => $_POST['LineExtensionAmount'],
+        'PayableAmount' => $_POST['PayableAmount'],
+        'ItemNames' => $_POST['ItemName'],
+        'ItemQuantities' => $_POST['ItemQuantity'],
+        'ItemPrices' => $_POST['ItemPrice'],
+    ];
+
+    // Create the XML structure
+    $xml = new SimpleXMLElement('<Invoice/>');
+    $xml->addAttribute('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
+    $xml->addAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+    $xml->addAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+    $xml->addAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+    $xml->addAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+
+    // Add invoice details
+    $xml->addChild('cbc:CustomizationID', $formData['CustomizationID']);
+    $xml->addChild('cbc:ProfileID', $formData['ProfileID']);
+    $xml->addChild('cbc:ID', $formData['ID']);
+    $xml->addChild('cbc:IssueDate', $formData['IssueDate']);
+    $xml->addChild('cbc:DueDate', $formData['DueDate']);
+    $xml->addChild('cbc:InvoiceTypeCode', $formData['InvoiceTypeCode']);
+    $xml->addChild('cbc:Note', $formData['Note']);
+    $xml->addChild('cbc:DocumentCurrencyCode', $formData['DocumentCurrencyCode']);
+    $xml->addChild('cbc:BuyerReference', $formData['BuyerReference']);
+
+    // Add supplier details
+    $supplierParty = $xml->addChild('cac:AccountingSupplierParty')->addChild('cac:Party');
+    $supplierParty->addChild('cbc:EndpointID', $formData['SupplierEndpointID'])->addAttribute('schemeID', '9939');
+    $supplierParty->addChild('cac:PartyIdentification')->addChild('cbc:ID', $formData['SupplierID']);
+    $supplierParty->addChild('cac:PartyName')->addChild('cbc:Name', $formData['SupplierName']);
+    $postalAddress = $supplierParty->addChild('cac:PostalAddress');
+    $postalAddress->addChild('cac:AddressLine')->addChild('cbc:Line', $formData['SupplierAddress']);
+    $postalAddress->addChild('cac:Country')->addChild('cbc:IdentificationCode', $formData['SupplierCountryCode']);
+    $supplierParty->addChild('cac:PartyTaxScheme')->addChild('cbc:RegistrationName', $formData['SupplierTaxName']);
+    $supplierParty->addChild('cac:PartyLegalEntity')->addChild('cbc:CompanyID', $formData['SupplierCompanyID']);
+
+    // Add customer details
+    $customerParty = $xml->addChild('cac:AccountingCustomerParty')->addChild('cac:Party');
+    $customerParty->addChild('cbc:EndpointID', $formData['CustomerEndpointID'])->addAttribute('schemeID', '9939');
+    $customerParty->addChild('cac:PartyIdentification')->addChild('cbc:ID', $formData['CustomerID']);
+    $customerParty->addChild('cac:PartyName')->addChild('cbc:Name', $formData['CustomerName']);
+    $postalAddress = $customerParty->addChild('cac:PostalAddress');
+    $postalAddress->addChild('cac:AddressLine')->addChild('cbc:Line', $formData['CustomerAddress']);
+    $postalAddress->addChild('cac:Country')->addChild('cbc:IdentificationCode', $formData['CustomerCountryCode']);
+    $customerParty->addChild('cac:PartyTaxScheme')->addChild('cbc:RegistrationName', $formData['CustomerTaxName']);
+    $customerParty->addChild('cac:PartyLegalEntity')->addChild('cbc:CompanyID', $formData['CustomerCompanyID']);
+
+    // Add tax and monetary details
+    $taxTotal = $xml->addChild('cac:TaxTotal');
+    $taxTotal->addChild('cbc:TaxAmount', $formData['TaxAmount'])->addAttribute('currencyID', 'EUR');
+    $taxSubtotal = $taxTotal->addChild('cac:TaxSubtotal');
+    $taxSubtotal->addChild('cbc:TaxableAmount', $formData['TaxableAmount'])->addAttribute('currencyID', 'EUR');
+    $taxSubtotal->addChild('cbc:TaxAmount', $formData['TaxAmount'])->addAttribute('currencyID', 'EUR');
+    $taxCategory = $taxSubtotal->addChild('cac:TaxCategory');
+    $taxCategory->addChild('cbc:ID', 'S');
+    $taxCategory->addChild('cbc:Name', 'VAT ' . $formData['TaxPercent'] . '%');
+    $taxCategory->addChild('cbc:Percent', $formData['TaxPercent']);
+    $taxCategory->addChild('cac:TaxScheme')->addChild('cbc:ID', 'VAT');
+
+    $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal');
+    $legalMonetaryTotal->addChild('cbc:LineExtensionAmount', $formData['LineExtensionAmount'])->addAttribute('currencyID', 'EUR');
+    $legalMonetaryTotal->addChild('cbc:PayableAmount', $formData['PayableAmount'])->addAttribute('currencyID', 'EUR');
+
+    // Add invoice line items
+    foreach ($formData['ItemNames'] as $index => $itemName) {
+        $invoiceLine = $xml->addChild('cac:InvoiceLine');
+        $invoiceLine->addChild('cbc:ID', $index + 1);
+        $invoiceLine->addChild('cbc:InvoicedQuantity', $formData['ItemQuantities'][$index])->addAttribute('unitCode', 'H87');
+        $invoiceLine->addChild('cbc:LineExtensionAmount', $formData['ItemPrices'][$index])->addAttribute('currencyID', 'EUR');
+        $item = $invoiceLine->addChild('cac:Item');
+        $item->addChild('cbc:Name', $itemName);
+        $item->addChild('cac:ClassifiedTaxCategory')->addChild('cbc:ID', 'S');
+    }
+
+    // Output the XML
+    header('Content-Type: application/xml');
+    echo $xml->asXML();
+} else {
+    echo "Form data not submitted.";
+}
+?>
+How It Works:
+The form includes a button (Add Invoice Line) that uses JavaScript to dynamically add new sets of input fields for invoice lines.
+
+Each invoice line's data is sent as an array (ItemName[], ItemQuantity[], ItemPrice[]).
+
+The PHP script processes these arrays and generates the corresponding XML structure.
+
+Let me know if you need further assistance! 😊
+
+for last laravel version. make controller, blade for user login and sql script to create table for new users and sql function to create hashed passwords
+Below is a step-by-step guide to create a user login system in Laravel (latest version). This includes:
+
+SQL Script to create a users table.
+
+SQL Function to hash passwords (though Laravel handles this automatically).
+
+Laravel Controller for authentication.
+
+Blade Template for the login form.
+
+1. SQL Script to Create users Table
+Run this SQL script to create the users table in your database:
+
+sql
+Copy
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    email_verified_at TIMESTAMP NULL,
+    password VARCHAR(255) NOT NULL,
+    remember_token VARCHAR(100) NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+2. SQL Function to Hash Passwords
+Laravel automatically hashes passwords using the bcrypt function, so you don't need a separate SQL function for this. However, if you want to hash passwords manually in SQL, you can use the following function:
+
+sql
+Copy
+DELIMITER //
+
+CREATE FUNCTION hash_password(password VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+    RETURN SHA2(CONCAT(password, 'your_salt_here'), 256); -- Use a secure salt
+END //
+
+DELIMITER ;
+3. Laravel Controller for Authentication
+Laravel provides built-in authentication scaffolding. You can generate it using the following command:
+
+bash
+Copy
+php artisan make:auth
+This command will create the necessary controllers, views, and routes for authentication. However, if you want to create a custom controller, follow these steps:
+
+Create a Controller
+Run this command to create a custom AuthController:
+
+bash
+Copy
+php artisan make:controller AuthController
+Add Methods to AuthController
+Open the AuthController and add the following methods:
+
+php
+Copy
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AuthController extends Controller
+{
+    // Show login form
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    // Handle login
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard'); // Redirect to dashboard after login
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
+    // Handle logout
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    }
+}
+4. Blade Template for Login Form
+Create a Blade template for the login form. Save this file as resources/views/auth/login.blade.php:
+
+html
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+Run HTML
+5. Routes
+Add the following routes to your routes/web.php file:
+
+php
+Copy
+use App\Http\Controllers\AuthController;
+
+// Login Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Protected Dashboard Route
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    });
+});
+6. Middleware for Authentication
+Laravel automatically applies the auth middleware to protect routes. If you want to restrict access to certain routes, wrap them in the auth middleware as shown above.
+
+7. Migrations
+If you prefer to use Laravel migrations instead of raw SQL, you can create a migration for the users table:
+
+bash
+Copy
+php artisan make:migration create_users_table
+Edit the migration file (database/migrations/xxxx_xx_xx_create_users_table.php):
+
+php
+Copy
+public function up()
+{
+    Schema::create('users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email')->unique();
+        $table->timestamp('email_verified_at')->nullable();
+        $table->string('password');
+        $table->rememberToken();
+        $table->timestamps();
+    });
+}
+Run the migration:
+
+bash
+Copy
+php artisan migrate
+8. Hashing Passwords
+Laravel automatically hashes passwords when you use the Auth::attempt() method or the User model's create method. For example:
+
+php
+Copy
+use App\Models\User;
+
+User::create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+    'password' => bcrypt('password123'), // Automatically hashes the password
+]);
+9. Testing
+Register a user (you can use Laravel's built-in registration or create a user manually in the database).
+
+Visit /login and log in with the user's credentials.
+
+Access the /dashboard route (protected by the auth middleware).
+
+This setup provides a complete user login system in Laravel. Let me know if you need further assistance! 😊
+
+ok, but password must be hashed with sql function that you provided, not with bcript
+If you want to hash passwords using the SQL function I provided earlier (instead of Laravel's bcrypt), you'll need to handle password hashing directly in the database. Here's how you can integrate this into your Laravel application:
+
+1. Update the SQL Function
+Ensure the SQL function for hashing passwords is created in your database:
+
+sql
+Copy
+DELIMITER //
+
+CREATE FUNCTION hash_password(password VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+    RETURN SHA2(CONCAT(password, 'your_salt_here'), 256); -- Use a secure salt
+END //
+
+DELIMITER ;
+Replace 'your_salt_here' with a secure salt value.
+
+2. Modify the users Table
+Ensure the users table is created as shown earlier:
+
+sql
+Copy
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    email_verified_at TIMESTAMP NULL,
+    password VARCHAR(255) NOT NULL,
+    remember_token VARCHAR(100) NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+3. Create a User with Hashed Password
+When creating a user, you need to hash the password using the SQL function. For example:
+
+sql
+Copy
+INSERT INTO users (name, email, password, created_at, updated_at)
+VALUES (
+    'John Doe',
+    'john@example.com',
+    hash_password('password123'), -- Hash the password using the SQL function
+    NOW(),
+    NOW()
+);
+4. Modify Laravel's Authentication Logic
+Since Laravel's Auth::attempt() uses bcrypt by default, you need to override this behavior to use your SQL-based hashing function.
+
+Step 1: Create a Custom User Provider
+Create a custom user provider to handle password verification using the SQL function.
+
+Run this command to create a custom user provider:
+
+bash
+Copy
+php artisan make:provider CustomUserProvider
+Edit the CustomUserProvider class (app/Providers/CustomUserProvider.php):
+
+php
+Copy
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Support\Facades\DB;
+
+class CustomUserProvider implements UserProvider
+{
+    public function retrieveById($identifier)
+    {
+        return DB::table('users')->where('id', $identifier)->first();
+    }
+
+    public function retrieveByToken($identifier, $token)
+    {
+        return DB::table('users')->where('id', $identifier)->where('remember_token', $token)->first();
+    }
+
+    public function updateRememberToken(Authenticatable $user, $token)
+    {
+        DB::table('users')->where('id', $user->getAuthIdentifier())->update(['remember_token' => $token]);
+    }
+
+    public function retrieveByCredentials(array $credentials)
+    {
+        return DB::table('users')->where('email', $credentials['email'])->first();
+    }
+
+    public function validateCredentials(Authenticatable $user, array $credentials)
+    {
+        // Hash the provided password using the SQL function
+        $hashedPassword = DB::selectOne("SELECT hash_password(?) AS hashed_password", [$credentials['password']])->hashed_password;
+
+        // Compare the hashed password with the one stored in the database
+        return $hashedPassword === $user->getAuthPassword();
+    }
+}
+Step 2: Register the Custom User Provider
+Register the custom user provider in the AuthServiceProvider (app/Providers/AuthServiceProvider.php):
+
+php
+Copy
+public function boot()
+{
+    $this->registerPolicies();
+
+    Auth::provider('custom', function ($app, array $config) {
+        return new \App\Providers\CustomUserProvider();
+    });
+}
+Update the guards and providers in config/auth.php:
+
+php
+Copy
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'custom',
+    ],
+],
+
+'providers' => [
+    'custom' => [
+        'driver' => 'custom',
+    ],
+],
+5. Update the Login Logic
+In your AuthController, the login method will now use the custom user provider:
+
+php
+Copy
+public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return redirect()->intended('dashboard');
+    }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+}
+6. Create a User with Hashed Password
+When creating a user, you need to hash the password using the SQL function. For example:
+
+php
+Copy
+use Illuminate\Support\Facades\DB;
+
+DB::table('users')->insert([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+    'password' => DB::selectOne("SELECT hash_password(?) AS hashed_password", ['password123'])->hashed_password,
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
+7. Testing
+Create a user with a hashed password using the SQL function.
+
+Log in using the AuthController's login method.
+
+The custom user provider will validate the password using the SQL function.
+
+Important Notes
+Security: Ensure the salt used in the SQL function is secure and unique.
+
+Performance: Hashing passwords in SQL may introduce performance overhead compared to bcrypt.
+
+Compatibility: This approach bypasses Laravel's built-in password hashing, so ensure it aligns with your security requirements.
+
+Let me know if you need further clarification! 😊
+
+New chat
+Message DeepSeek
+AI-generated, for reference only
