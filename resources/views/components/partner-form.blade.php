@@ -111,7 +111,7 @@
 
                                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                                     <div class="sm:col-span-1">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Key</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Parametrs</label>
                                         <input type="text" 
                                                x-model="pair.key"
                                                :name="'data[' + objectIndex + '][items][' + pairIndex + '][key]'"
@@ -119,7 +119,7 @@
                                                >
                                     </div>
                                     <div class="sm:col-span-3">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Saturs</label>
                                         <input type="text" 
                                                x-model="pair.value"
                                                :name="'data[' + objectIndex + '][items][' + pairIndex + '][value]'"
