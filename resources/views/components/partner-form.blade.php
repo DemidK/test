@@ -154,7 +154,7 @@
         <div class="border-t pt-4">
             <button type="submit" 
                     class="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                {{ $partner ? 'Update Partner' : 'Create Partner' }}
+                {{ $partner ? 'Rediget Partneri' : 'Izveidot Partneri' }}
             </button>
         </div>
     </form>
