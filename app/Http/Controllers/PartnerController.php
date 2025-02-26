@@ -36,7 +36,7 @@ class PartnerController extends CrudController
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('partner')->ignore($id)
+                Rule::unique('partners')->ignore($id)
             ];
         }
         return $rules;
