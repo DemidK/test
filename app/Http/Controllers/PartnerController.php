@@ -28,6 +28,18 @@ class PartnerController extends CrudController
         ];
     }
 
+    protected function getPartnerDataConfig()
+    {
+        // Assuming you have a Config model
+        $config = \App\Models\Config::where('key', 'partner_data_objects')->first();
+        
+        if (!$config) {
+            return ['partner_create' => []]; // Default empty config
+        }
+        
+        return is_string($config->value) ? json_decode($config->value, true) : $config->value;
+    }
+
     protected function getValidationRules($id = null): array
     {
         $rules = $this->validationRules;

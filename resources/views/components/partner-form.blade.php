@@ -5,14 +5,28 @@
     formData: {
         name: '{{ $partner?->name ?? '' }}',
         identification_number: '{{ $partner?->identification_number ?? '' }}',
-        dataObjects: {{ json_encode($partner ? ($formattedData ?? []) : [
+        dataObjects: {{ json_encode($partner ? ($formattedData ?? []) : (
+            isset($config['partner_create']) ? 
+            array_map(function($section) {
+                return [
+                    'name' => $section['name'] ?? '',
+                    'items' => array_map(function($field) {
+                        return [
+                            'key' => $field['key'] ?? '',
+                            'value' => $field['value'] ?? ''
+                        ];
+                    }, $section['fields'] ?? [])
+                ];
+            }, $config['partner_create']) : 
             [
-                'name' => '',
-                'items' => [
-                    ['key' => '', 'value' => '']
+                [
+                    'name' => '',
+                    'items' => [
+                        ['key' => '', 'value' => '']
+                    ]
                 ]
             ]
-        ]) }}
+        )) }}
     },
 
     addDataObject() {
