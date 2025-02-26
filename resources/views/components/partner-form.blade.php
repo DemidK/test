@@ -88,7 +88,7 @@
 
                     <!-- Object Name -->
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Object Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Sadaļas nosaukums</label>
                         <input type="text" 
                                x-model="dataObject.name"
                                :name="'data[' + objectIndex + '][object_name]'"
@@ -136,7 +136,7 @@
                         <button type="button" 
                                 @click="addKeyValuePair(objectIndex)"
                                 class="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                            Add Key-Value Pair
+                            Pievienot parametru un saturu
                         </button>
                     </div>
                 </div>

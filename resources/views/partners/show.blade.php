@@ -29,7 +29,7 @@
 
                 <!-- Data Objects Section -->
                 <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-4">Data Objects</h2>
+                    <h2 class="text-xl font-semibold mb-4">Sadaļa</h2>
                     @if ($formattedData)
                         <div class="space-y-6">
                             @foreach ($formattedData as $dataObject)

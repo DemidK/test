@@ -49,7 +49,7 @@ function getDataObjectTemplate(index) {
         <h3 class="text-lg font-medium mb-4">Data Object ${index + 1}</h3>
         
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Object Name</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Sadaļas nosaukums</label>
             <input type="text" name="data[${index}][object_name]" class="w-full px-3 py-2 border rounded-lg">
         </div>
 
@@ -60,7 +60,7 @@ function getDataObjectTemplate(index) {
         <button type="button" 
                 onclick="addKeyValuePair(this)" 
                 class="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-            Add Key-Value Pair
+            Pievienot parametru un saturu
         </button>
     `;
 }
