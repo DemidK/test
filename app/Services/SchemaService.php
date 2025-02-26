@@ -77,6 +77,45 @@ class SchemaService
             );
         ");
 
+        // Create transportation_orders table in new schema
+        DB::statement("
+            CREATE TABLE {$schemaName}.transportation_orders (
+                id BIGSERIAL PRIMARY KEY,
+                carrier_name VARCHAR(255),
+                reg_number VARCHAR(255),
+                address VARCHAR(255),
+                is_our_vehicle BOOLEAN,
+                vehicle_number VARCHAR(255),
+                vehicle_brand VARCHAR(255),
+                vehicle_type VARCHAR(255),
+                driver_name VARCHAR(255),
+                cargo_type VARCHAR(255),
+                cargo_description TEXT,
+                max_tonnage VARCHAR(255),
+                ldm VARCHAR(255),
+                pallet_count INTEGER,
+                volume_m3 VARCHAR(255),
+                load_address VARCHAR(255),
+                load_address_info TEXT,
+                load_datetime TIMESTAMP WITHOUT TIME ZONE,
+                adr_level INTEGER,
+                unload_address VARCHAR(255),
+                unload_address_info TEXT,
+                unload_datetime TIMESTAMP WITHOUT TIME ZONE,
+                freight_amount NUMERIC(10,2),
+                vat_status VARCHAR(255),
+                currency VARCHAR(255),
+                payment_term_days INTEGER,
+                penalty_amount VARCHAR(255),
+                documents_required TEXT,
+                special_conditions TEXT,
+                order_number VARCHAR(255),
+                partner_id BIGINT,
+                created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
+
         // Create configs table in new schema
         DB::statement("
         CREATE TABLE {$schemaName}.configs (
