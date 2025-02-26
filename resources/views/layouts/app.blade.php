@@ -85,6 +85,9 @@
                         </button>
                         <div x-show="open" class="pl-4">
                             <a href="/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Vadības panelis</a>
+                            <a href="{{ route('configs.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>Configuration Settings
+                            </a>
                             <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
