@@ -31,7 +31,7 @@ class SchemaService
                 id BIGSERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 identification_number VARCHAR(255) NOT NULL,
-                json_data JSON NULL,
+                json_data JSONB NULL,
                 created_at TIMESTAMP NULL,
                 updated_at TIMESTAMP NULL
             )
@@ -63,7 +63,7 @@ class SchemaService
                 invoice_date date NOT NULL,
                 partner_name character varying(255) NOT NULL,
                 partner_email character varying(255),
-                items json NOT NULL,
+                items jsonb NOT NULL,
                 total_amount numeric(10,2) NOT NULL,
                 created_at timestamp without time zone,
                 updated_at timestamp without time zone,
@@ -120,8 +120,8 @@ class SchemaService
         DB::statement("
         CREATE TABLE {$schemaName}.configs (
             id BIGSERIAL PRIMARY KEY,
-            key VARCHAR(255) UNIQUE NOT NULL,
-            value TEXT NOT NULL,
+            route VARCHAR(255) UNIQUE NOT NULL,
+            data JSONB NOT NULL,
             created_at TIMESTAMP NULL,
             updated_at TIMESTAMP NULL
         )
@@ -129,11 +129,11 @@ class SchemaService
 
         // Copy config data from ConfigSeeder
         DB::statement("
-        INSERT INTO {$schemaName}.configs (key, value, created_at, updated_at)
+        INSERT INTO {$schemaName}.configs (route, data, created_at, updated_at)
         VALUES (
-            'partner_data_objects',
+            'partners_create',
             " . DB::getPdo()->quote(json_encode([
-                'partner_create' => [
+                'default_inpupts' => [
                     [
                         'name' => 'Contact Information',
                         'background_color' => 'bg-gray-50',

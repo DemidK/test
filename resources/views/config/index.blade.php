@@ -14,10 +14,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Atslēga
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Vērtība
+                                Konfiguracija priekš:
                             </th>
                             <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Darbības
@@ -28,15 +25,10 @@
                         @foreach($configs as $config)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    {{ $config->key }}
-                                </td>
-                                <td class="px-4 py-4">
-                                    <div class="truncate max-w-md">
-                                        {{ json_encode(json_decode($config->value), JSON_PRETTY_PRINT) }}
-                                    </div>
+                                    {{ $config->route }}
                                 </td>
                                 <td class="px-4 py-4 text-right">
-                                    <a href="{{ route('configs.edit', $config->key) }}" 
+                                    <a href="{{ route('configs.edit', $config->route) }}" 
                                        class="text-blue-600 hover:text-blue-900">
                                         <i class="fas fa-edit"></i>
                                     </a>

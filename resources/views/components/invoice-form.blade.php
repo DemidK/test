@@ -129,7 +129,7 @@
                     </div>
                     <div class="col-span-2">
                         <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
                             <input type="number" 
                                    x-model.number="item.price"
                                    :name="'items[' + index + '][price]'"
@@ -153,7 +153,7 @@
                     </div>
                     <div class="col-span-2">
                         <div class="flex items-center justify-between">
-                            <span class="font-medium" x-text="'$' + calculateItemTotal(item)"></span>
+                            <span class="font-medium" x-text="'€' + calculateItemTotal(item)"></span>
                             <button type="button" 
                                     @click="removeItem(index)"
                                     class="text-red-500 hover:text-red-700 ml-2"
@@ -189,7 +189,7 @@
                     <div>
                         <label class="block text-gray-700 mb-2">Cena</label>
                         <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
                             <input type="number" 
                                    x-model.number="item.price"
                                    :name="'items[' + index + '][price]'"
@@ -215,7 +215,7 @@
                     <div>
                         <label class="block text-gray-700 mb-2">Total</label>
                         <div class="flex items-center justify-between">
-                            <span class="font-medium" x-text="'$' + calculateItemTotal(item)"></span>
+                            <span class="font-medium" x-text="'€' + calculateItemTotal(item)"></span>
                             <button type="button" 
                                     @click="removeItem(index)"
                                     class="text-red-500 hover:text-red-700 ml-2"
@@ -246,17 +246,17 @@
         <div class="mt-6 p-4 bg-gray-50 rounded-lg space-y-2">
             <div class="flex justify-between text-gray-600">
                 <span>Total (w/o VAT):</span>
-                <span x-text="'$' + calculateSubtotal()"></span>
+                <span x-text="'€' + calculateSubtotal()"></span>
                 <input type="hidden" name="total_wo_vat" x-bind:value="calculateSubtotal()">
             </div>
             <div class="flex justify-between text-gray-600">
                 <span>Total VAT:</span>
-                <span x-text="'$' + calculateVat()"></span>
+                <span x-text="'€' + calculateVat()"></span>
                 <input type="hidden" name="total_vat" x-bind:value="calculateVat()">
             </div>
             <div class="flex justify-between text-xl font-bold text-gray-900">
                 <span>Kopējā summa:</span>
-                <span x-text="'$' + calculateTotal()"></span>
+                <span x-text="'€' + calculateTotal()"></span>
                 <input type="hidden" name="total_amount" x-bind:value="calculateTotal()">
             </div>
         </div>

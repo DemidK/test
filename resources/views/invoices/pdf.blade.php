@@ -104,18 +104,18 @@
                 <tr>
                     <td>{{ $itemDescription }}</td>
                     <td>{{ $itemQty }}</td>
-                    <td>${{ number_format($itemPrice, 2) }}</td>
+                    <td>€{{ number_format($itemPrice, 2) }}</td>
                     <td>{{ $itemVat }}%</td>
-                    <td>${{ number_format($itemTotal, 2) }}</td>
+                    <td>€{{ number_format($itemTotal, 2) }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
     <div class="totals">
-        <div>Subtotal (w/o VAT): ${{ number_format($totalSubtotal, 2) }}</div>
-        <div>Total VAT: ${{ number_format($totalVat, 2) }}</div>
-        <div class="total-row">Total Amount: ${{ number_format($grandTotal, 2) }}</div>
+        <div>Subtotal (w/o VAT): €{{ number_format($totalSubtotal, 2) }}</div>
+        <div>Total VAT: €{{ number_format($totalVat, 2) }}</div>
+        <div class="total-row">Total Amount: €{{ number_format($grandTotal, 2) }}</div>
     </div>
 </body>
 </html>

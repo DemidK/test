@@ -6,10 +6,11 @@
         name: '{{ $partner?->name ?? '' }}',
         identification_number: '{{ $partner?->identification_number ?? '' }}',
         dataObjects: {{ json_encode($partner ? ($formattedData ?? []) : (
-            isset($config['partner_create']) ? 
+            isset($config['default_inpupts']) ? 
             array_map(function($section) {
                 return [
                     'name' => $section['name'] ?? '',
+                    'background_color' => $section['background_color'] ?? 'bg-gray-50',
                     'items' => array_map(function($field) {
                         return [
                             'key' => $field['key'] ?? '',
@@ -17,10 +18,11 @@
                         ];
                     }, $section['fields'] ?? [])
                 ];
-            }, $config['partner_create']) : 
+            }, $config['default_inpupts']) : 
             [
                 [
                     'name' => '',
+                    'background_color' => 'bg-gray-50',
                     'items' => [
                         ['key' => '', 'value' => '']
                     ]
@@ -32,6 +34,7 @@
     addDataObject() {
         this.formData.dataObjects.push({
             name: '',
+            background_color: 'bg-gray-50',
             items: [{ key: '', value: '' }]
         });
     },
@@ -89,7 +92,12 @@
         <!-- Data Objects Container -->
         <div id="data-objects-container">
             <template x-for="(dataObject, objectIndex) in formData.dataObjects" :key="objectIndex">
-                <div class="data-object bg-gray-50 p-4 rounded-lg mb-4 relative">
+                <div :class="['data-object', dataObject.background_color, 'p-4', 'rounded-lg', 'mb-4', 'relative']">
+                    <!-- Background color hidden input -->
+                    <input type="hidden" 
+                           :name="'data[' + objectIndex + '][background_color]'" 
+                           :value="dataObject.background_color">
+                    
                     <!-- Delete Object Button -->
                     <button type="button" 
                             @click="deleteDataObject(objectIndex)"

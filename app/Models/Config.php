@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Config extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $fillable = ['route', 'data'];
     
     // Get config value with default fallback
-    public static function getConfig($key, $default = null)
+    public static function getConfig($route, $default = null)
     {
-        $config = self::where('key', $key)->first();
-        return $config ? json_decode($config->value, true) : $default;
+        $config = self::where('route', $route)->first();
+        return $config ? json_decode($config->data, true) : $default;
     }
 }

@@ -31,13 +31,13 @@ class PartnerController extends CrudController
     protected function getPartnerDataConfig()
     {
         // Assuming you have a Config model
-        $config = \App\Models\Config::where('key', 'partner_data_objects')->first();
+        $config = \App\Models\Config::where('route', 'partners_create')->first();
         
         if (!$config) {
-            return ['partner_create' => []]; // Default empty config
+            return ['default_inpupts' => []]; // Default empty config
         }
         
-        return is_string($config->value) ? json_decode($config->value, true) : $config->value;
+        return is_string($config->data) ? json_decode($config->data, true) : $config->data;
     }
 
     protected function getValidationRules($id = null): array
@@ -56,12 +56,7 @@ class PartnerController extends CrudController
 
     public function create()
     {
-        $dataObjectConfig = Config::getConfig('partner_data_objects', [
-            'initial_count' => 1,
-            'max_count' => 5,
-            'background_color' => 'bg-gray-50',
-            'default_items' => []
-        ]);
+        $dataObjectConfig = Config::getConfig('partners_create', []);
         
         return view("{$this->viewPath}.create", [
             'navLinks' => $this->navLinks(),

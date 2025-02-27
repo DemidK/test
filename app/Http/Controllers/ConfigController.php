@@ -19,9 +19,9 @@ class ConfigController extends Controller
         ]);
     }
 
-    public function edit($key)
+    public function edit($route)
     {
-        $config = Config::where('key', $key)->firstOrFail();
+        $config = Config::where('route', $route)->firstOrFail();
         $navLinks = NavLink::orderBy('position')->get();
 
         return view('config.edit', [
@@ -30,13 +30,12 @@ class ConfigController extends Controller
         ]);
     }
 
-    public function update(Request $request, $key)
+    public function update(Request $request, $route)
     {
-        $config = Config::where('key', $key)->firstOrFail();
+        $config = Config::where('route', $route)->firstOrFail();
         $config->update([
-            'value' => json_encode($request->value)
+            'data' => json_encode($request->data)
         ]);
-
         return redirect()->route('configs.index')->with('success', 'Configuration updated successfully');
     }
 }
