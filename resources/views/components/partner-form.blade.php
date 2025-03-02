@@ -6,7 +6,7 @@
         name: '{{ $partner?->name ?? '' }}',
         identification_number: '{{ $partner?->identification_number ?? '' }}',
         dataObjects: {{ json_encode($partner ? ($formattedData ?? []) : (
-            isset($config['default_inpupts']) ? 
+            isset($config['default_inputs']) ? 
             array_map(function($section) {
                 return [
                     'name' => $section['name'] ?? '',
@@ -18,7 +18,7 @@
                         ];
                     }, $section['fields'] ?? [])
                 ];
-            }, $config['default_inpupts']) : 
+            }, $config['default_inputs']) : 
             [
                 [
                     'name' => '',
@@ -176,7 +176,7 @@
         <div class="border-t pt-4">
             <button type="submit" 
                     class="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                {{ $partner ? 'Rediget Partneri' : 'Izveidot Partneri' }}
+                {{ $partner ? 'Rediģēt Partneri' : 'Izveidot Partneri' }}
             </button>
         </div>
     </form>

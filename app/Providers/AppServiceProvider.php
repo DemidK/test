@@ -16,13 +16,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        Log::debug('boot');
         if (Auth::check()) {
-            Log::debug('check');
-
             $user = Auth::user();
             $schemaName = $user->schema_name;
-            Log::debug($user->schema_name);
 
             if ($schemaName && $this->isValidSchema($schemaName)) {
                 DB::statement("SET search_path TO $schemaName");
@@ -36,8 +32,6 @@ class AppServiceProvider extends ServiceProvider
 
     protected function isValidSchema($schemaName)
     {
-        Log::debug('isValidSchema');
-
         return !empty($schemaName);
     }
 }

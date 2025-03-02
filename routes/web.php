@@ -30,7 +30,8 @@ Route::middleware('auth')->group(function () {
     // Existing routes
     Route::resource('partners', PartnerController::class);
     Route::resource('invoices', InvoiceController::class);
-    
+    Route::get('/search-partners', [App\Http\Controllers\PartnerController::class, 'searchPartners'])->name('search.partners');
+
     // New Transportation Orders Routes
     Route::resource('transportation_orders', TransportationOrderController::class);
     

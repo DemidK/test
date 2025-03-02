@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Partner;
 use App\Models\NavLink;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -16,7 +17,7 @@ class InvoiceController extends CrudController
         $this->model = Invoice::class;
         $this->viewPath = 'invoices';
         $this->routePrefix = 'invoices';
-        $this->searchableFields = ['invoice_number', 'parner_name'];
+        $this->searchableFields = ['invoice_number', 'partner_name'];
         $this->sortableFields = [
             'date' => 'invoice_date',
             'amount' => 'total_amount',
@@ -25,11 +26,11 @@ class InvoiceController extends CrudController
         $this->defaultSort = ['created_at', 'desc'];
         $this->validationRules = [
             'invoice_number' => 'required|string|unique:invoices',
-            'invoice_date' => 'required|date',
-            'partner_id' => 'nullable|numeric',
+            'invoice_date' => 'nullable|date',
+            'partner_id' => 'required|numeric',
             'partner_name' => 'required|string',
-            'partner_email' => 'required|email',
-            'partner_address' => 'required|string',
+            'partner_email' => 'nullable|email',
+            'partner_address' => 'nullable|string',
             'partner_vat' => 'nullable|string',
             'partner_post_address' => 'nullable|string',
             'items' => 'required|array|min:1',
@@ -72,6 +73,8 @@ class InvoiceController extends CrudController
 
     protected function storeItem(array $validated)
     {
+        $this->findOrCreatePartner($validated);
+        
         // Process items and calculate totals
         $processedData = $this->processInvoiceData($validated);
         $processedData['updater'] = auth()->user()->name ?? 'System';
@@ -81,10 +84,62 @@ class InvoiceController extends CrudController
 
     protected function updateItem($item, array $validated)
     {
+        // If partner_id is not provided or not valid and we have partner details,
+        // check if we need to create a new partner
+        if ((empty($validated['partner_id']) || $validated['partner_id'] == 0) && !empty($validated['partner_name'])) {
+            $partner = $this->findOrCreatePartner($validated);
+            $validated['partner_id'] = $partner->id;
+        }
+        
         $processedData = $this->processInvoiceData($validated);
         $processedData['updater'] = auth()->user()->name ?? 'System';
         
         return $item->update($processedData);
+    }
+
+    /**
+     * Find an existing partner by name or create a new one
+     */
+    private function findOrCreatePartner(array $data): Partner
+    {
+        // Try to find by exact name match first
+        $partner = Partner::where('identification_number', $data['partner_id'])->first();
+        
+        if (!$partner) {
+            // Generate a unique identification number if not provided
+            $identificationNumber = !empty($data['partner_vat']) 
+                ? $data['partner_vat'] 
+                : 'CUST-' . date('YmdHis');
+            
+            // Create partner json_data structure
+            $jsonData = [
+                'Contact Information' => [
+                    'Email' => $data['partner_email'] ?? '',
+                    'Address' => $data['partner_address'] ?? '',
+                    'Postal Address' => $data['partner_post_address'] ?? '',
+                ]
+            ];
+            
+            if (!empty($data['partner_vat'])) {
+                $jsonData['Contact Information']['VAT Number'] = $data['partner_vat'];
+            }
+            
+            try {
+                // Create new partner
+                $partner = Partner::create([
+                    'name' => $data['partner_name'],
+                    'identification_number' => $identificationNumber,
+                    'json_data' => $jsonData
+                ]);
+                
+                Log::info('Created new partner: ' . $data['partner_name'] . ' with ID: ' . $partner->id);
+            } catch (\Exception $e) {
+                Log::error('Failed to create partner: ' . $e->getMessage());
+                throw $e;
+            }
+        }
+        
+        return $partner;
     }
 
     private function processInvoiceData(array $data): array

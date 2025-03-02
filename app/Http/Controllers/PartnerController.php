@@ -28,13 +28,69 @@ class PartnerController extends CrudController
         ];
     }
 
+    /**
+     * Search for partners by name (AJAX endpoint)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchPartners(Request $request)
+    {
+        $query = $request->input('query');
+        
+        if (empty($query) || strlen($query) < 2) {
+            return response()->json([]);
+        }
+        
+        $partners = Partner::where('name', 'like', "%{$query}%")
+            ->orderBy('name')
+            ->limit(10)
+            ->get();
+        
+        $results = $partners->map(function ($partner) {
+            // Base partner data
+            $partnerData = [
+                'id' => $partner->id,
+                'name' => $partner->name,
+                'identification_number' => $partner->identification_number,
+                'vat' => '',
+                'email' => '',
+                'address' => '',
+                'post_address' => ''
+            ];
+            
+            // Extract contact information from json_data if available
+            if (!empty($partner->json_data)) {
+                // Look for contact info in any section of json_data
+                foreach ($partner->json_data as $section => $fields) {
+                    if (isset($fields['Email'])) {
+                        $partnerData['email'] = $fields['Email'];
+                    }
+                    if (isset($fields['Address'])) {
+                        $partnerData['address'] = $fields['Address'];
+                    }
+                    if (isset($fields['VAT Number'])) {
+                        $partnerData['vat'] = $fields['VAT Number'];
+                    }
+                    if (isset($fields['Postal Address'])) {
+                        $partnerData['post_address'] = $fields['Postal Address'];
+                    }
+                }
+            }
+            
+            return $partnerData;
+        });
+        
+        return response()->json($results);
+    }
+
     protected function getPartnerDataConfig()
     {
         // Assuming you have a Config model
         $config = \App\Models\Config::where('route', 'partners_create')->first();
         
         if (!$config) {
-            return ['default_inpupts' => []]; // Default empty config
+            return ['default_inputs' => []]; // Default empty config
         }
         
         return is_string($config->data) ? json_decode($config->data, true) : $config->data;

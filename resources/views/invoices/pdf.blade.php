@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lv">
 <head>
     <meta charset="UTF-8">
-    <title>Invoice #{{ $invoice->invoice_number }}</title>
+    <title>Rēķins Nr. {{ $invoice->invoice_number }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,35 +47,35 @@
 <body>
     <div class="invoice-header">
         <div>
-            <h1>Invoice</h1>
-            <p>Invoice Number: #{{ $invoice->invoice_number }}</p>
-            <p>Date: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('F d, Y') }}</p>
+            <h1>Rēķins</h1>
+            <p>Rēķina numurs: Nr. {{ $invoice->invoice_number }}</p>
+            <p>Datums: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d.m.Y') }}</p>
         </div>
         <div>
             <h3>{{ $invoice->partner_name }}</h3>
             <p>{{ $invoice->partner_email }}</p>
             @if($invoice->partner_vat)
-                <p>VAT No: {{ $invoice->partner_vat }}</p>
+                <p>PVN reģ. Nr.: {{ $invoice->partner_vat }}</p>
             @endif
         </div>
     </div>
 
     <div class="invoice-details">
-        <h3>Customer Details</h3>
-        <p>Address: {{ $invoice->partner_address }}</p>
+        <h3>Klienta informācija</h3>
+        <p>Adrese: {{ $invoice->partner_address }}</p>
         @if($invoice->partner_post_address)
-            <p>Postal Address: {{ $invoice->partner_post_address }}</p>
+            <p>Pasta adrese: {{ $invoice->partner_post_address }}</p>
         @endif
     </div>
 
     <table class="items-table">
         <thead>
             <tr>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>VAT %</th>
-                <th>Total</th>
+                <th>Apraksts</th>
+                <th>Daudzums</th>
+                <th>Cena</th>
+                <th>PVN %</th>
+                <th>Kopā</th>
             </tr>
         </thead>
         <tbody>
@@ -113,9 +113,9 @@
     </table>
 
     <div class="totals">
-        <div>Subtotal (w/o VAT): €{{ number_format($totalSubtotal, 2) }}</div>
-        <div>Total VAT: €{{ number_format($totalVat, 2) }}</div>
-        <div class="total-row">Total Amount: €{{ number_format($grandTotal, 2) }}</div>
+        <div>Summa bez PVN: €{{ number_format($totalSubtotal, 2) }}</div>
+        <div>PVN summa: €{{ number_format($totalVat, 2) }}</div>
+        <div class="total-row">Kopējā summa: €{{ number_format($grandTotal, 2) }}</div>
     </div>
 </body>
 </html>

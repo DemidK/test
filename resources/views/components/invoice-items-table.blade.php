@@ -26,10 +26,10 @@
             <thead>
                 <tr class="bg-gray-100">
                     <th class="p-2 text-left">Apraksts</th>
-                    <th class="p-2 text-right">Qty</th>
+                    <th class="p-2 text-right">Daudzums</th>
                     <th class="p-2 text-right">Cena</th>
-                    <th class="p-2 text-right">VAT</th>
-                    <th class="p-2 text-right">Total</th>
+                    <th class="p-2 text-right">PVN</th>
+                    <th class="p-2 text-right">Summa</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,11 +49,11 @@
     <div class="bg-gray-100 p-4 text-right">
         <div class="space-y-2">
             <div class="flex justify-between">
-                <span class="text-gray-600">Subtotal (w/o VAT):</span>
+                <span class="text-gray-600">Summa bez PVN:</span>
                 <span class="font-semibold" x-text="'€' + calculateTotals().subtotal.toFixed(2)"></span>
             </div>
             <div class="flex justify-between">
-                <span class="text-gray-600">Total VAT:</span>
+                <span class="text-gray-600">Summa PVN:</span>
                 <span class="font-semibold" x-text="'€' + calculateTotals().vat.toFixed(2)"></span>
             </div>
             <div class="flex justify-between text-xl font-bold text-green-600">

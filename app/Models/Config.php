@@ -9,7 +9,7 @@ class Config extends Model
     protected $fillable = ['route', 'data'];
     
     // Get config value with default fallback
-    public static function getConfig($route, $default = null)
+    public static function getConfig($route, $default = [])
     {
         $config = self::where('route', $route)->first();
         return $config ? json_decode($config->data, true) : $default;
