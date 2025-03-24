@@ -4,9 +4,15 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold mb-6">Pieslēgties</h2>
+            <h2 class="text-2xl font-bold mb-6">
+                @if(isset($schemaInfo))
+                    Pieslēgties {{ $schemaInfo->schema_name }}
+                @else
+                    Pieslēgties
+                @endif
+            </h2>
             
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ isset($schemaInfo) ? route('login.schema.submit', $schemaInfo->route_name) : route('login') }}">
                 @csrf
                 
                 <div class="mb-4">
@@ -29,9 +35,11 @@
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                         Pieslēgties
                     </button>
-                    <a href="{{ route('register') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                        Reģistrēties
-                    </a>
+                    @if(!isset($schemaInfo))
+                        <a href="{{ route('register') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                            Reģistrēties
+                        </a>
+                    @endif
                 </div>
             </form>
         </div>
