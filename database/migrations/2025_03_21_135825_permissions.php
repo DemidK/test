@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class CreatePermissionsTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -172,4 +172,4 @@ class CreatePermissionsTables extends Migration
         // // Create permission tables in the schema
         // DB::statement("SELECT public.create_permission_tables_in_schema('{$schemaName}')");
     }
-}
+};

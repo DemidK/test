@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class SetupSecureSchemaSystem extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -62,4 +62,4 @@ class SetupSecureSchemaSystem extends Migration
             DROP ROLE IF EXISTS registration_service;
         ");
     }
-}
+};

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class CreatePermissionTablesFunction extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -94,4 +94,4 @@ class CreatePermissionTablesFunction extends Migration
     {
         DB::unprepared('DROP FUNCTION IF EXISTS public.create_permission_tables_in_schema(TEXT);');
     }
-}
+};
