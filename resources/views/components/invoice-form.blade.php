@@ -69,11 +69,11 @@
             <div>
                 <label for="invoice_date" class="block text-gray-700 mb-2">Rēķina datums</label>
                 <input type="date" 
-                       name="invoice_date" 
-                       id="invoice_date" 
-                       class="w-full px-4 py-2 border rounded-lg" 
-                       value="{{ old('invoice_date', $invoice?->invoice_date ?? date('Y-m-d')) }}" 
-                       required>
+                    name="invoice_date" 
+                    id="invoice_date" 
+                    class="w-full px-4 py-2 border rounded-lg" 
+                    value="{{ old('invoice_date', $invoice?->invoice_date ? date('Y-m-d', strtotime($invoice->invoice_date)) : date('Y-m-d')) }}" 
+                    required>
             </div>
         </div>
 

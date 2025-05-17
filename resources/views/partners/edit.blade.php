@@ -1,4 +1,3 @@
-<!-- edit.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -16,6 +15,7 @@
             :action="route('partners.update', $partner->id)"
             method="PUT"
             :formatted-data="$formattedData"
+            :config="$config"
         />
     </div>
 </div>

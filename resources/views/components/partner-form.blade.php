@@ -1,5 +1,5 @@
 <!-- partner-form.blade.php -->
-@props(['partner' => null, 'action', 'method' => 'POST', 'config' => []])
+@props(['partner' => null, 'action', 'method' => 'POST', 'config' => [], 'formatted-data' => null])
 
 <div x-data="{
     formData: {
@@ -31,6 +31,28 @@
         )) }}
     },
 
+    // Match background colors from config when editing
+    initBackgroundColors() {
+        if ({{ $partner ? 'true' : 'false' }} && {{ isset($config['default_inputs']) ? 'true' : 'false' }}) {
+            // Create a mapping of section names to their colors from the config
+            const sectionColors = {};
+            @if(isset($config['default_inputs']))
+            @foreach($config['default_inputs'] as $section)
+                @if(isset($section['name']) && isset($section['background_color']))
+                    sectionColors['{{ $section['name'] }}'] = '{{ $section['background_color'] }}';
+                @endif
+            @endforeach
+            @endif
+
+            // Update background colors based on the section name matches
+            this.formData.dataObjects.forEach(obj => {
+                if (sectionColors[obj.name]) {
+                    obj.background_color = sectionColors[obj.name];
+                }
+            });
+        }
+    },
+
     addDataObject() {
         this.formData.dataObjects.push({
             name: '',
@@ -58,7 +80,7 @@
             items.splice(pairIndex, 1);
         }
     }
-}">
+}" x-init="initBackgroundColors()">
     <form action="{{ $action }}" 
           method="POST" 
           class="bg-white rounded-lg shadow-md p-6">

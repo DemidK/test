@@ -29,11 +29,32 @@
 
                 <!-- Data Objects Section -->
                 <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-4">Sadaļa</h2>
+                    <h2 class="text-xl font-semibold mb-4">Sadaļas</h2>
                     @if ($formattedData)
                         <div class="space-y-6">
+                            @php
+                                // Get the section colors map from config
+                                $sectionColors = [];
+                                if (isset($config['default_inputs'])) {
+                                    $sections = $config['default_inputs'];
+                                    foreach ($sections as $section) {
+                                        if (isset($section['name']) && isset($section['background_color'])) {
+                                            $sectionColors[$section['name']] = $section['background_color'];
+                                        }
+                                    }
+                                }
+                            @endphp
+                            
                             @foreach ($formattedData as $dataObject)
-                                <div class="bg-gray-50 p-4 rounded-lg">
+                                @php
+                                    // Get the background color from config or use default
+                                    $backgroundColor = 'bg-gray-50';
+                                    if (isset($sectionColors[$dataObject['object_name']])) {
+                                        $backgroundColor = $sectionColors[$dataObject['object_name']];
+                                    }
+                                @endphp
+                                
+                                <div class="{{ $backgroundColor }} p-4 rounded-lg">
                                     <h3 class="font-semibold text-lg text-gray-900 mb-3">
                                         {{ $dataObject['object_name'] }}
                                     </h3>
