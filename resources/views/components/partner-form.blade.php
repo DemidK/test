@@ -46,6 +46,12 @@
 
             // Update background colors based on the section name matches
             this.formData.dataObjects.forEach(obj => {
+                // Fix: Set the name field from object_name if it exists
+                if (obj.object_name && !obj.name) {
+                    obj.name = obj.object_name;
+                }
+                
+                // Set background color based on name
                 if (sectionColors[obj.name]) {
                     obj.background_color = sectionColors[obj.name];
                 }

@@ -130,7 +130,7 @@ class PartnerController extends CrudController
             'navLinks' => $this->navLinks(),
             'partner' => $partner,
             'config' => $dataObjectConfig,
-            'formattedData' => $formattedData
+            'formattedData' => array_reverse($formattedData)
         ]);
     }
 
