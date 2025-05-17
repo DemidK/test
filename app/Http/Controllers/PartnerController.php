@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Partner;
 use App\Models\Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class PartnerController extends CrudController
@@ -113,7 +114,7 @@ class PartnerController extends CrudController
     public function create()
     {
         $dataObjectConfig = Config::getConfig('partners_create', []);
-        
+        Log::debug($dataObjectConfig);
         return view("{$this->viewPath}.create", [
             'navLinks' => $this->navLinks(),
             'config' => $dataObjectConfig

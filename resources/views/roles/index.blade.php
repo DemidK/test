@@ -4,23 +4,23 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Roles</h1>
+            <h1 class="text-3xl font-bold">Lomas</h1>
             <a href="{{ route('roles.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Create New Role
+                Izveidot jaunu lomu
             </a>
         </div>
 
         <!-- Search Form -->
         <div class="mb-6">
             <form action="{{ route('roles.index') }}" method="GET" class="flex">
-                <input type="text" name="search" placeholder="Search roles..." value="{{ $search ?? '' }}"
+                <input type="text" name="search" placeholder="Meklēt lomas..." value="{{ $search ?? '' }}"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-2 rounded">
-                    Search
+                    Meklēt
                 </button>
                 @if($search ?? false)
                     <a href="{{ route('roles.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 ml-2 rounded">
-                        Clear
+                        Notīrīt
                     </a>
                 @endif
             </form>
@@ -33,16 +33,16 @@
                     <tr>
                         <th class="py-3 px-4 bg-gray-100 font-semibold text-left">
                             <a href="{{ route('roles.index', ['sort_by' => 'name', 'sort_order' => $sortBy === 'name' && $sortOrder === 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
-                                Name
+                                Nosaukums
                                 @if($sortBy === 'name')
                                     <i class="fas fa-chevron-{{ $sortOrder === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @endif
                             </a>
                         </th>
-                        <th class="py-3 px-4 bg-gray-100 font-semibold text-left">Description</th>
-                        <th class="py-3 px-4 bg-gray-100 font-semibold text-left">Permissions</th>
-                        <th class="py-3 px-4 bg-gray-100 font-semibold text-center">Users</th>
-                        <th class="py-3 px-4 bg-gray-100 font-semibold text-center">Actions</th>
+                        <th class="py-3 px-4 bg-gray-100 font-semibold text-left">Apraksts</th>
+                        <th class="py-3 px-4 bg-gray-100 font-semibold text-left">Atļaujas</th>
+                        <th class="py-3 px-4 bg-gray-100 font-semibold text-center">Lietotāji</th>
+                        <th class="py-3 px-4 bg-gray-100 font-semibold text-center">Darbības</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -68,7 +68,7 @@
                                     <a href="{{ route('roles.edit', $role->id) }}" class="text-yellow-500 hover:text-yellow-700">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this role?');">
+                                    <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline" onsubmit="return confirm('Vai tiešām vēlaties dzēst šo lomu?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">

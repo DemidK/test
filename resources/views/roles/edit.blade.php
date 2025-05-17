@@ -4,9 +4,9 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Edit Role: {{ $item->name }}</h1>
+            <h1 class="text-3xl font-bold">Rediģēt lomu: {{ $item->name }}</h1>
             <a href="{{ route('roles.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                Back to Roles
+                Atpakaļ pie lomām
             </a>
         </div>
 
@@ -17,7 +17,7 @@
                 
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
-                        Name <span class="text-red-500">*</span>
+                        Nosaukums <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="name" id="name" value="{{ old('name', $item->name) }}" required
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -28,7 +28,7 @@
 
                 <div class="mb-6">
                     <label for="description" class="block text-gray-700 text-sm font-bold mb-2">
-                        Description
+                        Apraksts
                     </label>
                     <textarea name="description" id="description" rows="3"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ old('description', $item->description) }}</textarea>
@@ -39,7 +39,7 @@
 
                 <!-- Permissions Section -->
                 <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4">Permissions</h2>
+                    <h2 class="text-xl font-semibold mb-4">Atļaujas</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($permissionsByResource as $resource => $permissions)
@@ -67,7 +67,7 @@
 
                 <div class="flex items-center justify-end">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Update Role
+                        Atjaunināt lomu
                     </button>
                 </div>
             </form>

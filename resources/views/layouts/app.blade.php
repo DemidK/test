@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,28 +49,28 @@
                 <!-- Invoices Dropdown -->
                 <div x-data="{ open: false }">
                     <button @click="open = !open" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Invoices
+                        Rēķini
                         <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div x-show="open" class="pl-4">
-                        <a href="{{ url('/invoices') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">All</a>
-                        <a href="{{ url('/invoices/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">New</a>
+                        <a href="{{ url('/invoices') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Visi rēķini</a>
+                        <a href="{{ url('/invoices/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Jauns rēķins</a>
                     </div>
                 </div>
 
                 <!-- partners Dropdown -->
                 <div x-data="{ open: false }">
                     <button @click="open = !open" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
-                        Partners
+                        Partneri
                         <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div x-show="open" class="pl-4">
-                        <a href="{{ url('/partners') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">All</a>
-                        <a href="{{ url('/partners/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">New</a>
+                        <a href="{{ url('/partners') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Visi partneri</a>
+                        <a href="{{ url('/partners/create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Jauns partneris</a>
                     </div>
                 </div>
 
@@ -86,12 +86,12 @@
                         <div x-show="open" class="pl-4">
                             <a href="/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Vadības panelis</a>
                             <a href="{{ route('configs.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-cog mr-2"></i>Configuration Settings
+                                <i class="fas fa-cog mr-2"></i>Konfigurācijas iestatījumi
                             </a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profils</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</button>
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Izrakstīties</button>
                             </form>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
 
     <footer class="bg-white shadow-lg mt-8">
         <div class="container mx-auto px-4 py-4 text-center text-gray-700">
-            © {{ date('Y') }} test. All rights reserved.
+            © {{ date('Y') }} test. Visas tiesības aizsargātas.
         </div>
     </footer>
 

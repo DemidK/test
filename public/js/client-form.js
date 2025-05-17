@@ -46,7 +46,7 @@ function getDataObjectTemplate(index) {
             </svg>
         </button>
 
-        <h3 class="text-lg font-medium mb-4">Data Object ${index + 1}</h3>
+        <h3 class="text-lg font-medium mb-4">Datu objekts ${index + 1}</h3>
         
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Sadaļas nosaukums</label>

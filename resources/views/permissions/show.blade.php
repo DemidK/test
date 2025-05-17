@@ -4,9 +4,9 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Manage Permissions: {{ $user->name }}</h1>
+            <h1 class="text-3xl font-bold">Pārvaldīt atļaujas: {{ $user->name }}</h1>
             <a href="{{ route('users.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                Back to Users
+                Atpakaļ pie lietotājiem
             </a>
         </div>
 
@@ -17,7 +17,7 @@
                 
                 <!-- Roles Section -->
                 <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4">Assigned Roles</h2>
+                    <h2 class="text-xl font-semibold mb-4">Piešķirtās lomas</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($roles as $role)
@@ -39,10 +39,10 @@
 
                 <!-- Direct Permissions Section -->
                 <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4">Direct Permissions</h2>
+                    <h2 class="text-xl font-semibold mb-4">Tiešās atļaujas</h2>
                     <p class="text-sm text-gray-600 mb-4">
-                        These permissions are assigned directly to the user and override permissions from roles.
-                        Setting a permission to "Deny" will override any "Grant" permissions from roles.
+                        Šīs atļaujas ir piešķirtas tieši lietotājam un pārraksta atļaujas no lomām.
+                        Iestatot atļauju kā "Liegt", tā pārrakstīs jebkuru "Piešķirt" atļauju no lomām.
                     </p>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -65,7 +65,7 @@
                                                         {{ !isset($userPermissions[$permission->id]) ? 'checked' : '' }}
                                                         class="h-4 w-4 text-gray-600 border-gray-300 focus:ring-gray-500">
                                                     <label for="permission_{{ $permission->id }}_none" class="ml-2 text-sm">
-                                                        Not Set
+                                                        Nav iestatīts
                                                     </label>
                                                 </div>
                                                 <div class="flex items-center">
@@ -74,7 +74,7 @@
                                                         {{ isset($userPermissions[$permission->id]) && $userPermissions[$permission->id]['granted'] ? 'checked' : '' }}
                                                         class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
                                                     <label for="permission_{{ $permission->id }}_grant" class="ml-2 text-sm text-green-600 font-medium">
-                                                        Grant
+                                                        Piešķirt
                                                     </label>
                                                 </div>
                                                 <div class="flex items-center">
@@ -83,7 +83,7 @@
                                                         {{ isset($userPermissions[$permission->id]) && !$userPermissions[$permission->id]['granted'] ? 'checked' : '' }}
                                                         class="h-4 w-4 text-red-600 border-gray-300 focus:ring-red-500">
                                                     <label for="permission_{{ $permission->id }}_deny" class="ml-2 text-sm text-red-600 font-medium">
-                                                        Deny
+                                                        Liegt
                                                     </label>
                                                 </div>
                                             </div>
@@ -97,7 +97,7 @@
 
                 <div class="flex items-center justify-end">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Save Permissions
+                        Saglabāt atļaujas
                     </button>
                 </div>
             </form>

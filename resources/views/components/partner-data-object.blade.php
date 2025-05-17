@@ -10,7 +10,7 @@
 </button>
 
 <h3 class="text-lg font-medium mb-4">
-    {{ $isEdit ? "Data Object " . ($index + 1) : $item['name'] }}
+    {{ $isEdit ? "Datu objekts " . ($index + 1) : $item['name'] }}
 </h3>
 
 <div class="mb-4">
@@ -34,14 +34,14 @@
 
             <div class="grid grid-cols-4 gap-4">
                 <div class="col-span-1">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Key</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Parametrs</label>
                     <input type="text" 
                            name="data[{{ $index }}][items][{{ $j }}][key]" 
                            value="{{ $field['key'] }}"
                            class="w-full px-3 py-2 border rounded-lg">
                 </div>
                 <div class="col-span-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Saturs</label>
                     <input type="text" 
                            name="data[{{ $index }}][items][{{ $j }}][value]"
                            value="{{ $field['value'] ?? '' }}"

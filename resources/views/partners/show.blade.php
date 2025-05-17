@@ -4,10 +4,10 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold">Klienta detaļas</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold">Partnera detaļas</h1>
             <div class="space-x-2">
                 <a href="{{ route('partners.index') }}" class="text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-arrow-left"></i> Back
+                    <i class="fas fa-arrow-left"></i> Atpakaļ
                 </a>
             </div>
         </div>
@@ -22,7 +22,7 @@
                         <p class="text-gray-900">{{ $partner->name }}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Identification Number</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Reģistrācijas numurs</label>
                         <p class="text-gray-900">{{ $partner->identification_number }}</p>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                             @endforeach
                         </div>
                     @else
-                        <p class="text-gray-500 italic">No data objects available.</p>
+                        <p class="text-gray-500 italic">Nav pieejami datu objekti.</p>
                     @endif
                 </div>
             </div>
@@ -64,18 +64,18 @@
                     <a href="{{ route('partners.edit', $partner) }}" 
                        class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         <i class="fas fa-edit mr-2"></i>
-                        Rediģēt klientu
+                        Rediģēt partneri
                     </a>
                     <form action="{{ route('partners.destroy', $partner) }}" 
                           method="POST" 
                           class="inline-block"
-                          onsubmit="return confirm('Are you sure you want to delete this partner?');">
+                          onsubmit="return confirm('Vai tiešām vēlaties dzēst šo partneri?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" 
                                 class="inline-flex items-center justify-center w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                             <i class="fas fa-trash mr-2"></i>
-                            Delete Partner
+                            Dzēst partneri
                         </button>
                     </form>
                 </div>

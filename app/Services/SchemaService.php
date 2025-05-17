@@ -479,7 +479,7 @@ class SchemaService
             VALUES (
                 'partners_create',
                 " . DB::getPdo()->quote(json_encode([
-                    'default_inpupts' => [
+                    'default_inputs' => [
                         [
                             'name' => 'Contact Information',
                             'background_color' => 'bg-gray-50',

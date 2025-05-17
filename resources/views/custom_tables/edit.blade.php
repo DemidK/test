@@ -8,10 +8,10 @@
         <div class="mb-6">
             <div class="flex items-center gap-2 mb-2">
                 <a href="{{ route('custom-tables.show', $item->id) }}" class="text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-arrow-left"></i> Back to Details
+                    <i class="fas fa-arrow-left"></i> Atpakaļ uz detaļām
                 </a>
                 <span class="text-gray-400">/</span>
-                <h1 class="text-2xl font-bold">Edit {{ $item->display_name }}</h1>
+                <h1 class="text-2xl font-bold">Rediģēt {{ $item->display_name }}</h1>
             </div>
         </div>
 
@@ -23,12 +23,12 @@
 
             <!-- Basic Information -->
             <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-4">Table Information</h2>
+                <h2 class="text-xl font-semibold mb-4">Tabulas informācija</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            System Name
+                            Sistēmas nosaukums
                         </label>
                         <input type="text" 
                                value="{{ $item->name }}"
@@ -36,13 +36,13 @@
                                disabled
                                readonly>
                         <p class="text-sm text-gray-500 mt-1">
-                            System name cannot be changed after creation
+                            Sistēmas nosaukumu nevar mainīt pēc izveides
                         </p>
                     </div>
 
                     <div>
                         <label for="display_name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Display Name*
+                            Attēlojamais nosaukums*
                         </label>
                         <input type="text" 
                                name="display_name" 
@@ -58,7 +58,7 @@
 
                 <div class="mt-4">
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-                        Description
+                        Apraksts
                     </label>
                     <textarea name="description" 
                               id="description" 
@@ -76,10 +76,10 @@
                                value="1"
                                {{ old('is_active', $item->is_active) ? 'checked' : '' }}
                                class="form-checkbox rounded border-gray-300">
-                        <span class="ml-2">Active</span>
+                        <span class="ml-2">Aktīvs</span>
                     </label>
                     <p class="text-sm text-gray-500 mt-1">
-                        Inactive tables will be hidden from navigation and data entry
+                        Neaktīvās tabulas būs paslēptas no navigācijas un datu ievades
                     </p>
                 </div>
             </div>
@@ -87,12 +87,12 @@
             <!-- Field Management -->
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">Fields</h2>
+                    <h2 class="text-xl font-semibold">Lauki</h2>
                     <button type="button" 
                             id="addField"
                             class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="New fields can only be added during table creation">
-                        Add Field
+                            title="Jaunus laukus var pievienot tikai tabulas izveides laikā">
+                        Pievienot lauku
                     </button>
                 </div>
 
@@ -102,7 +102,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        Field Name
+                                        Lauka nosaukums
                                     </label>
                                     <input type="text" 
                                            value="{{ $fieldName }}"
@@ -113,7 +113,7 @@
 
                                 <div>
                                     <label for="fields[{{ $fieldName }}][label]" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Display Label*
+                                        Attēlojamais nosaukums*
                                     </label>
                                     <input type="text" 
                                            name="fields[{{ $fieldName }}][label]" 
@@ -124,7 +124,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        Field Type
+                                        Lauka tips
                                     </label>
                                     <input type="text" 
                                            value="{{ ucfirst($field['type']) }}"
@@ -141,7 +141,7 @@
                                            value="1"
                                            {{ old("fields.{$fieldName}.required", $field['required'] ?? false) ? 'checked' : '' }}
                                            class="form-checkbox rounded border-gray-300">
-                                    <span class="ml-2">Required field</span>
+                                    <span class="ml-2">Obligāts lauks</span>
                                 </label>
                             </div>
                         </div>
@@ -153,11 +153,11 @@
             <div class="flex justify-between">
                 <a href="{{ route('custom-tables.show', $item->id) }}" 
                    class="text-gray-600 hover:text-gray-800">
-                    Cancel
+                    Atcelt
                 </a>
                 <button type="submit" 
                         class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors">
-                    Save Changes
+                    Saglabāt izmaiņas
                 </button>
             </div>
         </form>
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalRequired = {{ count(array_filter($item->fields, fn($f) => $f['required'] ?? false)) }};
         
         if (requiredFields.length !== originalRequired) {
-            if (!confirm('Changing required field settings may affect existing data. Are you sure you want to continue?')) {
+            if (!confirm('Obligāto lauku iestatījumu maiņa var ietekmēt esošos datus. Vai tiešām vēlaties turpināt?')) {
                 e.preventDefault();
                 return false;
             }

@@ -55,7 +55,7 @@
                                    value="1"
                                    {{ old($fieldName, $item?->$fieldName) ? 'checked' : '' }}
                                    class="form-checkbox rounded border-gray-300 @error($fieldName) border-red-500 @enderror">
-                            <label for="{{ $fieldName }}" class="ml-2 text-sm text-gray-700">Yes</label>
+                            <label for="{{ $fieldName }}" class="ml-2 text-sm text-gray-700">Jā</label>
                         </div>
                         @break
 
@@ -126,11 +126,11 @@
     <div class="flex justify-between mt-6">
         <a href="{{ route('custom-tables.data.index', $customTable->name) }}" 
            class="text-gray-600 hover:text-gray-800">
-            Cancel
+            Atcelt
         </a>
         <button type="submit" 
                 class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors">
-            {{ $item ? 'Update' : 'Create' }} Record
+            {{ $item ? 'Atjaunināt' : 'Izveidot' }} ierakstu
         </button>
     </div>
 </form>

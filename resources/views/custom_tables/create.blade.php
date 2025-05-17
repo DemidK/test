@@ -5,9 +5,9 @@
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Create New Table</h1>
+            <h1 class="text-2xl font-bold">Izveidot jaunu tabulu</h1>
             <a href="{{ route('custom-tables.index') }}" class="text-blue-600 hover:text-blue-800">
-                <i class="fas fa-arrow-left"></i> Back to Tables
+                <i class="fas fa-arrow-left"></i> Atpakaļ pie tabulām
             </a>
         </div>
 
@@ -16,12 +16,12 @@
 
             <!-- Basic Information -->
             <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-4">Table Information</h2>
+                <h2 class="text-xl font-semibold mb-4">Tabulas informācija</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Table Name*
+                            Tabulas nosaukums*
                         </label>
                         <input type="text" 
                                name="name" 
@@ -31,7 +31,7 @@
                                pattern="[a-z][a-z0-9_]*"
                                required>
                         <p class="text-sm text-gray-500 mt-1">
-                            Use lowercase letters, numbers, and underscores only. Must start with a letter.
+                            Izmantojiet tikai mazos burtus, ciparus un pasvītrojumus. Jāsākas ar burtu.
                         </p>
                         @error('name')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -40,7 +40,7 @@
 
                     <div>
                         <label for="display_name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Display Name*
+                            Attēlojamais nosaukums*
                         </label>
                         <input type="text" 
                                name="display_name" 
@@ -56,7 +56,7 @@
 
                 <div class="mt-4">
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-                        Description
+                        Apraksts
                     </label>
                     <textarea name="description" 
                               id="description" 
@@ -71,11 +71,11 @@
             <!-- Fields Section -->
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">Table Fields</h2>
+                    <h2 class="text-xl font-semibold">Tabulas lauki</h2>
                     <button type="button" 
                             id="addField"
                             class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-                        Add Field
+                        Pievienot lauku
                     </button>
                 </div>
 
@@ -91,11 +91,11 @@
             <div class="flex justify-between mt-6">
                 <a href="{{ route('custom-tables.index') }}" 
                    class="text-gray-600 hover:text-gray-800">
-                    Cancel
+                    Atcelt
                 </a>
                 <button type="submit" 
                         class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors">
-                    Create Table
+                    Izveidot tabulu
                 </button>
             </div>
         </form>
@@ -106,7 +106,7 @@
 <template id="fieldTemplate">
     <div class="field-row bg-gray-50 p-4 rounded-md">
         <div class="flex justify-between mb-2">
-            <h3 class="font-medium">Field #<span class="field-number"></span></h3>
+            <h3 class="font-medium">Lauks #<span class="field-number"></span></h3>
             <button type="button" class="delete-field text-red-500 hover:text-red-700">
                 <i class="fas fa-trash"></i>
             </button>
@@ -115,7 +115,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Field Name*
+                    Lauka nosaukums*
                 </label>
                 <input type="text" 
                        name="fields[0][name]" 
@@ -123,13 +123,13 @@
                        pattern="[a-z][a-z0-9_]*"
                        required>
                 <p class="text-sm text-gray-500 mt-1">
-                    Lowercase letters, numbers, and underscores
+                    Mazie burti, cipari un pasvītrojumi
                 </p>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Display Label*
+                    Attēlojamais nosaukums*
                 </label>
                 <input type="text" 
                        name="fields[0][label]" 
@@ -139,12 +139,12 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Field Type*
+                    Lauka tips*
                 </label>
                 <select name="fields[0][type]" 
                         class="field-type form-select w-full rounded-md border-gray-300"
                         required>
-                    <option value="">Select Type</option>
+                    <option value="">Izvēlieties tipu</option>
                     <option value="text">Text</option>
                     <option value="integer">Integer Number</option>
                     <option value="float">Decimal Number</option>
@@ -164,7 +164,7 @@
                        name="fields[0][required]" 
                        class="field-required form-checkbox rounded border-gray-300"
                        value="1">
-                <span class="ml-2">Required field</span>
+                <span class="ml-2">Obligāts lauks</span>
             </label>
         </div>
     </div>
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fields = fieldsContainer.querySelectorAll('.field-row');
         if (fields.length === 0) {
             e.preventDefault();
-            alert('Please add at least one field to the table.');
+            alert('Lūdzu, pievienojiet tabulai vismaz vienu lauku.');
             return false;
         }
         return true;
