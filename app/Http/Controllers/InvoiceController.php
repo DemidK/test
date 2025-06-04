@@ -6,9 +6,9 @@ use App\Models\Invoice;
 use App\Models\Partner;
 use App\Models\NavLink;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
 class InvoiceController extends CrudController
 {
@@ -202,14 +202,19 @@ class InvoiceController extends CrudController
         $invoice = $this->model::findOrFail($id);
         $items = $invoice->items ?? [];
         
-        $pdf = Pdf::loadView('invoices.pdf', compact('invoice', 'items'));
-        
-        $pdf->setPaper('a4');
-        $pdf->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-            'defaultFont' => 'sans-serif'
-        ]);
+        // Use Snappy's PDF facade
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice', 'items'));
+               
+        // Snappy doesn't use setPaper or setOptions in the same way as DomPDF
+        // You pass options directly to loadView or using specific methods.
+        // For example, to set paper size or margins:
+        $pdf->setPaper('a4')
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 10)
+            ->setOption('margin-left', 10);
+            // Add any other wkhtmltopdf options as needed.
+            // Refer to wkhtmltopdf documentation for available options (e.g., --enable-local-file-access, etc.)
 
         return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
@@ -221,15 +226,16 @@ class InvoiceController extends CrudController
             ? json_decode($invoice->items, true) 
             : ($invoice->items ?? []);
         
-        $pdf = Pdf::loadView('invoices.pdf', compact('invoice', 'items'));
+        // Use Snappy's PDF facade
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice', 'items'));
         
-        $pdf->setPaper('a4');
-        $pdf->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-            'defaultFont' => 'sans-serif'
-        ]);
+        $pdf->setPaper('a4')
+            ->setOption('margin-top', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('margin-bottom', 10)
+            ->setOption('margin-left', 10)
+            ->setOption('enable-local-file-access', true);
 
-        return $pdf->stream("invoice-{$invoice->invoice_number}.pdf");
+        return $pdf->inline("invoice-{$invoice->invoice_number}.pdf");
     }
 }
