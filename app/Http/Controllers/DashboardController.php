@@ -2,36 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use App\Models\Partner;
 use App\Models\NavLink;
-use App\Models\User;
-use Illuminate\Http\Request;
+use Symfony\Component\Process\Process;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the dashboard view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function index(\Illuminate\Http\Request $request) // Добавьте Request
     {
-        $navLinks = NavLink::orderBy('position')->get();
-        $totalUsers = User::count();
-        $totalPartners = Partner::count();
-        $data = [
-            'navLinks' => $navLinks,
+        // --- ДИАГНОСТИЧЕСКОЕ ЛОГИРОВАНИЕ ---
+        \Illuminate\Support\Facades\Log::info('--- DASHBOARD REQUEST START ---');
+        \Illuminate\Support\Facades\Log::info('Request to URL: ' . $request->fullUrl());
+        \Illuminate\Support\Facades\Log::info('Session ID on arrival: ' . $request->session()->getId());
+        \Illuminate\Support\Facades\Log::info('Auth::check() status: ' . (Auth::check() ? 'TRUE' : 'FALSE'));
+        
+        if (Auth::check()) {
+            \Illuminate\Support\Facades\Log::info('Authenticated User ID: ' . Auth::id());
+        } else {
+            \Illuminate\Support\Facades\Log::info('User is NOT authenticated on dashboard request.');
+        }
+        // --- КОНЕЦ ДИАГНОСТИКИ ---
+
+        // ... ваш остальной код метода index ...
+        $totalUsers = \App\Models\User::count();
+        $totalPartners = \App\Models\Partner::count();
+        $navLinks = \App\Models\NavLink::orderBy('position')->get();
+        $updateUrl = null;
+        if (Auth::id() === 5) {
+            $updateUrl = route('app.run_update');
+        }
+        return view('dashboard', [
             'totalUsers' => $totalUsers,
             'totalPartners' => $totalPartners,
-            'totalRevenue' => 12345,
-            'recentActivities' => [
-                'User "John Doe" placed an order.',
-                'User "Jane Smith" registered.',
-                'Order #123 was completed.',
-            ],
-        ];
+            'updateUrl' => $updateUrl,
+            'navLinks' => $navLinks,
+        ]);
+    }
 
-        // Return the dashboard view with the data
-        return view('dashboard', $data);
+    public function runUpdate()
+    {
+        if (Auth::id() !== 3) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $scriptPath = base_path('update_app.sh');
+
+        if (!file_exists($scriptPath)) {
+            Log::channel('deploy')->error("Update script not found at {$scriptPath}");
+            return redirect()->route('dashboard')->with('error', 'Скрипт обновления не найден!');
+        }
+        
+        // Просто запускаем процесс. Логирование теперь происходит внутри скрипта.
+        $process = new Process(['sh', $scriptPath]);
+        $process->setWorkingDirectory(base_path());
+        $process->setTimeout(360);
+        $process->run();
+
+        // Проверяем только код завершения процесса.
+        if (!$process->isSuccessful()) {
+            // Запишем в лог только факт ошибки, т.к. детали уже будут в логе от самого скрипта
+            Log::channel('deploy')->error("Deployment script failed with exit code " . $process->getExitCode());
+            return redirect()->route('dashboard')->with('error', 'Произошла ошибка во время обновления. Проверьте deploy.log.');
+        }
+        
+        return redirect()->route('dashboard')->with('success', 'Приложение успешно обновлено!');
     }
 }

@@ -5,14 +5,16 @@
     <div class="max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-6">
-                @if(isset($schemaInfo))
-                    Pieslēgties {{ $schemaInfo->schema_name }}
+                {{-- Теперь проверяем простую переменную $schemaName --}}
+                @if(isset($schemaName) && $schemaName)
+                    Pieslēgties {{ $schemaName }}
                 @else
                     Pieslēgties
                 @endif
             </h2>
             
-            <form method="POST" action="{{ isset($schemaInfo) ? route('login.schema.submit', $schemaInfo->route_name) : route('login') }}">
+            {{-- Форма теперь тоже использует $schemaName для определения action --}}
+            <form method="POST" action="{{ isset($schemaName) ? route('login.schema.submit', ['schemaName' => $schemaName]) : route('login') }}">
                 @csrf
                 
                 <div class="mb-4">
@@ -35,8 +37,9 @@
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                         Pieslēgties
                     </button>
-                    @if(!isset($schemaInfo))
-                        <a href="{{ route('register') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                    {{-- Ссылка на регистрацию теперь тоже проверяет $schemaName --}}
+                    @if(!isset($schemaName))
+                        <a href="{{ route('register.tenant') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                             Reģistrēties
                         </a>
                     @endif

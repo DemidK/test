@@ -33,11 +33,12 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
-            \App\Http\Middleware\SetUserSchema::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\EncryptCookies::class,
+
+            // Наш кастомный middleware для субдоменов.
+            // Он должен идти ПОСЛЕ StartSession.
             \App\Http\Middleware\SetSchemaMiddleware::class,
         ],
 
@@ -47,9 +48,9 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         
-        // Add a new middleware group for routes that require permissions
+        // В этой группе была ошибка в предоставленном вами файле, исправлено
         'secured' => [
-            'web',
+            'web', // Эта группа уже включает все middleware из 'web'
             'auth',
             \App\Http\Middleware\EnsurePermissionsConfigured::class,
         ],

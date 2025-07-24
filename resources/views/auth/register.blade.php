@@ -6,7 +6,7 @@
         <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-6">Reģistrēties</h2>
             
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ (isset($isTenantRegistration) && $isTenantRegistration) ? route('register.tenant.submit') : route('register.user.submit') }}">
                 @csrf
                 
                 <div class="mb-4">
@@ -25,14 +25,16 @@
                     @enderror
                 </div>
 
-                <div class="mb-4">
-                    <label for="schema_name" class="block text-gray-700 text-sm font-bold mb-2">Shēmas nosaukums (URL adrese)</label>
-                    <input type="text" name="schema_name" id="schema_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required placeholder="company_name">
-                    <p class="text-gray-600 text-xs mt-1">Pieslēgsieties izmantojot: domainname.com/login/jūsu_shēmas_nosaukums</p>
-                    @error('schema_name')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
+                @if(isset($isTenantRegistration) && $isTenantRegistration)
+                    <div class="mb-4">
+                        <label for="schema_name" class="block text-gray-700 text-sm font-bold mb-2">Jūsu kompānijas nosaukums (URL)</label>
+                        <input type="text" name="schema_name" id="schema_name" class="shadow..." required placeholder="mana_kompanija">
+                        <p class="text-gray-600 text-xs mt-1">Jūs varēsiet pieslēgties šeit: jūsu_nosaukums.b4me.lv</p>
+                        @error('schema_name')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endif
 
                 <div class="mb-4">
                     <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Parole</label>

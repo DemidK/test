@@ -26,7 +26,7 @@
         <div class="mt-8 flex justify-center space-x-4">
             @guest
                 <a href="{{ route('login') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Pieslēgties</a>
-                <a href="{{ route('register') }}" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Reģistrēties</a>
+                <a href="{{ route('register.tenant') }}" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Reģistrēties</a>
             @else
                 <a href="{{ route('dashboard') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">Go to Vadības panelis</a>
             @endguest
