@@ -10,17 +10,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                $currentSchema = session('current_schema');
+
+                // Если пользователь на субдомене - редиректим на dashboard субдомена
+                if ($currentSchema) {
+                    return redirect()->route('dashboard', ['schemaName' => $currentSchema]);
+                }
+                
+                // Если пользователь на основном домене - редиректим на HOME
                 return redirect(RouteServiceProvider::HOME);
             }
         }

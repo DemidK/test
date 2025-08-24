@@ -56,63 +56,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Grant direct permissions to the user
-     */
-    public function givePermissionsTo(... $permissions)
-    {
-        $permissions = $this->getAllPermissions($permissions);
-        
-        if (empty($permissions)) {
-            return $this;
-        }
-        
-        foreach ($permissions as $permission) {
-            $this->permissions()->syncWithoutDetaching([
-                $permission->id => ['granted' => true]
-            ]);
-        }
-        
-        return $this;
-    }
-
-    /**
-     * Revoke permissions from the user
-     */
-    public function revokePermissionsTo(... $permissions)
-    {
-        $permissions = $this->getAllPermissions($permissions);
-        
-        if (empty($permissions)) {
-            return $this;
-        }
-        
-        $this->permissions()->detach($permissions);
-        
-        return $this;
-    }
-
-    /**
-     * Deny specific permissions to the user
-     * This overrides any permissions granted via roles
-     */
-    public function denyPermissionsTo(... $permissions)
-    {
-        $permissions = $this->getAllPermissions($permissions);
-        
-        if (empty($permissions)) {
-            return $this;
-        }
-        
-        foreach ($permissions as $permission) {
-            $this->permissions()->syncWithoutDetaching([
-                $permission->id => ['granted' => false]
-            ]);
-        }
-        
-        return $this;
-    }
-
-    /**
      * Assign roles to the user
      */
     public function assignRoles(... $roles)
@@ -189,26 +132,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all permissions from array of permission names/slugs/IDs
-     */
-    protected function getAllPermissions(array $permissions)
-    {
-        if (empty($permissions)) {
-            return [];
-        }
-        
-        // If array contains permission objects, return it
-        if (isset($permissions[0]) && is_object($permissions[0])) {
-            return $permissions;
-        }
-        
-        // Get permission objects from slugs or IDs
-        return Permission::whereIn('slug', $permissions)
-            ->orWhereIn('id', $permissions)
-            ->get();
-    }
-
-    /**
      * Get all roles from array of role names/slugs/IDs
      */
     protected function getRoles(array $roles)
@@ -217,19 +140,41 @@ class User extends Authenticatable
             return [];
         }
         
-        // If array contains role objects, return it
+        // Если массив уже содержит объекты Role, просто возвращаем его
         if (isset($roles[0]) && is_object($roles[0])) {
             return $roles;
         }
         
-        // Get role objects from slugs or IDs
-        return Role::whereIn('slug', $roles)
-            ->orWhereIn('id', $roles)
-            ->get();
+        // Разделяем входные данные на числовые ID и строковые slug'и
+        $roleIds = [];
+        $roleSlugs = [];
+
+        foreach ($roles as $role) {
+            if (is_numeric($role)) {
+                $roleIds[] = (int) $role;
+            } else if (is_string($role)) {
+                $roleSlugs[] = $role;
+            }
+        }
+
+        // Строим запрос, используя только подходящие данные
+        $query = Role::query();
+
+        if (!empty($roleSlugs)) {
+            // Ищем по slug, если переданы строки
+            $query->whereIn('slug', $roleSlugs);
+        }
+
+        if (!empty($roleIds)) {
+            // Ищем по id, если переданы числа
+            $query->orWhereIn('id', $roleIds);
+        }
+        
+        return $query->get();
     }
 
 
-        public function isSuperuser()
+    public function isSuperuser()
     {
         // Cache the result to avoid repeated database queries
         return cache()->remember("user_{$this->id}_is_superuser", now()->addMinutes(60), function () {
@@ -242,6 +187,21 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
+        // --- НАЧАЛО ОТЛАДКИ ---
+        // try {
+        //     $currentSearchPath = \Illuminate\Support\Facades\DB::selectOne("show search_path")->search_path;
+        //     $connectionConfig = config('database.connections.' . \Illuminate\Support\Facades\DB::getDefaultConnection());
+        //     dd(
+        //         "Текущий search_path в БД:", 
+        //         $currentSearchPath, 
+        //         "Конфигурация соединения Laravel:", 
+        //         $connectionConfig
+        //     );
+        // } catch (\Exception $e) {
+        //     dd("Не удалось выполнить отладочный запрос: " . $e->getMessage());
+        // }
+        // --- КОНЕЦ ОТЛАДКИ ---
+
         if (is_string($role)) {
             return $this->roles()->where('slug', $role)->exists();
         }
@@ -258,63 +218,22 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the direct permissions for the user
-     */
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'user_permission')
-            ->withPivot('granted')
-            ->withTimestamps();
-    }
-
-    /**
      * Check if the user has a specific permission
-     * This checks both direct permissions and permissions from roles
+     * This checks permissions from roles.
      */
-    public function hasPermissionTo($permission)
+    public function hasPermissionTo(string $routeName): bool
     {
         // Superusers bypass all permission checks
         if ($this->isSuperuser()) {
             return true;
         }
         
-        // First check for direct permissions (they override role permissions)
-        $directPermission = $this->getDirectPermission($permission);
-        
-        if ($directPermission) {
-            // If we have a direct permission, use its granted status
-            return (bool) $directPermission->pivot->granted;
-        }
-        
-        // If no direct permission, check role permissions
-        return $this->hasPermissionViaRole($permission);
-    }
-
-    /**
-     * Check if the user has a permission through any of their roles
-     */
-    public function hasPermissionViaRole($permission)
-    {
-        $permissionSlug = is_string($permission) ? $permission : $permission->slug;
-        
         foreach ($this->roles as $role) {
-            if ($role->hasPermission($permissionSlug)) {
+            if ($role->hasPermission($routeName)) {
                 return true;
             }
         }
-        
-        return false;
-    }
 
-    /**
-     * Get a direct permission for this user (if it exists)
-     */
-    public function getDirectPermission($permission)
-    {
-        $permissionSlug = is_string($permission) ? $permission : $permission->slug;
-        
-        return $this->permissions()
-            ->where('slug', $permissionSlug)
-            ->first();
+        return false;
     }
 }

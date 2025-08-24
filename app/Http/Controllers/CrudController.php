@@ -18,6 +18,18 @@ abstract class CrudController extends Controller
     protected $validationMessages = [];
     protected $perPage = 10;
 
+    public function callAction($method, $parameters)
+    {
+        // Если в параметрах от роутера есть 'schemaName',
+        // мы удаляем его из массива перед передачей в методы 'show', 'edit' и т.д.
+        if (isset($parameters['schemaName'])) {
+            unset($parameters['schemaName']);
+        }
+
+        // Вызываем оригинальный метод (например, show) уже с очищенными параметрами.
+        return parent::callAction($method, $parameters);
+    }
+
     public function navLinks()
     {
         return NavLink::orderBy('position')->get();
@@ -57,7 +69,7 @@ abstract class CrudController extends Controller
             'items' => $items,
             'search' => $request->search,
             'sortBy' => $sortBy,
-            'sortOrder' => $sortOrder
+            'sortOrder' => $sortOrder,
         ]);
     }
 
@@ -80,6 +92,7 @@ abstract class CrudController extends Controller
         }
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
@@ -87,6 +100,7 @@ abstract class CrudController extends Controller
         return view("{$this->viewPath}.show", compact('item', 'navLinks'));
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function edit($id)
     {
         $item = $this->model::findOrFail($id);
@@ -94,6 +108,7 @@ abstract class CrudController extends Controller
         return view("{$this->viewPath}.edit", compact('item', 'navLinks'));
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function update(Request $request, $id)
     {
         $item = $this->model::findOrFail($id);
@@ -108,6 +123,7 @@ abstract class CrudController extends Controller
         }
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function destroy($id)
     {
         $item = $this->model::findOrFail($id);

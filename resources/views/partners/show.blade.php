@@ -12,9 +12,7 @@
             </div>
         </div>
 
-        <!-- Partner Information Card -->
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <!-- Basic Info Section -->
             <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
@@ -27,7 +25,6 @@
                     </div>
                 </div>
 
-                <!-- Data Objects Section -->
                 <div class="mt-8">
                     <h2 class="text-xl font-semibold mb-4">Sadaļas</h2>
                     @if ($formattedData)
@@ -79,7 +76,6 @@
                 </div>
             </div>
 
-            <!-- Actions Section -->
             <div class="px-6 py-4 bg-gray-50 border-t">
                 <div class="flex flex-col sm:flex-row gap-3 justify-end">
                     <a href="{{ route('partners.edit', $partner) }}" 

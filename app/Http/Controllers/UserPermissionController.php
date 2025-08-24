@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Permission;
 use App\Models\NavLink;
 use App\Services\PermissionService;
 
@@ -27,29 +26,15 @@ class UserPermissionController extends Controller
         $navLinks = NavLink::orderBy('position')->get();
         
         // Get all available roles
-        $roles = Role::all();
+        $roles = Role::orderBy('name')->get();
         $userRoleIds = $user->roles()->pluck('roles.id')->toArray();
         
-        // Get permissions grouped by resource
-        $permissionsByResource = $this->permissionService->getPermissionsByResource();
-        
-        // Get user's direct permissions with granted status
-        $userPermissions = $user->permissions()
-            ->get()
-            ->mapWithKeys(function ($permission) {
-                return [$permission->id => [
-                    'granted' => (bool) $permission->pivot->granted
-                ]];
-            })
-            ->toArray();
-        
-        return view('users.permissions', compact(
+        // The view name is changed to a more standard 'users.edit'
+        return view('users.edit', compact(
             'user',
             'navLinks',
             'roles',
-            'userRoleIds',
-            'permissionsByResource',
-            'userPermissions'
+            'userRoleIds'
         ));
     }
     
@@ -61,21 +46,9 @@ class UserPermissionController extends Controller
         $user = User::findOrFail($userId);
         
         try {
-            // Update roles
-            $roles = $request->has('roles') ? $request->roles : [];
+            // Sync roles. Direct permissions are no longer managed here.
+            $roles = $request->input('roles', []);
             $user->syncRoles($roles);
-            
-            // Update direct permissions
-            if ($request->has('permissions')) {
-                // First, remove all direct permissions
-                $user->permissions()->detach();
-                
-                // Then add each permission with its granted status
-                foreach ($request->permissions as $permissionId => $status) {
-                    $granted = isset($status['granted']) && $status['granted'] === '1';
-                    $user->permissions()->attach($permissionId, ['granted' => $granted]);
-                }
-            }
             
             // Clear the permission cache for this user
             $this->permissionService->clearCache($user->id);
@@ -106,52 +79,30 @@ class UserPermissionController extends Controller
         $user = User::with('roles')->findOrFail($userId);
         $navLinks = NavLink::orderBy('position')->get();
         
-        // Get direct permissions grouped by status (granted/denied)
-        $directPermissions = [
-            'granted' => [],
-            'denied' => []
-        ];
-        
-        foreach ($user->permissions as $permission) {
-            $status = $permission->pivot->granted ? 'granted' : 'denied';
-            $resource = $permission->resource ?: 'General';
-            
-            if (!isset($directPermissions[$status][$resource])) {
-                $directPermissions[$status][$resource] = [];
-            }
-            
-            $directPermissions[$status][$resource][] = $permission;
-        }
-        
-        // Get inherited permissions from roles
-        $inheritedPermissions = [];
+        // Get all unique permissions (route names) from the user's roles.
+        $permissions = [];
         foreach ($user->roles as $role) {
-            foreach ($role->permissions as $permission) {
-                $resource = $permission->resource ?: 'General';
-                
-                if (!isset($inheritedPermissions[$resource])) {
-                    $inheritedPermissions[$resource] = [];
-                }
-                
-                // Check if this permission is already directly granted or denied
-                $isDirectlySet = $user->permissions()
-                    ->where('permissions.id', $permission->id)
-                    ->exists();
-                
-                if (!$isDirectlySet) {
-                    $inheritedPermissions[$resource][] = [
-                        'permission' => $permission,
-                        'role' => $role
-                    ];
-                }
+            $permissions = array_merge($permissions, $role->permissions ?? []);
+        }
+        $permissions = array_unique($permissions);
+        sort($permissions);
+
+        // Group permissions by the first part of the route name for cleaner display.
+        $permissionsByGroup = [];
+        foreach ($permissions as $permission) {
+            $group = explode('.', $permission)[0] ?? 'General';
+            $groupName = \Illuminate\Support\Str::title(str_replace(['_', '-'], ' ', $group));
+            if (!isset($permissionsByGroup[$groupName])) {
+                $permissionsByGroup[$groupName] = [];
             }
+            $permissionsByGroup[$groupName][] = $permission;
         }
         
-        return view('users.show_permissions', compact(
+        // The view name is changed to a more standard 'users.show'
+        return view('users.show', compact(
             'user',
             'navLinks',
-            'directPermissions',
-            'inheritedPermissions'
+            'permissionsByGroup'
         ));
     }
 }

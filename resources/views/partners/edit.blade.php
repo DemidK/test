@@ -12,7 +12,7 @@
 
         <x-partner-form 
             :partner="$partner"
-            :action="route('partners.update', $partner->id)"
+            :action="route('partners.update', $partner)"
             method="PUT"
             :formatted-data="$formattedData"
             :config="$config"

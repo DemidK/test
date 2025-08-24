@@ -3,27 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\NavLink;
-use App\Models\Partner;
 use App\Models\SchemaRoute;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Services\SchemaService;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    use RegistersUsers;
-
-    protected $redirectTo = '/';
     protected $schemaService;
 
     public function __construct(SchemaService $schemaService)
@@ -32,136 +25,132 @@ class RegisterController extends Controller
         $this->schemaService = $schemaService;
     }
 
-    public function showRegistrationForm()
+    /**
+     * Показывает форму регистрации (как для клиента, так и для пользователя).
+     */
+    public function showRegistrationForm(Request $request)
     {
-        $navLinks = NavLink::orderBy('position')->get();
-        $data = [
-            'navLinks' => $navLinks,
-        ];
-        return view('auth.register', $data);
+        // Определяем, это регистрация на главном домене или на субдомене
+        $isTenantRegistration = !$request->route('schemaName');
+        
+        return view('auth.register', [
+            'isTenantRegistration' => $isTenantRegistration
+        ]);
     }
 
-    public function register(Request $request)
+    /**
+     * Регистрирует нового КЛИЕНТА (создает схему, первого пользователя и т.д.).
+     * Вызывается с основного домена.
+     */
+    public function registerTenant(Request $request)
     {
-        $this->validator($request->all())->validate();
+        Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:user,email'], // Проверяем главную таблицу users
+            'schema_name' => ['required', 'string', 'max:63', 'alpha_dash', 'unique:schema_routes,route_name'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ])->validate();
+
+        $schemaName = Str::snake($request->schema_name);
 
         DB::beginTransaction();
         try {
-            // Create user
-            $user = $this->create($request->all());
-            
-            // Create partner record
-            $partner = Partner::create([
-                'name' => $user->name,
-                'identification_number' => 'USR' . $user->id,
-                'json_data' => null
+            // 1. Создаем пользователя-владельца в ГЛАВНОЙ таблице (public.users)
+            $owner = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'schema_name' => $schemaName, // Сразу связываем его со схемой
             ]);
 
-            // Format schema name (lowercase, replace spaces with underscores)
-            $schemaName = Str::snake($request->schema_name);
-            
-            // Create schema route entry in public schema
-            $routeName = $schemaName;
-            $schemaRoute = SchemaRoute::create([
+            // 2. Создаем запись о маршруте для субдомена
+            SchemaRoute::create([
                 'schema_name' => $schemaName,
-                'route_name' => $routeName,
-                'user_id' => $user->id,
+                'route_name' => $schemaName,
+                'user_id' => $owner->id,
                 'is_active' => true
             ]);
 
-            // Create schema for user with their provided schema name
-            // This now only returns the username, not the password
-            $pgUsername = $this->schemaService->createUserSchema($schemaName, $user->id);
+            // 3. Вызываем сервис, который создает схему, запускает миграции и сидеры
+            $this->schemaService->createUserSchema($schemaName);
 
-            // Update user with schema name and PostgreSQL username only (no password)
-            $user->update([
-                'schema_name' => $schemaName,
-                'pg_username' => $pgUsername
+            // 4. Устанавливаем соединение с новой схемой, чтобы создать там пользователя
+            $this->setTenantConnection($schemaName);
+
+            // 5. Создаем первого пользователя ВНУТРИ схемы клиента
+            $tenantUser = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
             ]);
 
-            // Store plain password in session for connection after login
-            $request->session()->put('plain_password', $request->password);
-
-            // Generate deterministic password for PostgreSQL
-            $initialPassword = $this->schemaService->generateSecurePassword(
-                $user->id,
-                $request->password, // This is the plain text password from the request
-                $schemaName
-            );
-            
-            // Update the PostgreSQL role password
-            DB::unprepared("ALTER ROLE {$pgUsername} WITH PASSWORD '{$initialPassword}'");
-
-            // Assign the user as a superuser of their schema
-            // First get the superuser role from the schema
-            $superuserRole = DB::selectOne("SELECT id FROM {$schemaName}.roles WHERE slug = 'superuser'");
-            if ($superuserRole) {
-                // Assign the role to the user
-                DB::statement("
-                    INSERT INTO {$schemaName}.user_role (user_id, role_id, created_at, updated_at)
-                    VALUES (
-                        {$user->id},
-                        {$superuserRole->id},
-                        NOW(),
-                        NOW()
-                    )
-                ");
-                
-                Log::info("Assigned superuser role to user {$user->id} in schema {$schemaName}");
-            }
+            // 6. Назначаем этому пользователю роль 'superuser' (сидер уже создал эту роль)
+            $tenantUser->assignRoles('superuser');
 
             DB::commit();
 
-            $this->guard()->login($user);
+            // 7. Авторизуем пользователя и перенаправляем
+            Auth::login($owner);
             
-            // CRITICAL: Connect to the new schema with the correct credentials immediately after login
-            if ($user->pg_username) {
-                // Store original connection for admin operations
-                Config::set('database.connections.pgsql_admin', Config::get('database.connections.pgsql'));
-                
-                // Set user connection
-                Config::set('database.connections.pgsql.username', $user->pg_username);
-                Config::set('database.connections.pgsql.password', $initialPassword);
-                
-                // Reconnect with new credentials
-                DB::purge('pgsql');
-                DB::reconnect('pgsql');
-                
-                // Set search path to user's schema FIRST, then public
-                DB::statement("SET search_path TO {$user->schema_name}, public");
-                
-                // Verify the search path was set correctly
-                $result = DB::select("SHOW search_path");
-                Log::info("Registration search_path: " . $result[0]->search_path);
-            }
+            // После логина Laravel регенерирует сессию, нужно снова установить контекст
+            session(['current_schema' => $schemaName]);
 
-            return redirect($this->redirectTo);
+            return redirect()->route('dashboard', ['schemaName' => $schemaName]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Registration error: " . $e->getMessage());
-            throw $e;
+            Log::error("Tenant registration error: " . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            return back()->with('error', 'Registration failed. Please try again or check the logs.')->withInput();
+        } finally {
+            $this->restoreDefaultConnection();
         }
     }
 
-    protected function validator(array $data)
+    /**
+     * Регистрирует нового ПОЛЬЗОВАТЕЛЯ в уже существующей компании.
+     * Вызывается с субдомена.
+     */
+    public function registerUser(Request $request, $schemaName)
     {
-        return Validator::make($data, [
+        Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:user'],
-            'schema_name' => ['required', 'string', 'max:64', 'alpha_dash', 'unique:schema_routes,route_name'],
+            // Валидация уникальности email происходит в контексте схемы клиента (благодаря Middleware)
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:user,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ])->validate();
+
+        // Middleware уже установил правильное соединение с БД
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
+    
+        // Назначаем новому пользователю роль 'user' (сидер уже создал эту роль)
+        $user->assignRoles('user');
+    
+        Auth::login($user);
+
+        return redirect()->route('dashboard', ['schemaName' => $schemaName]);
     }
 
-    protected function create(array $data)
+    /**
+     * Вспомогательные методы для смены соединения
+     */
+    protected function setTenantConnection(string $schemaName): void
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'schema_name' => null,
-            'pg_username' => null,
-        ]);
+        $tenantConnectionName = 'pgsql_tenant';
+        $defaultConnection = config('database.default');
+        
+        $config = config("database.connections.{$defaultConnection}");
+        $config['schema'] = $schemaName;
+        
+        config(["database.connections.{$tenantConnectionName}" => $config]);
+        DB::setDefaultConnection($tenantConnectionName);
+    }
+
+    protected function restoreDefaultConnection(): void
+    {
+        DB::setDefaultConnection(config('database.default'));
     }
 }

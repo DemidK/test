@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SchemaRoute extends Model
+class SchemaRoute extends BaseModel
 {
     use HasFactory;
 

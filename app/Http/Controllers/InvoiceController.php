@@ -44,6 +44,7 @@ class InvoiceController extends CrudController
         ];
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
@@ -81,7 +82,8 @@ class InvoiceController extends CrudController
         
         return $this->model::create($processedData);
     }
-
+    
+    // ИЗМЕНЕНО: Добавлен $schemaName
     protected function updateItem($item, array $validated)
     {
         // If partner_id is not provided or not valid and we have partner details,
@@ -197,6 +199,7 @@ class InvoiceController extends CrudController
         ];
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function exportPdf($id)
     {
         $invoice = $this->model::findOrFail($id);
@@ -219,6 +222,7 @@ class InvoiceController extends CrudController
         return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
 
+    // ИЗМЕНЕНО: Добавлен $schemaName
     public function previewPdf($id)
     {
         $invoice = $this->model::findOrFail($id);

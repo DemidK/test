@@ -5,10 +5,9 @@ namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 
 class PermissionService
 {
@@ -23,53 +22,31 @@ class PermissionService
         
         $user = Auth::user();
         
-        // Superusers bypass all permission checks
-        if (method_exists($user, 'isSuperuser') && $user->isSuperuser()) {
+        // Superusers bypass all permission checks.
+        if ($user->isSuperuser()) {
             return true;
         }
         
-        // For non-superusers, use cache for better performance
-        $cacheKey = "user_{$user->id}_permission_{$permission}";
+        // For non-superusers, use cache for better performance.
+        // The cache stores all allowed route names for the user.
+        $cacheKey = "user_{$user->id}_permissions";
         
-        return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user, $permission) {
-            return $this->checkUserPermission($user, $permission);
-        });
-    }
-    
-    /**
-     * Check if a user has a specific permission
-     */
-    protected function checkUserPermission($user, $permission)
-    {
-        // First check for direct permissions
-        if (method_exists($user, 'hasPermissionTo')) {
-            return $user->hasPermissionTo($permission);
-        }
-        
-        // Basic fallback if user model doesn't have permission methods
-        // Check direct user permissions
-        if (method_exists($user, 'permissions')) {
-            $directPermission = $user->permissions()
-                ->where('slug', $permission)
-                ->first();
-                
-            if ($directPermission) {
-                return (bool) $directPermission->pivot->granted;
-            }
-        }
-        
-        // Check role permissions
-        if (method_exists($user, 'roles')) {
+        $userPermissions = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
+            $permissions = [];
             foreach ($user->roles as $role) {
-                if (method_exists($role, 'permissions')) {
-                    $hasPermission = $role->permissions()
-                        ->where('slug', $permission)
-                        ->exists();
-                        
-                    if ($hasPermission) {
-                        return true;
-                    }
-                }
+                $permissions = array_merge($permissions, $role->permissions ?? []);
+            }
+            return array_unique($permissions);
+        });
+
+        // Check for a direct match or a wildcard match.
+        if (in_array('*', $userPermissions) || in_array($permission, $userPermissions)) {
+            return true;
+        }
+
+        foreach ($userPermissions as $userPermission) {
+            if (Str::is($userPermission, $permission)) {
+                return true;
             }
         }
         
@@ -120,88 +97,48 @@ class PermissionService
     /**
      * Clear permission cache for a user
      */
-    public function clearCache($userId)
+    public function clearCache($userId = null)
     {
-        // If userId is 'all', clear all permission caches
-        if ($userId === 'all') {
-            // Get all users
-            $userIds = User::pluck('id')->toArray();
-            foreach ($userIds as $id) {
-                $this->clearUserPermissionCache($id);
-            }
-            return;
-        }
-        
-        $this->clearUserPermissionCache($userId);
-    }
-    
-    /**
-     * Clear permission cache for a specific user
-     */
-    protected function clearUserPermissionCache($userId)
-    {
-        // Clear all permission caches for this user
-        try {
-            // Get all permission slugs
-            $permissions = Permission::pluck('slug')->toArray();
-            
-            foreach ($permissions as $permission) {
-                $cacheKey = "user_{$userId}_permission_{$permission}";
-                Cache::forget($cacheKey);
-            }
-            
-            // Also clear superuser cache if that method exists
+        if ($userId) {
+            Cache::forget("user_{$userId}_permissions");
             Cache::forget("user_{$userId}_is_superuser");
-        } catch (\Exception $e) {
-            Log::error("Error clearing permission cache: " . $e->getMessage());
+        } else {
+            // If no user ID is provided, this could be a signal to clear for all users.
+            // This can be slow, use with caution.
+            Log::warning('Clearing permission cache for all users.');
+            User::pluck('id')->each(function ($id) {
+                $this->clearCache($id);
+            });
         }
     }
-    
+
     /**
-     * Register a new permission
+     * Gets all named routes and groups them by a resource name.
+     * The resource is determined by the first part of the route name (before the first dot).
      */
-    public function registerPermission($name, $description = null, $type = 'route', $resource = null, $action = null)
+    public function getGroupedRoutes(): array
     {
-        $slug = Str::slug(str_replace(' ', '_', strtolower($name)), '_');
-        
-        try {
-            return Permission::firstOrCreate(
-                ['slug' => $slug],
-                [
-                    'name' => $name,
-                    'description' => $description,
-                    'type' => $type,
-                    'resource' => $resource,
-                    'action' => $action
-                ]
-            );
-        } catch (\Exception $e) {
-            Log::error("Error registering permission: " . $e->getMessage());
-            return null;
+        $routes = Route::getRoutes()->getRoutes();
+        $groupedRoutes = [];
+
+        foreach ($routes as $route) {
+            $name = $route->getName();
+            // Filter out system routes
+            if ($name && !Str::startsWith($name, ['ignition.', 'sanctum.', 'livewire.'])) {
+                $parts = explode('.', $name);
+                $resource = $parts[0] ?? 'general';
+                $action = $parts[1] ?? 'index';
+
+                $resourceName = Str::title(str_replace(['_', '-'], ' ', $resource));
+
+                if (!isset($groupedRoutes[$resourceName])) {
+                    $groupedRoutes[$resourceName] = [];
+                }
+
+                $groupedRoutes[$resourceName][] = ['name' => $name, 'action' => $action];
+            }
         }
-    }
-    
-    /**
-     * Create basic CRUD permissions for a resource
-     */
-    public function createCrudPermissions($resource)
-    {
-        $resource = strtolower($resource);
-        $permissions = [];
-        
-        $actions = ['view', 'create', 'edit', 'delete'];
-        
-        foreach ($actions as $action) {
-            $name = ucfirst($action) . ' ' . ucfirst($resource);
-            $permissions[] = $this->registerPermission(
-                $name,
-                "Can {$action} {$resource}",
-                'route',
-                $resource,
-                $action
-            );
-        }
-        
-        return array_filter($permissions);
+        ksort($groupedRoutes);
+        return $groupedRoutes;
     }
 }
