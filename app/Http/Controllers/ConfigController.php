@@ -10,18 +10,18 @@ class ConfigController extends Controller
 {
     public function index()
     {
-        $configs = Config::all();
+        $items = Config::all();
         $navLinks = NavLink::orderBy('position')->get();
         
         return view('config.index', [
-            'configs' => $configs,
+            'items' => $items,
             'navLinks' => $navLinks
         ]);
     }
 
-    public function edit($route)
+    public function edit($key)
     {
-        $config = Config::where('route', $route)->firstOrFail();
+        $config = Config::where('route', $key)->firstOrFail();
         $navLinks = NavLink::orderBy('position')->get();
 
         return view('config.edit', [
@@ -30,9 +30,9 @@ class ConfigController extends Controller
         ]);
     }
 
-    public function update(Request $request, $route)
+    public function update(Request $request, $key)
     {
-        $config = Config::where('route', $route)->firstOrFail();
+        $config = Config::where('route', $key)->firstOrFail();
         $config->update([
             'data' => json_encode($request->data)
         ]);

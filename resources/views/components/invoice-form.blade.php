@@ -107,23 +107,6 @@
                 </div>
             </div>
             <div>
-                <label for="partner_id" class="block text-gray-700 mb-2">Klienta ID</label>
-                <input type="text" 
-                       name="partner_id" 
-                       id="partner_id" 
-                       class="w-full px-4 py-2 border rounded-lg" 
-                       value="{{ old('partner_id', $invoice?->partner_id) }}"
-                       required>
-            </div>
-            <div>
-                <label for="partner_vat" class="block text-gray-700 mb-2">PVN reģistrācijas numurs</label>
-                <input type="text" 
-                       name="partner_vat" 
-                       id="partner_vat" 
-                       class="w-full px-4 py-2 border rounded-lg" 
-                       value="{{ old('partner_vat', $invoice?->partner_vat) }}">
-            </div>
-            <div>
                 <label for="partner_email" class="block text-gray-700 mb-2">Klienta e-pasts</label>
                 <input type="email" 
                        name="partner_email" 
@@ -131,6 +114,23 @@
                        class="w-full px-4 py-2 border rounded-lg" 
                        value="{{ old('partner_email', $invoice?->partner_email) }}"
                        >
+            </div>
+            <div>
+                <label for="partner_vat" class="block text-gray-700 mb-2">PVN numurs</label>
+                <input type="text" 
+                       name="partner_vat" 
+                       id="partner_vat" 
+                       class="w-full px-4 py-2 border rounded-lg" 
+                       value="{{ old('partner_vat', $invoice?->partner_vat) }}">
+            </div>
+            <div>
+                <label for="partner_id" class="block text-gray-700 mb-2">Reģistrācijas numurs</label>
+                <input type="text" 
+                       name="partner_id" 
+                       id="partner_id" 
+                       class="w-full px-4 py-2 border rounded-lg" 
+                       value="{{ old('partner_id', $invoice?->partner_id) }}"
+                       required>
             </div>
             <div class="sm:col-span-2">
                 <label for="partner_address" class="block text-gray-700 mb-2">Juridiskā adrese</label>

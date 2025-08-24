@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\Json;
 
-class Invoice extends Model
+class Invoice extends BaseModel
 {
     use HasFactory;
 

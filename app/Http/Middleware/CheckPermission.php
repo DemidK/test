@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Services\PermissionService;
+use App\Services\PermissionService; //
 use Illuminate\Support\Facades\Auth;
 
 class CheckPermission
@@ -16,47 +16,37 @@ class CheckPermission
         $this->permissionService = $permissionService;
     }
     
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $permission
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next, $permission)
+    public function handle(Request $request, Closure $next, string $permission = null)
     {
-        // If this is a guest permission, allow access
-        if ($permission === 'guest') {
-            return $next($request);
-        }
-        
-        // Check if user is authenticated
+        // Проверяем, авторизован ли пользователь
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please log in to access this page');
-        }
-        
-        $user = Auth::user();
-        
-        // Superusers bypass all permission checks
-        if (method_exists($user, 'isSuperuser') && $user->isSuperuser()) {
-            return $next($request);
-        }
-        
-        // For non-superusers, check if they have the required permission
-        if (!$this->permissionService->userCan($permission)) {
-            // Check if this is an AJAX request
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'error' => 'Unauthorized',
-                    'message' => 'You do not have permission to access this resource.'
-                ], 403);
-            }
+            // Если нет, перенаправляем на нужную страницу входа
+            $schemaName = $request->route('schemaName');
+            $routeName = $schemaName ? 'login.schema' : 'login';
+            $routeParams = $schemaName ? ['schemaName' => $schemaName] : [];
             
-            // For normal requests, redirect with error message
-            return redirect()
-                ->back()
-                ->with('error', 'You do not have permission to access this resource.');
+            return redirect()->route($routeName, $routeParams)->with('error', 'Please log in to access this page');
+        }
+
+        // Если право не передано в middleware, используем имя текущего маршрута
+        $permissionToCheck = $permission ?: $request->route()->getName();
+
+        if (!$permissionToCheck) {
+            abort(403, 'This route is not named and cannot be checked for permissions.');
+        }
+
+        // Теперь вся проверка прав, включая суперпользователя, происходит через Gate Laravel,
+        // который мы настроили в AuthServiceProvider. Это централизует логику.
+        // Auth::user()->can() использует настроенный Gate.
+        if (Auth::user()->cannot($permissionToCheck)) {
+            // Если у пользователя НЕТ прав, показываем ошибку 403. Это разрывает цикл редиректов.
+            // Вместо abort(403), который может вызывать проблемы с поиском шаблонов ошибок,
+            // мы возвращаем ответ с нашим собственным шаблоном напрямую.
+            // Это гарантирует, что будет использован правильный макет ('layouts.app').
+            // Мы также передаем объект исключения, чтобы сообщение отобразилось в шаблоне.
+            return response()->view('errors.403', [
+                'exception' => new \Symfony\Component\HttpKernel\Exception\HttpException(403, 'You do not have permission to perform this action.')
+            ], 403);
         }
         
         return $next($request);

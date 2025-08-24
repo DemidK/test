@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Partner;
 
-class TransportationOrder extends Model
+class TransportationOrder extends BaseModel
 {
     protected $fillable = [
         'carrier_name', 'reg_number', 'address',

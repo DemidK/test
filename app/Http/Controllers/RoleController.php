@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
-use App\Models\Permission;
 use App\Models\NavLink;
 use App\Services\PermissionService;
 
@@ -38,9 +37,9 @@ class RoleController extends CrudController
     public function create()
     {
         $navLinks = NavLink::orderBy('position')->get();
-        $permissionsByResource = $this->permissionService->getPermissionsByResource();
+        $routesByGroup = $this->permissionService->getGroupedRoutes();
         
-        return view("{$this->viewPath}.create", compact('navLinks', 'permissionsByResource'));
+        return view("{$this->viewPath}.create", compact('navLinks', 'routesByGroup'));
     }
     
     /**
@@ -57,8 +56,9 @@ class RoleController extends CrudController
             $role = $this->storeItem($validated);
             
             // Sync permissions if any were selected
-            if ($request->has('permissions')) {
-                $role->syncPermissions($request->permissions);
+            $permissions = $request->input('permissions', []);
+            if (!empty($permissions)) {
+                $role->syncPermissions($permissions);
             }
             
             return redirect()->route("{$this->routePrefix}.show", $role)
@@ -75,12 +75,12 @@ class RoleController extends CrudController
     {
         $item = $this->model::findOrFail($id);
         $navLinks = NavLink::orderBy('position')->get();
-        $permissionsByResource = $this->permissionService->getPermissionsByResource();
+        $routesByGroup = $this->permissionService->getGroupedRoutes();
         
         // Get currently assigned permission IDs
-        $rolePermissionIds = $item->permissions()->pluck('permissions.id')->toArray();
+        $rolePermissions = $item->permissions ?? [];
         
-        return view("{$this->viewPath}.edit", compact('item', 'navLinks', 'permissionsByResource', 'rolePermissionIds'));
+        return view("{$this->viewPath}.edit", compact('item', 'navLinks', 'routesByGroup', 'rolePermissions'));
     }
     
     /**
@@ -98,13 +98,12 @@ class RoleController extends CrudController
             $this->updateItem($role, $validated);
             
             // Sync permissions
-            $permissions = $request->has('permissions') ? $request->permissions : [];
+            $permissions = $request->input('permissions', []);
             $role->syncPermissions($permissions);
             
             // Clear permission cache for all users with this role
-            $userIds = $role->users()->pluck('user.id')->toArray();
-            foreach ($userIds as $userId) {
-                $this->permissionService->clearCache($userId);
+            if ($role->wasChanged('permissions')) {
+                $role->users->each(fn($user) => $this->permissionService->clearCache($user->id));
             }
             
             return redirect()->route("{$this->routePrefix}.show", $role)
@@ -123,18 +122,21 @@ class RoleController extends CrudController
         $navLinks = NavLink::orderBy('position')->get();
         
         // Get permissions grouped by resource
-        $permissionsByResource = [];
-        foreach ($item->permissions as $permission) {
-            $resource = $permission->resource ?: 'General';
-            if (!isset($permissionsByResource[$resource])) {
-                $permissionsByResource[$resource] = [];
+        // Get permissions grouped by resource for display
+        $routesByGroup = [];
+        if (!empty($item->permissions)) {
+            foreach ($item->permissions as $routeName) {
+                $resource = explode('.', $routeName)[0] ?? 'General';
+                $resourceName = \Illuminate\Support\Str::title(str_replace(['_', '-'], ' ', $resource));
+                if (!isset($routesByGroup[$resourceName])) {
+                    $routesByGroup[$resourceName] = [];
+                }
+                $routesByGroup[$resourceName][] = $routeName;
             }
-            $permissionsByResource[$resource][] = $permission;
         }
-        
         // Get users with this role
         $users = $item->users()->paginate(10);
         
-        return view("{$this->viewPath}.show", compact('item', 'navLinks', 'permissionsByResource', 'users'));
+        return view("{$this->viewPath}.show", compact('item', 'navLinks', 'routesByGroup', 'users'));
     }
 }
