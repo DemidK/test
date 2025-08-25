@@ -112,12 +112,14 @@ class RegisterController extends Controller
                 'is_active' => true
             ]);
 
-            // 6. Создаем первого пользователя ВНУТРИ схемы клиента
-            Log::info('RegisterController: Creating user inside tenant schema.', ['email' => $request->email]);
+            // Устанавливаем search_path для всех последующих операций с данными тенанта
+            DB::statement("SET search_path TO \"{$schemaName}\", public");
+            Log::info('RegisterController: Switched search_path for tenant operations.', ['schema_name' => $schemaName]);
+
+            // 6. Создаем первого пользователя ВНУТРИ схемы клиента (теперь в правильном контексте)
             $tenantUser = $this->createTenantUser($schemaName, $request);
 
-            // 7. Назначаем роль superuser
-            Log::info('RegisterController: Assigning "superuser" role to tenant user.', ['user_id' => $tenantUser->id]);
+            // 7. Назначаем роль superuser (теперь в правильном контексте)
             $tenantUser->assignRoles('superuser');
 
             Log::info('RegisterController: Committing transaction.');
@@ -125,7 +127,7 @@ class RegisterController extends Controller
 
             // 8. Авторизуем пользователя
             Log::info('RegisterController: Logging in the new tenant user.', ['user_id' => $tenantUser->id]);
-            Auth::login($tenantUser);
+            Auth::login($tenantUser, true); // Добавляем true для "remember me"
             
             Log::info('RegisterController: Setting current_schema in session.', ['schema_name' => $schemaName]);
             session(['current_schema' => $schemaName]);
@@ -153,6 +155,10 @@ class RegisterController extends Controller
             // Восстанавливаем исходные настройки
             config(['database.migrations' => $originalMigrationsTable]);
             Log::info('RegisterController: Restored migrations table.', ['table' => config('database.migrations')]);
+
+            // Важно! Восстанавливаем search_path в любом случае
+            DB::statement("SET search_path TO public");
+            Log::info('RegisterController: Restored search_path to public in finally block.');
         }
     }
 
@@ -271,48 +277,24 @@ class RegisterController extends Controller
         
         Log::info('RegisterController: Users table exists in schema.', ['schema_name' => $schemaName]);
         
-        try {
-            // Создаем пользователя напрямую через Query Builder с явным указанием схемы
-            $userId = $connection->table("{$schemaName}.users")->insertGetId([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        // Создаем пользователя напрямую через Query Builder с явным указанием схемы
+        $userId = $connection->table("{$schemaName}.users")->insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-            Log::info('RegisterController: User inserted into tenant schema.', [
-                'schema_name' => $schemaName,
-                'user_id' => $userId
-            ]);
+        // Получаем пользователя через Eloquent. search_path уже установлен в вызывающем методе.
+        $tenantUser = User::find($userId);
 
-            // Временно устанавливаем search_path для получения пользователя через Eloquent
-            $connection->statement("SET search_path TO \"{$schemaName}\", public");
-            
-            // Получаем пользователя через Eloquent
-            $tenantUser = User::find($userId);
-            
-            // Восстанавливаем search_path
-            $connection->statement("SET search_path TO public");
-
-            if (!$tenantUser) {
-                throw new \Exception("Could not find newly created tenant user with ID: {$userId}");
-            }
-
-            Log::info('RegisterController: Tenant user created successfully.', ['user_id' => $userId]);
-            
-            return $tenantUser;
-            
-        } catch (\Exception $e) {
-            // В случае ошибки пытаемся восстановить search_path
-            try {
-                $connection->statement("SET search_path TO public");
-            } catch (\Exception $restoreException) {
-                // Игнорируем ошибку восстановления, так как транзакция уже прервана
-                Log::warning('Could not restore search_path after error: ' . $restoreException->getMessage());
-            }
-            throw $e;
+        if (!$tenantUser) {
+            throw new \Exception("Could not find newly created tenant user with ID: {$userId}");
         }
+
+        Log::info('RegisterController: Tenant user created successfully.', ['user_id' => $userId]);
+        return $tenantUser;
     }
 
     /**

@@ -17,8 +17,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('status')->default('new'); // e.g., new, in_progress, done, on_hold
             $table->string('priority')->default('medium'); // e.g., low, medium, high, critical
-            $table->foreignId('user_id')->nullable()->comment('Assignee')->constrained('users')->onDelete('set null');
-            $table->foreignId('creator_id')->comment('Creator')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->comment('Assignee');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('creator_id')->comment('Creator');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->date('due_date')->nullable();
             $table->timestamps();
         });
