@@ -48,7 +48,7 @@ return new class extends Migration
         // Create user_role pivot table in public schema
         Schema::create('user_role', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
             
@@ -58,7 +58,7 @@ return new class extends Migration
         // Create user_permission pivot table in public schema
         Schema::create('user_permission', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->boolean('granted')->default(true); // true = granted, false = denied (override)
             $table->timestamps();

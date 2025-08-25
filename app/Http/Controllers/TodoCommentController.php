@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TodoCommentController extends Controller
 {
-    public function store(Request $request, $schemaName, Todo $todo)
+    public function store(Request $request, Todo $todo)
     {
         // Право 'todos.show' используется как допущение, что если пользователь
         // может видеть задачу, он может ее и комментировать.
@@ -24,7 +24,8 @@ class TodoCommentController extends Controller
             'content' => $request->input('content'),
         ]);
 
-        return redirect()->route('todos.show', ['schemaName' => $schemaName, 'todo' => $todo->id])
+        // Параметр 'schemaName' будет подставлен автоматически благодаря URL::defaults.
+        return redirect()->route('todos.show', ['todo' => $todo->id])
                          ->with('success', 'Комментарий успешно добавлен.');
     }
 }

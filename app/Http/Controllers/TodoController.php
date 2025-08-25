@@ -66,7 +66,7 @@ class TodoController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:' . implode(',', array_keys(Todo::getStatuses())),
             'priority' => 'required|in:' . implode(',', array_keys(Todo::getPriorities())),
-            'user_id' => 'nullable|exists:user,id',
+            'user_id' => 'nullable|exists:users,id',
             'due_date' => 'nullable|date',
         ]);
 
@@ -74,15 +74,15 @@ class TodoController extends Controller
 
         Todo::create($validated);
 
-        $schemaName = $request->route('schemaName');
-        return redirect()->route('todos.index', ['schemaName' => $schemaName])
+        // Параметр 'schemaName' будет подставлен автоматически благодаря URL::defaults.
+        return redirect()->route('todos.index')
                          ->with('success', 'Задача успешно создана.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $schemaName, Todo $todo)
+    public function show(Todo $todo)
     {
         // Проверка прав 'todos.view'
         $todo->load(['assignee', 'creator', 'comments.user']);
@@ -92,7 +92,7 @@ class TodoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, $schemaName, Todo $todo)
+    public function edit(Todo $todo)
     {
         // Проверка прав 'todos.edit'
         $users = User::orderBy('name')->get();
@@ -107,7 +107,7 @@ class TodoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $schemaName, Todo $todo)
+    public function update(Request $request, Todo $todo)
     {
         // Проверка прав 'todos.edit'
         $validated = $request->validate([
@@ -115,25 +115,25 @@ class TodoController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:' . implode(',', array_keys(Todo::getStatuses())),
             'priority' => 'required|in:' . implode(',', array_keys(Todo::getPriorities())),
-            'user_id' => 'nullable|exists:user,id',
+            'user_id' => 'nullable|exists:users,id',
             'due_date' => 'nullable|date',
         ]);
 
         $todo->update($validated);
         
-        return redirect()->route('todos.index', ['schemaName' => $schemaName])
+        return redirect()->route('todos.index')
                          ->with('success', 'Задача успешно обновлена.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, $schemaName, Todo $todo)
+    public function destroy(Todo $todo)
     {
         // Проверка прав 'todos.delete'
         $todo->delete();
 
-        return redirect()->route('todos.index', ['schemaName' => $schemaName])
+        return redirect()->route('todos.index')
                          ->with('success', 'Задача успешно удалена.');
     }
 }

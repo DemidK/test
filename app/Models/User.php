@@ -25,7 +25,7 @@ class User extends Authenticatable
         'pg_username',  // We'll keep the username for reference
     ];
 
-    protected $table = 'user';
+    protected $table = 'users';
     
     /**
      * The attributes that should be hidden for serialization.
@@ -187,23 +187,42 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
-        // --- НАЧАЛО ОТЛАДКИ ---
-        // try {
-        //     $currentSearchPath = \Illuminate\Support\Facades\DB::selectOne("show search_path")->search_path;
-        //     $connectionConfig = config('database.connections.' . \Illuminate\Support\Facades\DB::getDefaultConnection());
-        //     dd(
-        //         "Текущий search_path в БД:", 
-        //         $currentSearchPath, 
-        //         "Конфигурация соединения Laravel:", 
-        //         $connectionConfig
-        //     );
-        // } catch (\Exception $e) {
-        //     dd("Не удалось выполнить отладочный запрос: " . $e->getMessage());
-        // }
-        // --- КОНЕЦ ОТЛАДКИ ---
-
         if (is_string($role)) {
-            return $this->roles()->where('slug', $role)->exists();
+            // --- НАЧАЛО ЛОГИРОВАНИЯ ДЛЯ ДИАГНОСТИКИ 403 ---
+            try {
+                // Получаем имя соединения, которое использует модель
+                $connectionName = $this->getConnectionName() ?? config('database.default');
+                $dbConnection = \Illuminate\Support\Facades\DB::connection($connectionName);
+                
+                // Получаем текущий search_path из базы данных для этого соединения
+                $searchPathResult = $dbConnection->selectOne('show search_path');
+                $currentSearchPath = $searchPathResult->search_path ?? 'N/A';
+                
+                // Выполняем проверку наличия роли
+                $hasRole = $this->roles()->where('slug', $role)->exists();
+
+                // Записываем всю информацию в лог
+                \Illuminate\Support\Facades\Log::info('--- Role Check Debug ---', [
+                    'user_id' => $this->id,
+                    'checking_for_role' => $role,
+                    'connection_name' => $connectionName,
+                    'db_search_path' => $currentSearchPath,
+                    'session_schema' => session('current_schema', 'not_set'),
+                    'result_has_role' => $hasRole,
+                ]);
+                
+                return $hasRole;
+
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('--- Role Check FAILED ---', [
+                    'user_id' => $this->id,
+                    'checking_for_role' => $role,
+                    'error' => $e->getMessage(),
+                ]);
+                // В случае ошибки лучше вернуть false, чтобы не давать лишних прав
+                return false;
+            }
+            // --- КОНЕЦ ЛОГИРОВАНИЯ ---
         }
         
         return $this->roles->contains($role);

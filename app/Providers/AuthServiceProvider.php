@@ -26,13 +26,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Этот код будет выполняться перед всеми остальными проверками прав.
-        // Если у пользователя есть роль 'superuser', ему будет предоставлен доступ ко всему.
+        // Если у пользователя есть роль 'superuser' (проверяется через метод isSuperuser), ему будет предоставлен доступ ко всему.
         // Это стандартный и самый эффективный способ реализации "супер-админа" в Laravel.
         Gate::before(function (User $user, $ability) {
-            // Это самая надежная проверка для суперпользователя.
-            // Она напрямую запрашивает у БД, есть ли у пользователя хотя бы одна роль,
-            // у которой в JSON-массиве 'permissions' есть значение '*'.
-            if ($user->roles()->whereJsonContains('permissions', '*')->exists()) {
+            if ($user->isSuperuser()) {
                 return true;
             }
             return null; // Важно возвращать null, чтобы проверки продолжились для других прав
