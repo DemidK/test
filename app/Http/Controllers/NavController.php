@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NavLink;
 use Illuminate\Http\Request;
 
-class NavController extends Controller
+class NavController extends CrudController
 {
     /**
      * Update the navigation order.

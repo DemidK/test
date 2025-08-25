@@ -48,14 +48,12 @@ class InvoiceController extends CrudController
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
         
         if (is_string($item->items)) {
             $item->items = json_decode($item->items, true);
         }
         
         return view("{$this->viewPath}.show", [
-            'navLinks' => $navLinks,
             'items' => $item]);
     }
 

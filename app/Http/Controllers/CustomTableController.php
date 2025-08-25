@@ -52,13 +52,13 @@ class CustomTableController extends CrudController
         $items = $query->paginate($this->perPage);
         $navLinks = $this->navLinks();
         
-        return view("{$this->viewPath}.index", compact('items', 'navLinks'));
+        return view("{$this->viewPath}.index", compact('items'));
     }
 
     public function create()
     {
         $navLinks = $this->navLinks();
-        return view("{$this->viewPath}.create", compact('navLinks'));
+        return view("{$this->viewPath}.create");
     }
 
     public function store(Request $request)
@@ -129,14 +129,14 @@ class CustomTableController extends CrudController
             $lastRecord = null;
         }
 
-        return view("{$this->viewPath}.show", compact('item', 'recordCount', 'lastRecord', 'navLinks'));
+        return view("{$this->viewPath}.show", compact('item', 'recordCount', 'lastRecord'));
     }
 
     public function edit($id)
     {
         $item = CustomTable::findOrFail($id);
         $navLinks = $this->navLinks();
-        return view("{$this->viewPath}.edit", compact('item', 'navLinks'));
+        return view("{$this->viewPath}.edit", compact('item'));
     }
 
     public function update(Request $request, $id)
@@ -195,7 +195,7 @@ class CustomTableController extends CrudController
         $items = $modelClass::paginate(10);
         $navLinks = $this->navLinks();
 
-        return view("{$this->viewPath}.preview", compact('customTable', 'items', 'navLinks'));
+        return view("{$this->viewPath}.preview", compact('customTable', 'items'));
     }
 
     public function dataIndex($tableName)
@@ -205,7 +205,7 @@ class CustomTableController extends CrudController
         $items = $model->newQuery()->paginate(10);
         $navLinks = $this->navLinks();
 
-        return view('custom_tables.data.index', compact('customTable', 'items', 'navLinks'));
+        return view('custom_tables.data.index', compact('customTable', 'items',));
     }
 
     public function dataStore(Request $request, $tableName)
@@ -236,7 +236,7 @@ class CustomTableController extends CrudController
         $item = $model->newQuery()->findOrFail($id);
         $navLinks = $this->navLinks();
 
-        return view('custom_tables.data.show', compact('customTable', 'item', 'navLinks'));
+        return view('custom_tables.data.show', compact('customTable', 'item'));
     }
 
     public function dataCreate($tableName)
@@ -244,7 +244,7 @@ class CustomTableController extends CrudController
     $customTable = CustomTable::where('name', $tableName)->firstOrFail();
     $navLinks = $this->navLinks();
     
-    return view('custom_tables.data.create', compact('customTable', 'navLinks'));
+    return view('custom_tables.data.create', compact('customTable'));
 }
 
     public function dataEdit($tableName, $id)
@@ -254,7 +254,7 @@ class CustomTableController extends CrudController
         $item = $model->newQuery()->findOrFail($id);
         $navLinks = $this->navLinks();
 
-        return view('custom_tables.data.edit', compact('customTable', 'item', 'navLinks'));
+        return view('custom_tables.data.edit', compact('customTable', 'item'));
     }
 
     public function dataUpdate(Request $request, $tableName, $id)

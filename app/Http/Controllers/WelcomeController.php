@@ -5,20 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\NavLink;
 
-class WelcomeController extends Controller
+class WelcomeController extends CrudController
 {
     /**
      * Display the welcome page.
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch links ordered by their position
-        $navLinks = NavLink::orderBy('position')->get();
-
         return view('welcome', [
-            'navLinks' => $navLinks,
             'featuredContent' => 'Welcome to our application! Explore our features and get started.',
             'recentUpdates' => [
                 'New user dashboard released!',

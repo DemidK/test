@@ -36,10 +36,9 @@ class RoleController extends CrudController
      */
     public function create()
     {
-        $navLinks = NavLink::orderBy('position')->get();
         $routesByGroup = $this->permissionService->getGroupedRoutes();
         
-        return view("{$this->viewPath}.create", compact('navLinks', 'routesByGroup'));
+        return view("{$this->viewPath}.create", compact('routesByGroup'));
     }
     
     /**
@@ -74,13 +73,12 @@ class RoleController extends CrudController
     public function edit($id)
     {
         $item = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
         $routesByGroup = $this->permissionService->getGroupedRoutes();
         
         // Get currently assigned permission IDs
         $rolePermissions = $item->permissions ?? [];
         
-        return view("{$this->viewPath}.edit", compact('item', 'navLinks', 'routesByGroup', 'rolePermissions'));
+        return view("{$this->viewPath}.edit", compact('item','routesByGroup', 'rolePermissions'));
     }
     
     /**
@@ -119,7 +117,6 @@ class RoleController extends CrudController
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
         
         // Get permissions grouped by resource
         // Get permissions grouped by resource for display
@@ -137,6 +134,6 @@ class RoleController extends CrudController
         // Get users with this role
         $users = $item->users()->paginate(10);
         
-        return view("{$this->viewPath}.show", compact('item', 'navLinks', 'routesByGroup', 'users'));
+        return view("{$this->viewPath}.show", compact('item', 'routesByGroup', 'users'));
     }
 }

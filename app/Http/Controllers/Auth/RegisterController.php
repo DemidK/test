@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\CrudController;
 use App\Models\SchemaRoute;
 use App\Models\User;
 use App\Services\SchemaService;
@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
 use Database\Seeders\TenantDatabaseSeeder;
 
-class RegisterController extends Controller
+class RegisterController extends CrudController
 {
     protected $schemaService;
 

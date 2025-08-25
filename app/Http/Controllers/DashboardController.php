@@ -10,9 +10,9 @@ use App\Models\Partner;
 use App\Models\NavLink;
 use Symfony\Component\Process\Process;
 
-class DashboardController extends Controller
+class DashboardController extends CrudController
 {
-    public function index(\Illuminate\Http\Request $request) // Добавьте Request
+    public function index(Request $request) // Добавьте Request
     {
         // --- ДИАГНОСТИЧЕСКОЕ ЛОГИРОВАНИЕ ---
         \Illuminate\Support\Facades\Log::info('--- DASHBOARD REQUEST START ---');
@@ -40,7 +40,6 @@ class DashboardController extends Controller
         return view('dashboard', [
             'totalUsers' => $totalUsers,
             'totalPartners' => $totalPartners,
-            'navLinks' => $navLinks,
             'updateUrl' => $updateUrl,
         ]);
     }

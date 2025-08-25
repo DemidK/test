@@ -23,7 +23,6 @@ class UserPermissionController extends CrudController
     public function edit($userId)
     {
         $user = User::findOrFail($userId);
-        $navLinks = NavLink::orderBy('position')->get();
         
         // Get all available roles
         $roles = Role::orderBy('name')->get();
@@ -32,7 +31,6 @@ class UserPermissionController extends CrudController
         // The view name is changed to a more standard 'users.edit'
         return view('users.edit', compact(
             'user',
-            'navLinks',
             'roles',
             'userRoleIds'
         ));
@@ -63,7 +61,7 @@ class UserPermissionController extends CrudController
     /**
      * Show a list of users with their roles
      */
-    public function index($request)
+    public function index(Request $request)
     {
         $navLinks = NavLink::orderBy('position')->get();
         // Переименовываем переменную $users в $items, чтобы соответствовать
@@ -71,7 +69,7 @@ class UserPermissionController extends CrudController
         // был создан по аналогии с другими CRUD-шаблонами.
         $items = User::with('roles')->paginate(10);
         
-        return view('users.index', compact('navLinks', 'items'));
+        return view('users.index', compact('items'));
     }
     
     /**
@@ -104,7 +102,6 @@ class UserPermissionController extends CrudController
         // The view name is changed to a more standard 'users.show'
         return view('users.show', compact(
             'user',
-            'navLinks',
             'permissionsByGroup'
         ));
     }

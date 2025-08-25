@@ -14,8 +14,7 @@ class ConfigController extends Controller
         $navLinks = NavLink::orderBy('position')->get();
         
         return view('config.index', [
-            'items' => $items,
-            'navLinks' => $navLinks
+            'items' => $items
         ]);
     }
 
@@ -25,8 +24,7 @@ class ConfigController extends Controller
         $navLinks = NavLink::orderBy('position')->get();
 
         return view('config.edit', [
-            'config' => $config,
-            'navLinks' => $navLinks
+            'config' => $config
         ]);
     }
 
