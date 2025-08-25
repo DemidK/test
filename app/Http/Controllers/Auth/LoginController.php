@@ -24,7 +24,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             Log::info('Login successful for user: ' . Auth::user()->email);
-            return redirect()->route('dashboard', ['schemaName' => $request->route('schemaName')]);
+            // Параметр 'schemaName' будет подставлен автоматически благодаря
+            // URL::defaults в SetSchemaMiddleware, так как мы находимся на маршруте субдомена.
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');

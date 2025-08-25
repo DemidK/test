@@ -115,7 +115,6 @@ class PartnerController extends CrudController
     {
         $dataObjectConfig = Config::getConfig('partners_create', []);
         return view("{$this->viewPath}.create", [
-            'navLinks' => $this->navLinks(),
             'config' => $dataObjectConfig
         ]);
     }
@@ -127,7 +126,6 @@ class PartnerController extends CrudController
         $dataObjectConfig = Config::getConfig('partners_create', []);
 
         return view("{$this->viewPath}.show", [
-            'navLinks' => $this->navLinks(),
             'partner' => $partner,
             'config' => $dataObjectConfig,
             'formattedData' => array_reverse($formattedData)
@@ -141,7 +139,6 @@ class PartnerController extends CrudController
         $dataObjectConfig = Config::getConfig('partners_create', []);
 
         return view("{$this->viewPath}.edit", [
-            'navLinks' => $this->navLinks(),
             'partner' => $partner,
             'config' => $dataObjectConfig,
             'formattedData' => $formattedData

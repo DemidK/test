@@ -35,7 +35,6 @@ class TransportationOrderController extends CrudController
         $cargoTypes = $this->getCargoTypes();
         
         return view("{$this->viewPath}.create", [
-            'navLinks' => $this->navLinks(),
             'partners' => $partners,
             'cargoTypes' => $cargoTypes
         ]);
@@ -48,7 +47,6 @@ class TransportationOrderController extends CrudController
         $cargoTypes = $this->getCargoTypes();
         
         return view("{$this->viewPath}.edit", [
-            'navLinks' => $this->navLinks(),
             'order' => $order,
             'partners' => $partners,
             'cargoTypes' => $cargoTypes
@@ -75,7 +73,6 @@ class TransportationOrderController extends CrudController
         $order = $this->model::findOrFail($id);
         
         return view("{$this->viewPath}.show", [
-            'navLinks' => $this->navLinks(),
             'order' => $order
         ]);
     }

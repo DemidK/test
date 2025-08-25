@@ -8,7 +8,7 @@ use App\Models\Role;
 use App\Models\NavLink;
 use App\Services\PermissionService;
 
-class UserPermissionController extends Controller
+class UserPermissionController extends CrudController
 {
     protected $permissionService;
     
@@ -63,12 +63,15 @@ class UserPermissionController extends Controller
     /**
      * Show a list of users with their roles
      */
-    public function index()
+    public function index($request)
     {
         $navLinks = NavLink::orderBy('position')->get();
-        $users = User::with('roles')->paginate(10);
+        // Переименовываем переменную $users в $items, чтобы соответствовать
+        // ожиданиям шаблона `users.index.blade.php`, который, вероятно,
+        // был создан по аналогии с другими CRUD-шаблонами.
+        $items = User::with('roles')->paginate(10);
         
-        return view('users.index', compact('navLinks', 'users'));
+        return view('users.index', compact('navLinks', 'items'));
     }
     
     /**

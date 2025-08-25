@@ -19,7 +19,6 @@ class TenantDatabaseSeeder extends Seeder
             [
                 'name' => 'Superuser',
                 'description' => 'Schema owner with full access',
-                'permissions' => ['*'] // Superuser может все
             ]
         );
         
@@ -28,14 +27,6 @@ class TenantDatabaseSeeder extends Seeder
             [
                 'name' => 'User',
                 'description' => 'Default role for new users',
-                'permissions' => [
-                    'dashboard',
-                    'todos.index',
-                    'todos.show',
-                    'todos.create',
-                    'todos.edit',
-                    'todos.delete',
-                ]
             ]
         );
         Log::info('Roles created or verified.');

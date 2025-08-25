@@ -18,11 +18,11 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             
-            $table->foreign('user_id')->references('id')->on('user');
+            $table->foreign('user_id')->references('id')->on('users');
         });
         
         // 2. Add PostgreSQL username column to user table (but not password)
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('pg_username')->nullable();
         });
         
@@ -52,7 +52,7 @@ return new class extends Migration
         Schema::dropIfExists('schema_routes');
         
         // Remove pg_username column from user table
-        Schema::table('user', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('pg_username');
         });
         

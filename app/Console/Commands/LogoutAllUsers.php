@@ -97,10 +97,10 @@ class LogoutAllUsers extends Command
                 
                 if ($keepAdmins) {
                     $superuserIds = $this->getSuperuserIds();
-                    $query = DB::table('user')->whereNotIn('id', $superuserIds);
+                    $query = DB::table('users')->whereNotIn('id', $superuserIds);
                     $query->update(['remember_token' => null]);
                 } else {
-                    DB::table('user')->update(['remember_token' => null]);
+                    DB::table('users')->update(['remember_token' => null]);
                 }
                 
                 $this->info('Remember tokens invalidated.');

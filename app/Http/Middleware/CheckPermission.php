@@ -19,7 +19,14 @@ class CheckPermission
     public function handle(Request $request, Closure $next, string $permission = null)
     {
         // Проверяем, авторизован ли пользователь
+        // Добавляем логирование, чтобы отследить причину редиректов
         if (!Auth::check()) {
+            \Illuminate\Support\Facades\Log::info('--- CheckPermission Middleware: Auth check FAILED ---', [
+                'url' => $request->fullUrl(),
+                'session_id' => session()->getId(),
+                'message' => 'User is not authenticated. Redirecting to login.'
+            ]);
+
             // Если нет, перенаправляем на нужную страницу входа
             $schemaName = $request->route('schemaName');
             $routeName = $schemaName ? 'login.schema' : 'login';

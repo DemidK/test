@@ -30,11 +30,6 @@ abstract class CrudController extends Controller
         return parent::callAction($method, $parameters);
     }
 
-    public function navLinks()
-    {
-        return NavLink::orderBy('position')->get();
-    }
-
     public function index(Request $request)
     {
         $query = $this->model::query();
@@ -62,10 +57,8 @@ abstract class CrudController extends Controller
         $items = $query->paginate($this->perPage);
         $items->appends($request->except('page'));
         
-        $navLinks = NavLink::orderBy('position')->get();
-        
         return view("{$this->viewPath}.index", [
-            'navLinks' => $navLinks,
+            // 'navLinks' теперь передается глобально через ViewServiceProvider
             'items' => $items,
             'search' => $request->search,
             'sortBy' => $sortBy,
@@ -75,8 +68,8 @@ abstract class CrudController extends Controller
 
     public function create()
     {
-        $navLinks = NavLink::orderBy('position')->get();
-        return view("{$this->viewPath}.create", compact('navLinks'));
+        // 'navLinks' теперь передается глобально через ViewServiceProvider
+        return view("{$this->viewPath}.create");
     }
 
     public function store(Request $request)
@@ -96,16 +89,14 @@ abstract class CrudController extends Controller
     public function show($id)
     {
         $item = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
-        return view("{$this->viewPath}.show", compact('item', 'navLinks'));
+        return view("{$this->viewPath}.show", compact('item'));
     }
 
     // ИЗМЕНЕНО: Добавлен $schemaName
     public function edit($id)
     {
         $item = $this->model::findOrFail($id);
-        $navLinks = NavLink::orderBy('position')->get();
-        return view("{$this->viewPath}.edit", compact('item', 'navLinks'));
+        return view("{$this->viewPath}.edit", compact('item'));
     }
 
     // ИЗМЕНЕНО: Добавлен $schemaName
