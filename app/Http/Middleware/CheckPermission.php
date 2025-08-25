@@ -35,6 +35,12 @@ class CheckPermission
             return redirect()->route($routeName, $routeParams)->with('error', 'Please log in to access this page');
         }
 
+        // Дашборд доступен всем авторизованным пользователям,
+        // поэтому для него не требуется специальная проверка прав.
+        if ($request->route()->named('dashboard')) {
+            return $next($request);
+        }
+
         // Если право не передано в middleware, используем имя текущего маршрута
         $permissionToCheck = $permission ?: $request->route()->getName();
 
@@ -45,15 +51,15 @@ class CheckPermission
         // Теперь вся проверка прав, включая суперпользователя, происходит через Gate Laravel,
         // который мы настроили в AuthServiceProvider. Это централизует логику.
         // Auth::user()->can() использует настроенный Gate.
+        // Если у пользователя НЕТ прав, и он авторизован, перенаправляем на дашборд с сообщением.
         if (Auth::user()->cannot($permissionToCheck)) {
-            // Если у пользователя НЕТ прав, показываем ошибку 403. Это разрывает цикл редиректов.
-            // Вместо abort(403), который может вызывать проблемы с поиском шаблонов ошибок,
-            // мы возвращаем ответ с нашим собственным шаблоном напрямую.
-            // Это гарантирует, что будет использован правильный макет ('layouts.app').
-            // Мы также передаем объект исключения, чтобы сообщение отобразилось в шаблоне.
-            return response()->view('errors.403', [
-                'exception' => new \Symfony\Component\HttpKernel\Exception\HttpException(403, 'You do not have permission to perform this action.')
-            ], 403);
+            // Определяем параметры для редиректа на дашборд, сохраняя schemaName
+            $schemaName = $request->route('schemaName');
+            $dashboardRouteParams = $schemaName ? ['schemaName' => $schemaName] : [];
+
+            // Перенаправляем на дашборд с информационным сообщением
+            return redirect()->route('dashboard', $dashboardRouteParams)
+                             ->with('warning', 'У вас нет прав доступа к этой странице.');
         }
         
         return $next($request);
